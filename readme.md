@@ -1,0 +1,2 @@
+# Qt desktop client plugin
+

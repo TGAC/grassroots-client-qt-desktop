@@ -34,7 +34,7 @@ class ParamCheckBox : public BaseParamWidget
 
 
 private slots:
-	bool UpdateConfig (int state);
+//	bool UpdateConfig (int state);
 
 public:
 	ParamCheckBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p = 0);

@@ -42,7 +42,7 @@ public:
 
 
 public slots:
-  void SelectService (const char *service_name_s, const json_t *params_json_p);
+  //void SelectService (const char *service_name_s, const json_t *params_json_p);
 
 private slots:
   void ToggleServiceRunStatus (const QModelIndex &index_r);

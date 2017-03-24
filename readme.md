@@ -1,6 +1,10 @@
-# Desktop client
+﻿# Desktop client
 
-This builds a  graphical user interface desktop client to access a Grassroots server. It uses a [Qt](https://www.qt.io)-ball sed GUI 
+This builds a  graphical user interface desktop client to access a Grassroots server. It uses a [Qt](https://www.qt.io)-based GUI.
+
+![Screenshot of the Grassroots Qt desktop client](grassroots_qt_client.png "Grassroots Qt Desktop Client")
+
+
 
 ## Installation
 

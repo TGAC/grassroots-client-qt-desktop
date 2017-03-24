@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webenginewidgets
 
-TARGET = ls
+TARGET = grassroots-desktop-client
 TEMPLATE = app
 
 VPATH += src include
@@ -24,11 +24,20 @@ unix {
 }
 
 
-include(dependencies.pri)
+# Include the user preferemces
+include (dependencies.pri)
 
 
-DIR_GRASSROOTS_SHARED_SRC = $$DIR_GRASSROOTS_PKG_ROOT/shared
-DIR_GRASSROOTS_SERVER_SRC = $$DIR_GRASSROOTS_PKG_ROOT/server
+# Path to root of this project
+DIR_GRASSROOTS_QT_SRC = ../../
+
+
+# Path to the Grassroots libraries
+DIR_GRASSROOTS_LIBS = $$DIR_GRASSROOTS_INSTALL_ROOT/lib
+
+
+DIR_GRASSROOTS_SHARED_SRC = $$DIR_GRASSROOTS_CORE_ROOT/shared
+DIR_GRASSROOTS_SERVER_SRC = $$DIR_GRASSROOTS_CORE_ROOT/server
 
 DIR_GRASSROOTS_EXTRAS = $$DIR_GRASSROOTS_INSTALL_ROOT/extras
 
@@ -36,7 +45,7 @@ DIR_GRASSROOTS_PARAMS = $$DIR_GRASSROOTS_SHARED_SRC/parameters
 DIR_GRASSROOTS_PARAMS_INC = $$DIR_GRASSROOTS_PARAMS/include
 GRASSROOTS_PARAMS_LIB_NAME = grassroots_params
 
-DIR_GRASSROOTS_CLIENTS = $$DIR_GRASSROOTS_PKG_ROOT/client
+DIR_GRASSROOTS_CLIENTS = $$DIR_GRASSROOTS_CORE_ROOT/client
 DIR_GRASSROOTS_CLIENTS_INC = $$DIR_GRASSROOTS_CLIENTS/include
 GRASSROOTS_CLIENTS_LIB_NAME = grassroots_clients
 

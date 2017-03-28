@@ -1,6 +1,5 @@
-﻿# Desktop client
-<<<<<<< HEAD
-=======
+# Desktop client
+
 
 This builds a  graphical user interface desktop client to access a Grassroots server allowing you to query and run services, view results, *etc.* It uses a [Qt](https://www.qt.io)-based GUI.
 

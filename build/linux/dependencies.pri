@@ -12,3 +12,4 @@ DIR_GRASSROOTS_INSTALL_ROOT = /home/billy/Applications/grassroots-0/grassroots
 # This is the path to the Grassroots core development packages
 # containing the reuired header files
 DIR_GRASSROOTS_CORE = ../../../../core
+

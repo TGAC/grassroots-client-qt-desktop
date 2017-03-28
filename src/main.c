@@ -14,7 +14,6 @@
  ** limitations under the License.
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -39,16 +38,12 @@
 #include "streams.h"
 #include "client_ui_api.h"
 
+
 #ifdef _DEBUG
 #define STANDALONE_CLIENT_DEBUG	(STM_LEVEL_FINER)
 #else
 #define STANDALONE_CLIENT_DEBUG	(STM_LEVEL_NONE)
 #endif
-
-
-/*********************************/
-/******* STATIC PROTOTYPES *******/
-/*********************************/
 
 
 /*************************************/
@@ -57,256 +52,245 @@
 
 int main (int argc, char *argv [])
 {
-  const char *hostname_s = "localhost";
-  const char *port_s = NULL;
-  const char *username_s = NULL;
-  const char *query_s = NULL;
-  const char *client_s = "grassroots-qt-client";
-  const char *protocol_s = NULL;
-  bool web_server_flag = true;
-  Operation op = OP_LIST_ALL_SERVICES;
-  int i;
-  Connection *connection_p = NULL;
+	if (argc < 4)
+		{
+			printf (
+					"USAGE: grassroots-qt-client "
+					"\t-h <server_url>, the web address of the Grassroots server to connect to.\n"
+					"\t--list-all, get all available services from the Grassroots server.\n"
+					"\t--keyword-search <keyword>, perform a keyword search against all keyword-aware services.\n"
+					"\t--list-interested <resource>, get all services that are able to run against a given resource.\n"
+					"\t\tThe resource is in the form <protocol>://<name> e.g. file:///home/test.fa, https://my.data/object, irods://data.fa\n"
+					);
+			return 0;
+		}
+	else
+		{
+			int i = 1;
+			const char *hostname_s = "localhost";
+			char *protocol_s = NULL;
+			char *query_s = NULL;
+			const char *keyword_s = NULL;
+			Operation op = OP_NONE;
+			bool web_server_flag = true;
+			CURLcode c;
+			Connection *connection_p = NULL;
 
-  if (argc < 3)
-    {
-      printf ("USAGE: client <username> <password>\n");
-      return 0;
-    }
-  else
-    {
-      i = 1;
+			while (i < argc)
+				{
+					if (strcmp (argv [i], "-h") == 0)
+						{
+							if ((i + 1) < argc)
+								{
+									hostname_s = argv [++ i];
+								}
+							else
+								{
+									printf ("Hostname argument missing");
+								}
 
-      while (i < argc)
-        {
-          char error_arg = 0;
+						}
+					else if (strcmp (argv [i], "--list-all") == 0)
+						{
+							op = OP_LIST_ALL_SERVICES;
+						}
+					else if (strcmp (argv [i], "--list-interested") == 0)
+						{
+							if ((i + 1) < argc)
+								{
+									const char *arg_s = argv [++ i];
+									const char *delimiter_s = "://";
+									const char *ptr = strstr (arg_s, delimiter_s);
 
-          if (*argv [i] == '-')
-            {
-              switch (* (argv [i] + 1))
-              {
-                case 'u':
-                  if (++ i < argc)
-                    {
-                      username_s = argv [i];
-                    }
-                  else
-                    {
-                      error_arg = * (argv [i] - 1);
-                    }
-                  break;
+									if (ptr)
+										{
+											protocol_s = CopyToNewString (arg_s, ptr - arg_s, false);
 
-                case 's':
-                  if (++ i < argc)
-                    {
-                      port_s = argv [i];
-                    }
-                  else
-                    {
-                      error_arg = * (argv [i] - 1);
-                    }
-                  break;
+											if (protocol_s)
+												{
+													query_s = CopyToNewString (ptr + strlen (delimiter_s), 0, false);
 
-                case 'h':
-                  if (++ i < argc)
-                    {
-                      hostname_s = argv [i];
-                    }
-                  else
-                    {
-                      error_arg = * (argv [i] - 1);
-                    }
-                  break;
+													if (query_s)
+														{
+															op = OP_LIST_INTERESTED_SERVICES;
+														}
+													else
+														{
+															printf ("Failed to get resource name from \"%s\"", arg_s);
+														}
+												}
+											else
+												{
+													printf ("Failed to copy resource type from \"%s\"", arg_s);
+												}
+										}
+									else
+										{
+											printf ("Failed to find resource separator \"%s\" in \"%s\"", delimiter_s, arg_s);
+										}
 
-                case 'a':
-                  if (++ i < argc)
-                    {
-                      int id = atoi (argv [i]);
+								}
+							else
+								{
+									printf ("hostname argument missing");
+								}
+						}
+					else if (strcmp (argv [i], "--keyword-search") == 0)
+						{
+							op = OP_RUN_KEYWORD_SERVICES;
 
-                      if ((id >= 0) && (id < OP_NUM_OPERATIONS))
-                        {
-                          op = (Operation) id;
-                        }
-                      else
-                        {
-                          error_arg = * (argv [i] - 1);
-                        }
-                    }
-                  else
-                    {
-                      error_arg = * (argv [i] - 1);
-                    }
-                  break;
 
-                case 'q':
-                  if (++ i < argc)
-                    {
-                      query_s = argv [i];
-                    }
-                  else
-                    {
-                      error_arg = * (argv [i] - 1);
-                    }
-                  break;
+							if ((i + 1) < argc)
+								{
+									keyword_s = argv [++ i];
+								}
+							else
+								{
+									printf ("Keyword argument missing");
+								}
+						}
+					else
+						{
+							printf ("Unknown argument: \"%s\"", argv [i]);
+						}
 
-                case 'P':
-                  if (++ i < argc)
-                    {
-                      protocol_s = argv [i];
-                    }
-                  else
-                    {
-                      error_arg = * (argv [i] - 1);
-                    }
-                  break;
+					++ i;
+				}		/* while (i < argc) */
 
-                /* raw socket connection */
-                case 'r':
-                  web_server_flag = false;
-                  break;
 
-                default:
-                  break;
-              }
 
-              if (error_arg)
-                {
-                  PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Error arg \"%c\"", error_arg);
-                }
-            }
+			c = curl_global_init (CURL_GLOBAL_DEFAULT);
 
-          ++ i;
-        }		/* while (i < argc) */
+			if (c == 0)
+				{
+					connection_p = AllocateWebServerConnection (hostname_s);
+				}
+			else
+				{
+					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to initialise curl environment: %d", c);
+				}
 
-      if (web_server_flag)
-        {
-          CURLcode c = curl_global_init (CURL_GLOBAL_DEFAULT);
 
-          if (c == 0)
-            {
-              connection_p = AllocateWebServerConnection (hostname_s);
-            }
-          else
-            {
-              PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to init curl: %d", c);
-            }
-        }
-      else
-        {
-          connection_p = AllocateRawServerConnection (hostname_s, port_s);
-        }
+			if (connection_p)
+				{
+					Client *client_p = GetClient (connection_p);
 
-      if (connection_p)
-        {
-          Client *client_p = GetClient (connection_p);
+					if (client_p)
+						{
+							SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
+							UserDetails *user_p = NULL;
 
-          if (client_p)
-            {
-              SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
-              UserDetails *user_p = NULL;
+							SetClientSchema (client_p, sv_p);
 
-              SetClientSchema (client_p, sv_p);
+							switch (op)
+								{
+									case OP_LIST_ALL_SERVICES:
+										{
+											GetAllServicesInClient (client_p, user_p);
+										}
+										break;
 
-              switch (op)
-                {
-                  case OP_LIST_ALL_SERVICES:
-                    {
-                      GetAllServicesInClient (client_p, user_p);
-                    }
-                    break;
+									case OP_LIST_INTERESTED_SERVICES:
+										{
+											GetInterestedServicesInClient (client_p, protocol_s, query_s, user_p);
+										}
+										break;
 
-                  case OP_LIST_INTERESTED_SERVICES:
-                    {
-                      GetInterestedServicesInClient (client_p, protocol_s, query_s, user_p);
-                    }
-                    break;
+									case OP_RUN_KEYWORD_SERVICES:
+										{
+											json_t *req_p = GetKeywordServicesRequest (user_p, keyword_s, sv_p);
 
-                  case OP_RUN_KEYWORD_SERVICES:
-                    {
-                      if (query_s)
-                        {
-                          json_t *req_p = GetKeywordServicesRequest (user_p, query_s, sv_p);
+											if (req_p)
+												{
+													json_t *response_p = MakeRemoteJsonCall (req_p, connection_p);
 
-                          if (req_p)
-                            {
-                              json_t *response_p = MakeRemoteJsonCall (req_p, connection_p);
+													if (response_p)
+														{
+															if (DisplayResultsInClient (client_p, response_p))
+																{
 
-                              if (response_p)
-                                {
-                                  if (DisplayResultsInClient (client_p, response_p))
-                                    {
+																}
 
-                                    }
+															json_decref (response_p);
+														}		/* if (response_p) */
+													else
+														{
+															PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "MakeRemoteJsonCall failed");
+														}
 
-                                  json_decref (response_p);
-                                }		/* if (response_p) */
-                              else
-                                {
-                                  PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "MakeRemoteJsonCall failed");
-                                }
+													json_decref (req_p);
+												}		/* if (req_p) */
+											else
+												{
+													PrintErrors (STM_LEVEL_SEVERE,__FILE__, __LINE__, "GetKeywordServicesRequest failed for %s", query_s);
+												}
+										}
+										break;
 
-                              json_decref (req_p);
-                            }		/* if (req_p) */
-                          else
-                            {
-                              PrintErrors (STM_LEVEL_SEVERE,__FILE__, __LINE__, "GetKeywordServicesRequest failed for %s", query_s);
-                            }
+									case OP_GET_NAMED_SERVICES:
+										{
+											GetNamedServicesInClient (client_p, query_s, user_p);
+										}
+										break;
 
-                        }		/* if (query_s) */
-                    }
-                    break;
+									case OP_CHECK_SERVICE_STATUS:
+										{
+											json_t *req_p = GetCheckServicesRequest (user_p, query_s, sv_p);
 
-                  case OP_GET_NAMED_SERVICES:
-                    {
-                      GetNamedServicesInClient (client_p, query_s, user_p);
-                    }
-                    break;
+											if (req_p)
+												{
+													json_t *response_p = MakeRemoteJsonCall (req_p, connection_p);
 
-                  case OP_CHECK_SERVICE_STATUS:
-                    {
-                      json_t *req_p = GetCheckServicesRequest (user_p, query_s, sv_p);
+													if (response_p)
+														{
+															char *dump_s = json_dumps (response_p, JSON_INDENT (2));
 
-                      if (req_p)
-                        {
-                          json_t *response_p = MakeRemoteJsonCall (req_p, connection_p);
+															if (dump_s)
+																{
+																	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "%s", dump_s);
+																	free (dump_s);
+																}
 
-                          if (response_p)
-                            {
-                              char *dump_s = json_dumps (response_p, JSON_INDENT (2));
+															json_decref (response_p);
+														}		/* if (response_p) */
 
-                              if (dump_s)
-                                {
-                                  PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "%s", dump_s);
-                                  free (dump_s);
-                                }
+													json_decref (req_p);
+												}		/* if (req_p) */
+										}
+										break;
 
-                              json_decref (response_p);
-                            }		/* if (response_p) */
+									default:
+										break;
+								}		/* switch (api_id) */
 
-                          json_decref (req_p);
-                        }		/* if (req_p) */
-                    }
-                    break;
+							ReleaseClient (client_p);
+						}		/* if (client_p) */
 
-                  default:
-                    break;
-                }		/* switch (api_id) */
+					FreeConnection (connection_p);
 
-              ReleaseClient (client_p);
-            }		/* if (client_p) */
+					if (web_server_flag)
+						{
+							curl_global_cleanup ();
+						}
+				}
+			else
+				{
+					printf ("Failed to connect to server %s\n", hostname_s);
+				}
 
-          FreeConnection (connection_p);
+			if (query_s)
+				{
+					FreeCopiedString (query_s);
+				}
 
-          if (web_server_flag)
-            {
-              curl_global_cleanup ();
-            }
-        }
-      else
-        {
-          printf ("failed to connect to server %s:%s\n", hostname_s, port_s);
-        }
-    }
+			if (protocol_s)
+				{
+					FreeCopiedString (protocol_s);
+				}
 
-  return 0;
+		}
+
+
+	return 0;
 }
+

@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webenginewidgets
 
-TARGET = grassroots-qt-client
+TARGET = grassroots-desktop-client
 TEMPLATE = app
 
 VPATH += src include
@@ -24,12 +24,13 @@ unix {
 }
 
 
-include(dependencies.pri)
-
+# Include the user preferemces
+include (dependencies.pri)
 
 DIR_GRASSROOTS_QT_SRC = ../../
-DIR_GRASSROOTS_LIBS = $$DIR_GRASSROOTS_INSTALL_ROOT/lib
 
+# Path to the Grassroots libraries
+DIR_GRASSROOTS_LIBS = $$DIR_GRASSROOTS_INSTALL_ROOT/lib
 
 DIR_GRASSROOTS_SHARED_SRC = $$DIR_GRASSROOTS_CORE/shared
 DIR_GRASSROOTS_SERVER_SRC = $$DIR_GRASSROOTS_CORE/server

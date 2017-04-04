@@ -7,7 +7,7 @@
 # The Qt client library will be copied to the the clients drawer
 # located there and the libraries in the lib drawer there will 
 # be used by this client
-DIR_GRASSROOTS_INSTALL_ROOT = /home/billy/Applications/grassroots-0/grassroots
+DIR_GRASSROOTS_INSTALL_ROOT = /opt/grassroots-0/grassroots
 
 # This is the path to the Grassroots core development packages
 # containing the reuired header files

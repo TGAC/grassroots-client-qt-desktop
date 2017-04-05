@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QTimer>
+#include <QVector>
 
 #include "progress_widget.h"
 #include "jansson.h"
@@ -41,6 +42,9 @@ public:
 
 	json_t *BuildResultsRequest ();
 
+
+	void RefreshStatuses (ProgressWidget **widgets_pp, const size_t num_widgets);
+
 public slots:
 	void UpdateStatuses ();
 	void ViewResults ();
@@ -49,9 +53,8 @@ public slots:
 private:
 	QTimer *pw_timer_p;
 	bool pw_timer_started_flag;
-	QList <ProgressWidget *> pw_widgets;
+	QVector <ProgressWidget *> pw_widgets;
 	QTClientData *pw_data_p;
-	//QPushButton *pw_check_button_p;
 	QPushButton *pw_results_button_p;
 };
 

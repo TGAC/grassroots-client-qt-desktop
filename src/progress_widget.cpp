@@ -17,6 +17,7 @@
 #include <QVBoxLayout>
 
 #include "progress_widget.h"
+#include "progress_window.h"
 #include "json_util.h"
 #include "json_tools.h"
 #include "memory_allocations.h"
@@ -111,7 +112,7 @@ ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name
 
 									pw_parent_p = parent_p;
 
-									if (errors_p)
+									if ((errors_p != 0) && (json_object_size (errors_p) > 0))
 										{
 											QPushButton *errors_button_p = new QPushButton (tr ("View Errors"));
 											errors_button_p -> setEnabled (true);
@@ -181,10 +182,19 @@ void ProgressWidget ::	GetServiceResults ()
 
 void ProgressWidget :: ShowResults (bool checked_flag)
 {
-	json_t *req_p = 0;
-	const uuid_t *id_p = &pw_id;
+	ProgressWidget **widget_pp = reinterpret_cast <ProgressWidget **> (AllocMemory (sizeof (ProgressWidget *)));
+
+	if (widget_pp)
+		{
+			*widget_pp = this;
+
+			pw_parent_p -> RefreshStatuses (widget_pp, 1);
+
+			FreeMemory (widget_pp);
+		}
 
 }
+
 
 void ProgressWidget :: ShowErrors (bool checked_flag)
 {

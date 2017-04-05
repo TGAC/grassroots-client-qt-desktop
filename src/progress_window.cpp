@@ -38,18 +38,11 @@ ProgressWindow :: ProgressWindow (QMainWindow *parent_p, QTClientData *data_p)
 
   pw_timer_started_flag = false;
 
-	/*
-	pw_check_button_p = new QPushButton (QIcon ("images/check"), tr ("Check Statuses"));
-	connect (pw_check_button_p, &QPushButton :: clicked, this, &ProgressWindow :: UpdateStatuses);
-	pw_check_button_p -> setEnabled (false);
-	*/
-
-	pw_results_button_p = new QPushButton (QIcon ("images/go"), tr ("Check Job Statuses"));
+	pw_results_button_p = new QPushButton (QIcon ("images/go"), tr ("Refresh all jobs"));
 	connect (pw_results_button_p, &QPushButton :: clicked, this, &ProgressWindow :: ViewResults);
 	pw_results_button_p -> setEnabled (false);
 
 	QHBoxLayout *buttons_layout_p = new QHBoxLayout;
-	//buttons_layout_p -> addWidget (pw_check_button_p);
 	buttons_layout_p -> addWidget (pw_results_button_p);
 
 
@@ -235,23 +228,60 @@ void ProgressWindow :: UpdateStatuses ()
 }
 
 
+
 void ProgressWindow :: ViewResults ()
 {
-	json_t *req_p = 0;
-	const size_t size = pw_widgets.size ();
-	const uuid_t **ids_pp = (const uuid_t **) AllocMemoryArray (size, sizeof (const uuid_t *));
+	ProgressWidget **widgets_pp = pw_widgets.data ();
+	RefreshStatuses (widgets_pp, pw_widgets.size ());
+}
+
+
+ProgressWidget *FindProgressWidgetByUUID (ProgressWidget **widgets_pp, const size_t num_widgets, const json_t *service_json_p)
+{
+	json_t *uuid_json_p = json_object_get (service_json_p, JOB_UUID_S);
+
+	if (uuid_json_p)
+		{
+			if (json_is_string (uuid_json_p))
+				{
+					const char *uuid_s = json_string_value (uuid_json_p);
+					uuid_t uuid;
+
+					if (uuid_parse (uuid_s, uuid) == 0)
+						{
+							for (size_t i = 0; i < num_widgets; ++ i)
+								{
+									ProgressWidget *widget_p = * (widgets_pp + i);
+									const uuid_t *id_p = widget_p -> GetUUID ();
+
+									if (uuid_compare (*id_p, uuid) == 0)
+										{
+											return widget_p;
+										}
+								}
+						}
+				}
+		}
+
+	return 0;
+}
+
+
+void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_t num_widgets)
+{
+	const uuid_t **ids_pp = (const uuid_t **) AllocMemoryArray (num_widgets, sizeof (const uuid_t *));
 
 	if (ids_pp)
 		{
+			for (size_t i = 0; i < num_widgets; ++ i)
+				{
+					* (ids_pp + i) = (* (widgets_pp + i)) -> GetUUID ();
+				}
+
 			Connection *connection_p = pw_data_p -> qcd_base_data.cd_connection_p;
 			const SchemaVersion *schema_p = pw_data_p -> qcd_base_data.cd_schema_p;
 
-			for (size_t i = 0; i < size; ++ i)
-				{
-					* (ids_pp + i) = pw_widgets.at (i) -> GetUUID ();
-				}
-
-			req_p = GetServicesResultsRequest (ids_pp, size, connection_p, schema_p);
+			json_t *req_p = GetServicesResultsRequest (ids_pp, num_widgets, connection_p, schema_p);
 
 			if (req_p)
 				{
@@ -295,12 +325,16 @@ void ProgressWindow :: ViewResults ()
 														}
 												}
 
-											if (status != OS_ERROR)
+
+											ProgressWidget *widget_p = FindProgressWidgetByUUID (widgets_pp, num_widgets, job_p);
+
+											if (widget_p)
 												{
-													json_t *errors_p = NULL;
+													widget_p -> SetStatus (status);
 
 													if ((status == OS_SUCCEEDED) || (status == OS_PARTIALLY_SUCCEEDED))
 														{
+															//widget_p -> CacheResults (job_p);
 															results_p -> AddAllResultsPagesFromJSON (job_p, service_name_s, service_description_s, service_uri_s);
 															show_results_flag = true;
 														}
@@ -321,8 +355,7 @@ void ProgressWindow :: ViewResults ()
 				}		/* if (req_p) */
 
 			FreeMemory (ids_pp);
-		}		/* if (ids_pp) */
-
+		}
 }
 
 

@@ -34,7 +34,7 @@ void ServicesTabs :: SelectService (const char *service_name_s, const json_t *pa
 
 void ServicesTabs :: AddService (const char * const service_name_s, ServicePrefsWidget *service_widget_p)
 {
-	char * const icon_path_s = MakeFilename ("images", service_name_s);
+	const char * const icon_path_s = service_widget_p -> GetServiceIconUri ();
 	QString service_name (service_name_s);
 
 	if (icon_path_s)
@@ -42,8 +42,6 @@ void ServicesTabs :: AddService (const char * const service_name_s, ServicePrefs
 			QIcon icon (icon_path_s);
 
 			addTab (service_widget_p, icon, service_name);
-
-			FreeCopiedString (icon_path_s);
 		}
 	else
 		{

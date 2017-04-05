@@ -47,6 +47,8 @@ public:
 
 	const char *GetServiceName () const;
 
+	const char *GetServiceIconUri () const;
+
 	bool SetServiceParams (const json_t *service_config_p);
 
 	void CheckInterfaceLevel (ParameterLevel level);
@@ -67,6 +69,7 @@ private:
 	const char *spw_service_name_s;
 	QCheckBox *spw_run_service_button_p;
 	const struct QTClientData *spw_client_data_p;
+	const char *spw_icon_uri_s;
 };
 
 #endif // SERVICE_PREFS_WIDGET_H

@@ -94,11 +94,8 @@ void PrefsWidget :: CreateAndAddServicePage (const json_t * const service_json_p
 					if (params_p)
 						{
 							const char *service_info_uri_s = GetOperationInformationURIFromJSON (service_json_p);
-							const char *icon_data_s = GetJSONString (service_json_p, OPERATION_ICON_DATA_S);
 							const char *service_icon_uri_s = GetOperationIconURIFromJSON (service_json_p);
 							const json_t *provider_p = GetProviderFromServiceJSON (service_json_p);
-
-
 
 							CreateAndAddServicePage (service_name_s, service_description_s, service_info_uri_s, service_icon_uri_s, provider_p, params_p);
 						}		/* if (params_p) */

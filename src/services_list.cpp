@@ -20,6 +20,7 @@
 
 #include "filesystem_utils.h"
 #include "string_utils.h"
+#include "curl_tools.h"
 
 
 ServicesList :: ServicesList (QWidget *parent_p)
@@ -91,16 +92,48 @@ void ServicesList :: CheckServiceRunStatus (const QListWidgetItem *item_p)
 
 void ServicesList :: AddService (const char * const service_name_s, ServicePrefsWidget *services_widget_p)
 {
-	char * const icon_path_s = MakeFilename ("images", service_name_s);
+	const char * const icon_path_s = services_widget_p -> GetServiceIconUri ();
 	QString service_name (service_name_s);
 	ServicesListItem *item_p = 0;
 
 	if (icon_path_s)
 		{
-			QIcon icon (icon_path_s);
+			QIcon *icon_p = 0;
+			CurlTool *curl_tool_p = AllocateCurlTool (CM_MEMORY);
 
-			item_p = new ServicesListItem (icon, service_name, sl_services_p);
-			FreeCopiedString (icon_path_s);
+			if (curl_tool_p)
+				{
+					if (SetUriForCurlTool (curl_tool_p, icon_path_s))
+						{
+							CURLcode res = RunCurlTool (curl_tool_p);
+
+							if (res == CURLE_OK)
+								{
+									size_t length = GetCurlToolDataSize (curl_tool_p);
+									const uchar *data_p = reinterpret_cast <const uchar *> (GetCurlToolData (curl_tool_p));
+
+									QPixmap pix;
+
+									if (pix.loadFromData (data_p, length))
+										{
+											icon_p = new QIcon (pix);
+										}
+								}
+						}
+
+					FreeCurlTool (curl_tool_p);
+				}
+
+
+			if (icon_p)
+				{
+					item_p = new ServicesListItem (*icon_p, service_name, sl_services_p);
+					delete icon_p;
+				}
+			else
+				{
+					item_p = new ServicesListItem (service_name, sl_services_p);
+				}
 		}
 	else
 		{

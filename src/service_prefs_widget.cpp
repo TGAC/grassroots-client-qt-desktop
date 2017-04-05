@@ -36,7 +36,8 @@
 ServicePrefsWidget::ServicePrefsWidget (const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t *provider_p, ParameterSet *params_p, QTClientData *client_data_p, QWidget *parent_p)
 : QWidget (parent_p),
 	spw_service_name_s (service_name_s),
-	spw_client_data_p (client_data_p)
+	spw_client_data_p (client_data_p),
+	spw_icon_uri_s (service_icon_uri_s)
 {
 	QLayout *layout_p = new QVBoxLayout;
 	QScrollArea *scroller_p = new QScrollArea;
@@ -81,6 +82,12 @@ ServicePrefsWidget :: ~ServicePrefsWidget ()
 const char *ServicePrefsWidget ::GetServiceName () const
 {
 	return spw_service_name_s;
+}
+
+
+const char *ServicePrefsWidget :: GetServiceIconUri () const
+{
+	return spw_icon_uri_s;
 }
 
 

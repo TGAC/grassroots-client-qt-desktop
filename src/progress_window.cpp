@@ -125,7 +125,7 @@ void ProgressWindow :: UpdateStatuses ()
 					* (ids_pp + i) = pw_widgets.at (i) -> GetUUID ();
 				}
 
-			req_p = GetServicesStatusRequest (ids_pp, size, connection_p, schema_p);
+			req_p = GetServicesResultsRequest (ids_pp, size, connection_p, schema_p);
 
 			if (req_p)
 				{
@@ -373,7 +373,7 @@ json_t *ProgressWindow :: BuildResultsRequest ()
 					* (ids_pp + i) = pw_widgets.at (i) -> GetUUID ();
 				}
 
-			req_p = GetServicesStatusRequest (ids_pp, size, pw_data_p -> qcd_base_data.cd_connection_p, pw_data_p -> qcd_base_data.cd_schema_p);
+			req_p = GetServicesResultsRequest (ids_pp, size, pw_data_p -> qcd_base_data.cd_connection_p, pw_data_p -> qcd_base_data.cd_schema_p);
 
 			FreeMemory (ids_pp);
 		}		/* if (ids_pp) */

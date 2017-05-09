@@ -233,32 +233,6 @@ int main (int argc, char *argv [])
 										}
 										break;
 
-									case OP_CHECK_SERVICE_STATUS:
-										{
-											json_t *req_p = GetCheckServicesRequest (user_p, query_s, sv_p);
-
-											if (req_p)
-												{
-													json_t *response_p = MakeRemoteJsonCall (req_p, connection_p);
-
-													if (response_p)
-														{
-															char *dump_s = json_dumps (response_p, JSON_INDENT (2));
-
-															if (dump_s)
-																{
-																	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "%s", dump_s);
-																	free (dump_s);
-																}
-
-															json_decref (response_p);
-														}		/* if (response_p) */
-
-													json_decref (req_p);
-												}		/* if (req_p) */
-										}
-										break;
-
 									default:
 										break;
 								}		/* switch (api_id) */

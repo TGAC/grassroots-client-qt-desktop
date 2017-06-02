@@ -13,4 +13,8 @@ DIR_GRASSROOTS_INSTALL_ROOT = /opt/grassroots-0/grassroots
 # containing the reuired header files
 DIR_GRASSROOTS_CORE = ../../../../core
 
+# This is the path to the iRODS installation below which will
+# be such files as var/lib/irods/irodsctl.
+# Generally this will be at /
+DIR_IRODS_HOME = /
 

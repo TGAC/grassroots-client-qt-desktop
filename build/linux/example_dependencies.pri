@@ -18,3 +18,6 @@ DIR_GRASSROOTS_CORE = ../../../../core
 # Generally this will be at /
 DIR_IRODS_HOME = /
 
+
+DRMAA_TYPE = slurm
+GRASSROOTS_DRMAA_LIB_NAME = grassroots_drmaa_slurm

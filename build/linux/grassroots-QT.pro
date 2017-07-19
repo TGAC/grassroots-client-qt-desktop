@@ -165,7 +165,9 @@ SOURCES += \
 		$$DIR_GRASSROOTS_QT_SRC/src/qt_client_data.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/servce_ui.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/standard_list_widget_item.cpp \
-		$$DIR_GRASSROOTS_QT_SRC/src/results_page.cpp
+		$$DIR_GRASSROOTS_QT_SRC/src/results_page.cpp \
+    ../../src/repeatable_param_group_box.cpp \
+    ../../src/parameter_widget_container.cpp
 
 HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -204,7 +206,9 @@ HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/param_json_editor.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/matched_service_list_widget_item.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/standard_list_widget_item.h \
-		$$DIR_GRASSROOTS_QT_SRC/include/results_page.h
+		$$DIR_GRASSROOTS_QT_SRC/include/results_page.h \
+    ../../include/repeatable_param_group_box.h \
+    ../../include/parameter_widget_container.h
 
 
 LIBS += -L$$DIR_GRASSROOTS_LIBS \

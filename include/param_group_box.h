@@ -25,18 +25,22 @@
 #include <QGroupBox>
 
 #include "base_param_widget.h"
+#include "parameter_widget_container.h"
 
 
-class ParamGroupBox : public QGroupBox
+class ParamGroupBox : public QGroupBox, public ParameterWidgetContainer
 {
 	Q_OBJECT
 
 public:
 	ParamGroupBox (const char * const name_s, const bool visible_flag);
+	virtual ~ParamGroupBox ();
 
-	void AddParameterWidget (BaseParamWidget *widget_p);
+	virtual void AddParameterWidget (BaseParamWidget *widget_p);
 
-	void CheckVisibility (ParameterLevel level);
+	virtual QWidget *GetWidget ();
+
+	virtual void CheckVisibility (ParameterLevel level);
 
 protected:
 	void paintEvent (QPaintEvent *event_p);

@@ -34,6 +34,7 @@
 #include "parameter_set.h"
 #include "base_param_widget.h"
 #include "param_group_box.h"
+#include "parameter_widget_container.h"
 
 
 // forward class declaration
@@ -83,7 +84,7 @@ private:
 
 	QList <QWebEngineView *> qpw_browsers;
 
-	QList <ParamGroupBox *> qpw_groupings;
+	QList <ParameterWidgetContainer *> qpw_groupings;
 
 	const struct QTClientData *qpw_client_data_p;
 
@@ -99,7 +100,7 @@ private:
 	BaseParamWidget *GetWidgetForParameter (const Parameter * const param_p);
 
 	void AddRow (QWidget *first_p, QWidget *second_p, const int row_span);
-	void AddParameterWidget (Parameter *param_p, ParamGroupBox *group_p = 0);
+	void AddParameterWidget (Parameter *param_p,  ParameterWidgetContainer *container_p = 0);
 
 	void AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QLayout *info_layout_p);
 

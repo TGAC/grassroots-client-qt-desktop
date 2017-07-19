@@ -31,6 +31,7 @@
 #include "prefs_widget.h"
 #include "param_table_widget.h"
 #include "param_json_editor.h"
+#include "repeatable_param_group_box.h"
 
 #include "qt_client_data.h"
 
@@ -243,14 +244,24 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 	while (param_group_node_p)
 		{
 			ParameterGroup *group_p = param_group_node_p -> pgn_param_group_p;
-			ParamGroupBox *box_p = new ParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag);
+			ParameterWidgetContainer *container_p = 0;
+
+			if (group_p -> pg_repeatable_flag)
+				{
+					container_p = new RepeatableParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag);
+				}
+			else
+				{
+					container_p = new ParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag);
+				}
+
 			ParameterNode *node_in_group_p = reinterpret_cast <ParameterNode *> (group_p -> pg_params_p -> ll_head_p);
 
 			while (node_in_group_p)
 				{
 					Parameter *param_p = node_in_group_p -> pn_parameter_p;
 
-					AddParameterWidget (param_p, box_p);
+					AddParameterWidget (param_p, container_p);
 
 					params_map.insert (param_p, param_p);
 
@@ -262,9 +273,9 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 			qpw_layout_p -> addWidget (box_p, row, 0, group_p -> pg_num_params, 2, Qt :: AlignVCenter);
 			qpw_layout_p -> setColumnStretch (0, 100);
 */
-
+			QWidget *box_p = container_p -> GetWidget ();
 			qpw_layout_p -> addRow (box_p);
-			qpw_groupings.append (box_p);
+			qpw_groupings.append (container_p);
 
 			param_group_node_p = reinterpret_cast <ParameterGroupNode *> (param_group_node_p -> pgn_node.ln_next_p);
 		}
@@ -284,15 +295,15 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 }
 
 
-void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParamGroupBox *group_p)
+void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidgetContainer *container_p)
 {
 	BaseParamWidget *child_p = CreateWidgetForParameter (param_p);
 
 	if (child_p)
 		{
-			if (group_p)
+			if (container_p)
 				{
-					group_p -> AddParameterWidget (child_p);
+					container_p -> AddParameterWidget (child_p);
 					//group_p -> setSizePolicy (QSizePolicy :: Fixed, QSizePolicy :: Expanding);
 				}
 			else
@@ -307,8 +318,6 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParamGroupBox 
 					child_p -> SetVisible (false);
 				}
 		}
-
-
 }
 
 
@@ -390,8 +399,8 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 
 	for (int i = qpw_groupings.count () - 1; i >= 0; -- i)
 		{
-			ParamGroupBox *box_p = qpw_groupings.at (i);
-			box_p -> CheckVisibility (level);
+			ParameterWidgetContainer *container_p = qpw_groupings.at (i);
+			container_p -> CheckVisibility (level);
 		}
 
 	qpw_level = level;	

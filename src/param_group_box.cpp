@@ -33,6 +33,11 @@ ParamGroupBox :: ParamGroupBox (const char * const name_s, const bool visible_fl
 }
 
 
+ParamGroupBox :: ~ParamGroupBox ()
+{
+
+}
+
 void ParamGroupBox :: AddParameterWidget (BaseParamWidget *param_widget_p)
 {
 	QWidget *widget_p = param_widget_p -> GetUIQWidget ();
@@ -45,6 +50,12 @@ void ParamGroupBox :: AddParameterWidget (BaseParamWidget *param_widget_p)
 		{
 			param_widget_p -> SetVisible (false);
 		}
+}
+
+
+QWidget *ParamGroupBox :: GetWidget ()
+{
+	return this;
 }
 
 

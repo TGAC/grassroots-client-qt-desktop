@@ -6,13 +6,12 @@
 
 #include "param_group_box.h"
 
-
 class RepeatableParamGroupBox : public QGroupBox, public ParameterWidgetContainer
 {
 	Q_OBJECT
 
 public:
-	RepeatableParamGroupBox (const char * const name_s, const bool visible_flag);
+	RepeatableParamGroupBox (const char * const name_s, const bool visible_flag, QTParameterWidget *qt_param_widget_p);
 
 	virtual ~RepeatableParamGroupBox ();
 
@@ -28,6 +27,10 @@ protected:
 private:
 	QPushButton *rpgb_add_row_btn_p;
 	QList <ParamGroupBox *> rpgb_children;
+	const char * const rpgb_name_s;
+	const bool rpgb_visible_flag;
+	QGroupBox *rpgb_parent_box_p;
+	QTParameterWidget *rpgb_qt_param_widget_parent_p;
 
 private slots:
 	void AddRow (bool clicked_flag = false);

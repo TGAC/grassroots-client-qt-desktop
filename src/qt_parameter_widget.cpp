@@ -248,11 +248,11 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			if (group_p -> pg_repeatable_flag)
 				{
-					container_p = new RepeatableParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag);
+					container_p = new RepeatableParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag, this);
 				}
 			else
 				{
-					container_p = new ParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag);
+					container_p = new ParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag, this);
 				}
 
 			ParameterNode *node_in_group_p = reinterpret_cast <ParameterNode *> (group_p -> pg_params_p -> ll_head_p);

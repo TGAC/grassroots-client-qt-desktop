@@ -64,6 +64,11 @@ public:
 
 	BaseParamWidget *GetWidgetForParameter (const char * const param_name_s) const;
 
+	/**
+	 * Create widget for parameter.
+	 */
+	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p);
+
 public slots:
 	void ResetToDefaults ();
 
@@ -88,10 +93,7 @@ private:
 
 	const struct QTClientData *qpw_client_data_p;
 
-	/**
-	 * Create widget for parameter.
-	 */
-	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p);
+
 
 
 	/**

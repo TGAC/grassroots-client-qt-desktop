@@ -15,22 +15,44 @@
 */
 #include <QFormLayout>
 #include "param_group_box.h"
+#include "qt_parameter_widget.h"
 
 
-ParamGroupBox :: ParamGroupBox (const char * const name_s, const bool visible_flag)
- : QGroupBox (name_s)
+ParamGroupBox :: ParamGroupBox (const char * const name_s, const bool visible_flag, QTParameterWidget *qt_param_widget_p)
+ : QGroupBox (name_s),
+   pgb_parent_p (qt_param_widget_p)
 {
-	pg_layout_p = new QFormLayout;
+  pgb_layout_p = new QFormLayout;
 
 	setStyleSheet("QGroupBox { font-weight: bold; } ");
 
 	setCheckable (true);
 	setChecked (visible_flag);
-	setLayout (pg_layout_p);
+	setLayout (pgb_layout_p);
 	setAlignment (Qt :: AlignLeft);
 
 	connect (this, &ParamGroupBox :: clicked, this, &ParamGroupBox :: ToggleCollapsed);
 }
+
+
+ParamGroupBox *ParamGroupBox :: Clone (const char * const name_s)
+{
+	ParamGroupBox *cloned_box_p = new ParamGroupBox (name_s, true, pgb_parent_p);
+
+	for (i = pgb_children.count () - 1; i >= 0; -- i)
+		{
+			BaseParamWidget *src_widget_p = pgb_children.at (i) -> bpw_param_p;
+			BaseParamWidget *dest_widget_p = pgb_parent_p -> CreateWidgetForParameter (src_widget_p -> GetParameter ());
+
+			if (dest_widget_p)
+				{
+					cloned_box_p -> AddParameterWidget (param_widget_p);
+				}
+		}
+
+	return cloned_box_p;
+}
+
 
 
 ParamGroupBox :: ~ParamGroupBox ()
@@ -43,8 +65,8 @@ void ParamGroupBox :: AddParameterWidget (BaseParamWidget *param_widget_p)
 	QWidget *widget_p = param_widget_p -> GetUIQWidget ();
 	QLabel *label_p = param_widget_p -> GetLabel ();
 
-	pg_layout_p -> addRow (label_p, widget_p);
-	pg_children.append (param_widget_p);
+	pgb_layout_p -> addRow (label_p, widget_p);
+	pgb_children.append (param_widget_p);
 
 	if (! (isChecked ()))
 		{
@@ -69,9 +91,9 @@ void ParamGroupBox :: ToggleCollapsed (bool checked)
 {
 	if (checked)
 		{
-			for (int j = pg_children.count () - 1; j >= 0; -- j)
+			for (int j = pgb_children.count () - 1; j >= 0; -- j)
 				{
-					BaseParamWidget *widget_p = pg_children.at (j);
+					BaseParamWidget *widget_p = pgb_children.at (j);
 
 					widget_p -> SetVisible (true);
 				}
@@ -79,9 +101,9 @@ void ParamGroupBox :: ToggleCollapsed (bool checked)
 		}
 	else
 		{
-			for (int j = pg_children.count () - 1; j >= 0; -- j)
+			for (int j = pgb_children.count () - 1; j >= 0; -- j)
 				{
-					BaseParamWidget *widget_p = pg_children.at (j);
+					BaseParamWidget *widget_p = pgb_children.at (j);
 
 					widget_p -> SetVisible (false);
 				}
@@ -95,9 +117,9 @@ void ParamGroupBox :: CheckVisibility (ParameterLevel level)
 		{
 			bool any_visible_children_flag = false;
 
-			for (int j = pg_children.count () - 1; j >= 0; -- j)
+			for (int j = pgb_children.count () - 1; j >= 0; -- j)
 				{
-					BaseParamWidget *widget_p = pg_children.at (j);
+					BaseParamWidget *widget_p = pgb_children.at (j);
 
 					if (widget_p -> MeetsLevel (level))
 						{
@@ -115,9 +137,9 @@ void ParamGroupBox :: CheckVisibility (ParameterLevel level)
 		{
 			bool any_visible_children_flag = false;
 
-			for (int j = pg_children.count () - 1; j >= 0; -- j)
+			for (int j = pgb_children.count () - 1; j >= 0; -- j)
 				{
-					BaseParamWidget *widget_p = pg_children.at (j);
+					BaseParamWidget *widget_p = pgb_children.at (j);
 
 					if (widget_p -> MeetsLevel (level))
 						{

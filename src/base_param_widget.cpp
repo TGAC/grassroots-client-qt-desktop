@@ -32,6 +32,12 @@ BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, const PrefsWidget
 }
 
 
+BaseParamWidget *BaseParamWidget :: Clone (const BaseParamWidget * const source_p)
+{
+	source_p -> bp
+}
+
+
 BaseParamWidget :: ~BaseParamWidget ()
 {
 	if (bpw_param_name_s)

@@ -27,14 +27,19 @@
 #include "base_param_widget.h"
 #include "parameter_widget_container.h"
 
+class QTParameterWidget;
 
 class ParamGroupBox : public QGroupBox, public ParameterWidgetContainer
 {
 	Q_OBJECT
 
 public:
-	ParamGroupBox (const char * const name_s, const bool visible_flag);
+	ParamGroupBox (const char * const name_s, const bool visible_flag, QTParameterWidget *qt_param_widget_p);
+
 	virtual ~ParamGroupBox ();
+
+
+	ParamGroupBox *Clone (const char * const name_s);
 
 	virtual void AddParameterWidget (BaseParamWidget *widget_p);
 
@@ -46,8 +51,9 @@ protected:
 	void paintEvent (QPaintEvent *event_p);
 
 private:
-	QList <BaseParamWidget *> pg_children;
-	QFormLayout *pg_layout_p;
+	QList <BaseParamWidget *> pgb_children;
+	QFormLayout *pgb_layout_p;
+	QTParameterWidget *pgb_parent_p;
 
 private slots:
 	void ToggleCollapsed (bool checked);

@@ -36,6 +36,9 @@ class BaseParamWidget : public QObject
 public:
 	BaseParamWidget (Parameter * const param_p, const PrefsWidget * const prefs_widget_p);
 
+	BaseParamWidget *Clone (const BaseParamWidget * const source_p);
+
+
 	virtual ~BaseParamWidget ();
 
 	QWidget *GetUIQWidget ();
@@ -62,6 +65,8 @@ public:
 	virtual bool StoreParameterValue () = 0;
 
 	virtual void ShowErrors (const json_t *errors_p);
+
+	Parameter
 
 protected:
 	Parameter * const bpw_param_p;

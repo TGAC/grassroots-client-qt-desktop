@@ -27,16 +27,18 @@
 #include "parameter.h"
 #include "jansson.h"
 
-class PrefsWidget;
+
+class QTParameterWidget;
+
 
 class BaseParamWidget : public QObject
 {
 	Q_OBJECT
 
 public:
-	BaseParamWidget (Parameter * const param_p, const PrefsWidget * const prefs_widget_p);
+	BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p);
 
-	BaseParamWidget *Clone (const BaseParamWidget * const source_p);
+	BaseParamWidget *Clone (ParameterGroup *group_p) const;
 
 
 	virtual ~BaseParamWidget ();
@@ -66,11 +68,10 @@ public:
 
 	virtual void ShowErrors (const json_t *errors_p);
 
-	Parameter
 
 protected:
 	Parameter * const bpw_param_p;
-	const PrefsWidget * const bpw_prefs_widget_p;
+	QTParameterWidget * const bpw_parent_p;
 	QLabel *bpw_label_p;
 	char *bpw_param_name_s;
 

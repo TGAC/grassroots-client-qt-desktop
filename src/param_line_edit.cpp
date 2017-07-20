@@ -21,8 +21,8 @@
 #include "string_utils.h"
 
 
-ParamLineEdit :: ParamLineEdit (Parameter * const param_p, const PrefsWidget * const options_widget_p, QLineEdit :: EchoMode echo, QWidget *parent_p)
-:		BaseParamWidget (param_p, options_widget_p)
+ParamLineEdit :: ParamLineEdit (Parameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo)
+:		BaseParamWidget (param_p, parent_p)
 {
 	ple_text_box_p = new QLineEdit (parent_p);
 	ple_text_box_p -> setEchoMode (echo);

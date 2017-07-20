@@ -16,18 +16,20 @@
 #include <QFormLayout>
 #include "param_group_box.h"
 #include "qt_parameter_widget.h"
+#include "parameter_group.h"
 
 
-ParamGroupBox :: ParamGroupBox (const char * const name_s, const bool visible_flag, QTParameterWidget *qt_param_widget_p)
- : QGroupBox (name_s),
-   pgb_parent_p (qt_param_widget_p)
+ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p)
+ : QGroupBox (group_p -> pg_name_s),
+	 pgb_parent_p (qt_param_widget_p),
+	 pgb_parameter_group_p (group_p)
 {
   pgb_layout_p = new QFormLayout;
 
 	setStyleSheet("QGroupBox { font-weight: bold; } ");
 
 	setCheckable (true);
-	setChecked (visible_flag);
+	setChecked (group_p -> pg_visible_flag);
 	setLayout (pgb_layout_p);
 	setAlignment (Qt :: AlignLeft);
 
@@ -35,19 +37,19 @@ ParamGroupBox :: ParamGroupBox (const char * const name_s, const bool visible_fl
 }
 
 
-ParamGroupBox *ParamGroupBox :: Clone (const char * const name_s)
+ParamGroupBox *ParamGroupBox :: Clone (ParameterGroup *group_p)
 {
-	ParamGroupBox *cloned_box_p = new ParamGroupBox (name_s, true, pgb_parent_p);
+	ParamGroupBox *cloned_box_p = new ParamGroupBox (group_p, pgb_parent_p);
 
-	for (i = pgb_children.count () - 1; i >= 0; -- i)
+	for (int i = pgb_children.count () - 1; i >= 0; -- i)
 		{
-			BaseParamWidget *src_widget_p = pgb_children.at (i) -> bpw_param_p;
-			BaseParamWidget *dest_widget_p = pgb_parent_p -> CreateWidgetForParameter (src_widget_p -> GetParameter ());
+			BaseParamWidget *dest_widget_p = pgb_children.at (i) -> Clone (group_p);
 
 			if (dest_widget_p)
 				{
-					cloned_box_p -> AddParameterWidget (param_widget_p);
+					cloned_box_p -> AddParameterWidget (dest_widget_p);
 				}
+
 		}
 
 	return cloned_box_p;

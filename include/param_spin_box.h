@@ -36,7 +36,7 @@ class ParamSpinBox : public BaseParamWidget
 
 
 public:
-	ParamSpinBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, bool signed_flag, QWidget *parent_p = 0);
+	ParamSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p, bool signed_flag);
 	virtual ~ParamSpinBox ();
 
 

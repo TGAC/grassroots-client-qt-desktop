@@ -40,7 +40,7 @@ private slots:
 	bool UpdateConfigValue (const char * const value_s);
 
 public:
-  ParamLineEdit (Parameter * const param_p, const PrefsWidget * const options_widget_p, QLineEdit :: EchoMode echo = QLineEdit :: Normal, QWidget *parent_p = 0);
+	ParamLineEdit (Parameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo = QLineEdit :: Normal);
   virtual ~ParamLineEdit ();
 
   virtual void RemoveConnection ();

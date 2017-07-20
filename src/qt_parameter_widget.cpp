@@ -248,11 +248,11 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			if (group_p -> pg_repeatable_flag)
 				{
-					container_p = new RepeatableParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag, this);
+					container_p = new RepeatableParamGroupBox (group_p, this);
 				}
 			else
 				{
-					container_p = new ParamGroupBox (group_p -> pg_name_s, group_p -> pg_visible_flag, this);
+					container_p = new ParamGroupBox (group_p, this);
 				}
 
 			ParameterNode *node_in_group_p = reinterpret_cast <ParameterNode *> (group_p -> pg_params_p -> ll_head_p);
@@ -413,19 +413,19 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 
 	if (param_p -> pa_options_p)
 		{
-			widget_p = ParamComboBox :: Create (param_p, qpw_prefs_widget_p);
+			widget_p = ParamComboBox :: Create (param_p, this);
 		}
 	else
 		{
 			switch (param_p -> pa_type)
 				{
 					case PT_BOOLEAN:
-						widget_p = new ParamCheckBox (param_p, qpw_prefs_widget_p);
+						widget_p = new ParamCheckBox (param_p, this);
 						break;
 
 					case PT_CHAR:
 						{
-							ParamLineEdit *editor_p = new ParamLineEdit (param_p, qpw_prefs_widget_p, QLineEdit :: Normal);
+							ParamLineEdit *editor_p = new ParamLineEdit (param_p, this, QLineEdit :: Normal);
 							editor_p -> SetMaxLength (1);
 							widget_p = editor_p;
 						}
@@ -433,50 +433,50 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 
 					case PT_SIGNED_REAL:
 					case PT_UNSIGNED_REAL:
-						widget_p = new ParamDoubleSpinBox (param_p, qpw_prefs_widget_p);
+						widget_p = new ParamDoubleSpinBox (param_p, this);
 						break;
 
 					case PT_FILE_TO_READ:
-						widget_p = new FileChooserWidget (param_p, qpw_prefs_widget_p, QFileDialog :: ExistingFile);
+						widget_p = new FileChooserWidget (param_p, this, QFileDialog :: ExistingFile);
 						break;
 
 					case PT_FILE_TO_WRITE:
-						widget_p = new FileChooserWidget (param_p, qpw_prefs_widget_p, QFileDialog :: AnyFile);
+						widget_p = new FileChooserWidget (param_p, this, QFileDialog :: AnyFile);
 						break;
 
 					case PT_STRING:
 					case PT_KEYWORD:
-						widget_p = new ParamLineEdit (param_p, qpw_prefs_widget_p, QLineEdit :: Normal);
+						widget_p = new ParamLineEdit (param_p, this, QLineEdit :: Normal);
 						break;
 
 					case PT_PASSWORD:
-						widget_p = new ParamTextBox (param_p, qpw_prefs_widget_p);
+						widget_p = new ParamTextBox (param_p, this);
 						break;
 
 					case PT_SIGNED_INT:
 					case PT_NEGATIVE_INT:
-						widget_p = new ParamSpinBox (param_p, qpw_prefs_widget_p, true);
+						widget_p = new ParamSpinBox (param_p, this, true);
 						break;
 
 					case PT_UNSIGNED_INT:
-						widget_p = new ParamSpinBox (param_p, qpw_prefs_widget_p, false);
+						widget_p = new ParamSpinBox (param_p, this, false);
 						break;
 
 					case PT_DIRECTORY:
-						widget_p = new FileChooserWidget (param_p, qpw_prefs_widget_p, QFileDialog :: Directory);
+						widget_p = new FileChooserWidget (param_p, this, QFileDialog :: Directory);
 						break;
 
 					case PT_LARGE_STRING:
 					case PT_FASTA:
-						widget_p = new ParamTextBox (param_p, qpw_prefs_widget_p);
+						widget_p = new ParamTextBox (param_p, this);
 						break;
 
 					case PT_JSON:
-						widget_p = new ParamJSONEditor (param_p, qpw_prefs_widget_p);
+						widget_p = new ParamJSONEditor (param_p, this);
 						break;
 
 					case PT_TABLE:
-						widget_p = new ParamTableWidget (param_p, qpw_prefs_widget_p);
+						widget_p = new ParamTableWidget (param_p, this);
 						break;
 
 					default:

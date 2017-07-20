@@ -129,8 +129,8 @@ bool DroppableTextBox :: SetFromText (const char * const data_s)
 }
 
 
-ParamTextBox :: ParamTextBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p)
-:		BaseParamWidget (param_p, options_widget_p)
+ParamTextBox :: ParamTextBox (Parameter * const param_p, QTParameterWidget * const parent_p)
+:		BaseParamWidget (param_p, parent_p)
 {
 	CreateDroppableTextBox (parent_p);
 }

@@ -80,7 +80,7 @@ class ParamTableWidget : public BaseParamWidget
 	Q_OBJECT
 
 public:
-	ParamTableWidget (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p = 0);
+	ParamTableWidget (Parameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~ParamTableWidget ();
 
 	virtual void RemoveConnection ();

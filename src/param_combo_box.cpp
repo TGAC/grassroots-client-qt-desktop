@@ -25,10 +25,10 @@
 #include "math_utils.h"
 
 
-ParamComboBox *ParamComboBox :: Create (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p)
+ParamComboBox *ParamComboBox :: Create (Parameter * const param_p, QTParameterWidget * const parent_p)
 {
 	bool success_flag = true;
-	ParamComboBox *combo_box_p = new ParamComboBox (param_p, options_widget_p, parent_p);
+	ParamComboBox *combo_box_p = new ParamComboBox (param_p, parent_p);
 
 	if (combo_box_p -> bpw_param_p -> pa_options_p)
 		{
@@ -181,8 +181,8 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 	return success_flag;
 }
 
-ParamComboBox :: ParamComboBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p)
-: BaseParamWidget (param_p, options_widget_p), pcb_group_p (0)
+ParamComboBox :: ParamComboBox (Parameter * const param_p, QTParameterWidget * const parent_p)
+: BaseParamWidget (param_p, parent_p), pcb_group_p (0)
 {
 	pcb_combo_box_p = new QComboBox (parent_p);
 }

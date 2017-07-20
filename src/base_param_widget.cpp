@@ -14,13 +14,15 @@
 ** limitations under the License.
 */
 #include "base_param_widget.h"
+#include "qt_parameter_widget.h"
+
 
 #include "string_utils.h"
 
 
-BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, const PrefsWidget * const prefs_widget_p)
+BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 	: bpw_param_p (param_p),
-		bpw_prefs_widget_p (prefs_widget_p)
+		bpw_parent_p (parent_p)
 {
 	bpw_param_name_s = CopyToNewString (param_p -> pa_name_s, 0, false);	
 	bpw_label_p = new QLabel (GetUIName (param_p));
@@ -32,9 +34,32 @@ BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, const PrefsWidget
 }
 
 
-BaseParamWidget *BaseParamWidget :: Clone (const BaseParamWidget * const source_p)
+BaseParamWidget *BaseParamWidget :: Clone (ParameterGroup *group_p) const
 {
-	source_p -> bp
+	Parameter *dest_param_p = CloneParameter (bpw_param_p);
+
+	if (dest_param_p)
+		{
+			BaseParamWidget *dest_widget_p = 0;
+
+			if (group_p)
+				{
+					dest_param_p -> pa_group_p = group_p;
+				}
+
+			dest_widget_p = bpw_parent_p -> CreateWidgetForParameter (dest_param_p);
+
+			if (dest_widget_p)
+				{
+					return dest_widget_p;
+				}
+			else
+				{
+					FreeParameter (dest_param_p);
+				}
+		}
+
+	return 0;
 }
 
 

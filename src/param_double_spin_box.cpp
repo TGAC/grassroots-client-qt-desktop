@@ -20,8 +20,8 @@
 #include "math_utils.h"
 
 
-ParamDoubleSpinBox :: ParamDoubleSpinBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p)
-:		BaseParamWidget (param_p, options_widget_p)
+ParamDoubleSpinBox :: ParamDoubleSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p)
+:		BaseParamWidget (param_p, parent_p)
 {
 	pdsb_spinner_p = new QDoubleSpinBox (parent_p);
 	pdsb_spinner_p -> setDecimals (4);

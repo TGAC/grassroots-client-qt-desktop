@@ -118,8 +118,8 @@ bool FileChooserWidget :: StoreParameterValue ()
 
 
 
-FileChooserWidget :: FileChooserWidget (Parameter * const param_p, const PrefsWidget * const prefs_widget_p, QFileDialog :: FileMode mode)
-	: BaseParamWidget (param_p, prefs_widget_p),
+FileChooserWidget :: FileChooserWidget (Parameter * const param_p, QTParameterWidget * const parent_p, QFileDialog :: FileMode mode)
+	: BaseParamWidget (param_p, parent_p),
 		fcw_file_mode (mode)
 {
 	fcw_chooser_p = new QComboBox;

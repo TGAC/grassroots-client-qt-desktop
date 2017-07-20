@@ -56,7 +56,7 @@ class ParamTextBox : public BaseParamWidget
 
 
 public:
-	ParamTextBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p = 0);
+	ParamTextBox (Parameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~ParamTextBox ();
 
 	virtual void RemoveConnection ();

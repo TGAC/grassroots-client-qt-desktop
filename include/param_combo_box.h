@@ -37,8 +37,8 @@ class ParamComboBox : public BaseParamWidget
 
 
 public:
-	static ParamComboBox *Create (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p = 0);
-	ParamComboBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p = 0);
+	static ParamComboBox *Create (Parameter * const param_p, QTParameterWidget * const parent_p);
+	ParamComboBox (Parameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~ParamComboBox ();
 
 

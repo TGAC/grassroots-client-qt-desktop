@@ -425,8 +425,8 @@ void DroppableTableWidget :: LoadText (const char *filename_s)
 }
 
 
-ParamTableWidget :: ParamTableWidget (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p)
-:		BaseParamWidget (param_p, options_widget_p)
+ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
+:		BaseParamWidget (param_p, parent_p)
 {
 	ptw_delimiter = ',';
 	ptw_table_p = new DroppableTableWidget (parent_p, '\n', '|');

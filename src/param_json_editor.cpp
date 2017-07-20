@@ -66,8 +66,8 @@ bool DroppableJSONBox :: SetFromJSON (const json_t * const value_p)
 }
 
 
-ParamJSONEditor :: ParamJSONEditor (Parameter * const param_p, const PrefsWidget * const options_widget_p, QWidget *parent_p)
-:	ParamTextBox (param_p, options_widget_p, parent_p)
+ParamJSONEditor :: ParamJSONEditor (Parameter * const param_p, QTParameterWidget * const parent_p)
+:	ParamTextBox (param_p, parent_p)
 {
 }
 

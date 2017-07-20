@@ -34,12 +34,12 @@ class ParamGroupBox : public QGroupBox, public ParameterWidgetContainer
 	Q_OBJECT
 
 public:
-	ParamGroupBox (const char * const name_s, const bool visible_flag, QTParameterWidget *qt_param_widget_p);
+	ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p);
 
 	virtual ~ParamGroupBox ();
 
 
-	ParamGroupBox *Clone (const char * const name_s);
+	ParamGroupBox *Clone (ParameterGroup *group_p);
 
 	virtual void AddParameterWidget (BaseParamWidget *widget_p);
 
@@ -54,6 +54,7 @@ private:
 	QList <BaseParamWidget *> pgb_children;
 	QFormLayout *pgb_layout_p;
 	QTParameterWidget *pgb_parent_p;
+	ParameterGroup *pgb_parameter_group_p;
 
 private slots:
 	void ToggleCollapsed (bool checked);

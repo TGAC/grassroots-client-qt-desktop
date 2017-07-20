@@ -25,8 +25,8 @@ int ParamSpinBox :: PSB_DEFAULT_MIN = INT32_MIN;
 int ParamSpinBox :: PSB_DEFAULT_MAX = INT32_MAX;
 
 
-ParamSpinBox :: ParamSpinBox (Parameter * const param_p, const PrefsWidget * const options_widget_p, bool signed_flag, QWidget *parent_p)
-:	BaseParamWidget (param_p, options_widget_p),
+ParamSpinBox :: ParamSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p, bool signed_flag)
+:	BaseParamWidget (param_p, parent_p),
 	psb_signed_flag (signed_flag)
 {
 	psb_spin_box_p = new QSpinBox (parent_p);

@@ -28,6 +28,8 @@
 #include <QLabel>
 
 #include "base_param_widget.h"
+#include "qt_parameter_widget.h"
+
 
 class FileChooserWidget : public BaseParamWidget
 {
@@ -38,7 +40,7 @@ private slots:
 
 
 public:
-	FileChooserWidget (Parameter * const param_p, const PrefsWidget * const prefs_widget_p, QFileDialog :: FileMode mode);
+	FileChooserWidget (Parameter * const param_p, QTParameterWidget * const parent_p, QFileDialog :: FileMode mode);
 
 	~FileChooserWidget ();
 

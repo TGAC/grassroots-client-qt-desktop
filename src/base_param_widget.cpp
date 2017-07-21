@@ -47,7 +47,7 @@ BaseParamWidget *BaseParamWidget :: Clone (ParameterGroup *group_p) const
 					dest_param_p -> pa_group_p = group_p;
 				}
 
-			dest_widget_p = bpw_parent_p -> CreateWidgetForParameter (dest_param_p);
+			dest_widget_p = bpw_parent_p -> CreateWidgetForParameter (dest_param_p, true);
 
 			if (dest_widget_p)
 				{

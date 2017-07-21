@@ -21,6 +21,10 @@ public:
 
 	virtual void CheckVisibility (ParameterLevel level);
 
+public slots:
+	void ParamGroupBoxRemoved (ParamGroupBox *box_p);
+
+
 protected:
 	void paintEvent (QPaintEvent *event_p);
 
@@ -33,7 +37,6 @@ private:
 
 private slots:
 	void AddRow (bool clicked_flag = false);
-
 };
 
 #endif // REPEATABLE_PARAM_GROUP_BOX_HPP

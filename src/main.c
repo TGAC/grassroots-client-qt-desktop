@@ -149,6 +149,19 @@ int main (int argc, char *argv [])
 									printf ("Keyword argument missing");
 								}
 						}
+					else if (strcmp (argv [i], "--get-service") == 0)
+						{
+							op = OP_GET_NAMED_SERVICES;
+
+							if ((i + 1) < argc)
+								{
+									keyword_s = argv [++ i];
+								}
+							else
+								{
+									printf ("named service argument missing");
+								}
+						}
 					else
 						{
 							printf ("Unknown argument: \"%s\"", argv [i]);
@@ -229,7 +242,7 @@ int main (int argc, char *argv [])
 
 									case OP_GET_NAMED_SERVICES:
 										{
-											GetNamedServicesInClient (client_p, query_s, user_p);
+											GetNamedServicesInClient (client_p, keyword_s, user_p);
 										}
 										break;
 

@@ -64,10 +64,18 @@ public:
 
 	BaseParamWidget *GetWidgetForParameter (const char * const param_name_s) const;
 
+
 	/**
-	 * Create widget for parameter.
+	 * @brief CreateWidgetForParameter
+	 *
+	 * Create the appropriate widget for a given parameter.
+	 *
+	 * @param param_p The Parameter to create the widget for.
+	 * @param add_param_flag If <code>true</code> then the Parameter will also be added to the underlying ParameteSet.
+	 * This is for when you have repeatable parameters.
+	 * @return The widget or 0 upon error.
 	 */
-	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p);
+	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p, bool add_param_flag = false);
 
 public slots:
 	void ResetToDefaults ();

@@ -311,7 +311,7 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidge
 					AddRow (child_p -> GetLabel (), child_p -> GetUIQWidget (), 1);
 				}
 
-			qpw_widgets_map.insert (param_p, child_p);
+	//		qpw_widgets_map.insert (param_p, child_p);
 
 			if (!CompareParameterLevels (param_p -> pa_level, qpw_level))
 				{
@@ -407,9 +407,9 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 }
 
 
-BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * const param_p)
+BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * const param_p, bool add_param_flag)
 {
-	BaseParamWidget *widget_p = NULL;
+	BaseParamWidget *widget_p = 0;
 
 	if (param_p -> pa_options_p)
 		{
@@ -487,14 +487,23 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 
 	if (widget_p)
 		{
-			QWidget *w_p = widget_p -> GetUIQWidget ();
+			//QWidget *w_p = widget_p -> GetUIQWidget ();
 
 			widget_p -> SetDefaultValue ();
 
-			return widget_p;
+			qpw_widgets_map.insert (param_p, widget_p);
+
 		}		/* if (widget_p) */
 
-	return 0;
+	if (add_param_flag)
+		{
+			if (!AddParameterToParameterSet (qpw_params_p, param_p))
+				{
+					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to add new parameter %s", widget_p -> GetParameterName ());
+				}
+		}
+
+	return widget_p;
 }
 
 

@@ -1,12 +1,12 @@
 /*
 ** Copyright 2014-2016 The Earlham Institute
-** 
+**
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
 ** You may obtain a copy of the License at
-** 
+**
 **     http://www.apache.org/licenses/LICENSE-2.0
-** 
+**
 ** Unless required by applicable law or agreed to in writing, software
 ** distributed under the License is distributed on an "AS IS" BASIS,
 ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,34 +14,60 @@
 ** limitations under the License.
 */
 #include <QFormLayout>
+#include <QPushButton>
+
 #include "param_group_box.h"
 #include "qt_parameter_widget.h"
 #include "parameter_group.h"
+#include "repeatable_param_group_box.h"
 
 
-ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p)
+ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p, bool removeable_flag)
  : QGroupBox (group_p -> pg_name_s),
 	 pgb_parent_p (qt_param_widget_p),
-	 pgb_parameter_group_p (group_p)
+	 pgb_parameter_group_p (group_p),
+	 pgb_removable_flag (removeable_flag)
 {
-  pgb_layout_p = new QFormLayout;
-
 	setStyleSheet("QGroupBox { font-weight: bold; } ");
 
 	setCheckable (true);
 	setChecked (group_p -> pg_visible_flag);
-	setLayout (pgb_layout_p);
 	setAlignment (Qt :: AlignLeft);
 
 	connect (this, &ParamGroupBox :: clicked, this, &ParamGroupBox :: ToggleCollapsed);
+
+	pgb_layout_p = new QFormLayout;
+
+	if (removeable_flag)
+		{
+
+			QVBoxLayout *layout_p = new QVBoxLayout;
+
+			QPushButton *remove_row_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
+			connect (remove_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxRemoved);
+			layout_p -> addWidget (remove_row_button_p);
+
+			layout_p -> addLayout (pgb_layout_p);
+
+			setLayout (layout_p);
+
+		//	setLayout (pgb_layout_p);
+
+		}
+	else
+		{
+			setLayout (pgb_layout_p);
+		}
+
 }
 
 
 ParamGroupBox *ParamGroupBox :: Clone (ParameterGroup *group_p)
 {
-	ParamGroupBox *cloned_box_p = new ParamGroupBox (group_p, pgb_parent_p);
+	ParamGroupBox *cloned_box_p = new ParamGroupBox (group_p, pgb_parent_p, pgb_removable_flag);
+	const int size =  pgb_children.count ();
 
-	for (int i = pgb_children.count () - 1; i >= 0; -- i)
+	for (int i = 0; i < size; ++ i)
 		{
 			BaseParamWidget *dest_widget_p = pgb_children.at (i) -> Clone (group_p);
 
@@ -155,4 +181,10 @@ void ParamGroupBox :: CheckVisibility (ParameterLevel level)
 					hide ();
 				}
 		}
+}
+
+
+void ParamGroupBox :: ParamGroupBoxRemoved ()
+{
+	emit RemoveParamGroupBox (this);
 }

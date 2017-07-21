@@ -23,6 +23,7 @@
 
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QObject>
 
 #include "base_param_widget.h"
 #include "parameter_widget_container.h"
@@ -33,8 +34,11 @@ class ParamGroupBox : public QGroupBox, public ParameterWidgetContainer
 {
 	Q_OBJECT
 
+signals:
+	void RemoveParamGroupBox (ParamGroupBox *box_p);
+
 public:
-	ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p);
+	ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p, bool removeable_flag = false);
 
 	virtual ~ParamGroupBox ();
 
@@ -55,9 +59,11 @@ private:
 	QFormLayout *pgb_layout_p;
 	QTParameterWidget *pgb_parent_p;
 	ParameterGroup *pgb_parameter_group_p;
+	bool pgb_removable_flag;
 
 private slots:
 	void ToggleCollapsed (bool checked);
+	void ParamGroupBoxRemoved ();
 };
 
 

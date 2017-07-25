@@ -58,6 +58,7 @@ int main (int argc, char *argv [])
 					"USAGE: grassroots-qt-client "
 					"\t-h <server_url>, the web address of the Grassroots server to connect to.\n"
 					"\t--list-all, get all available services from the Grassroots server.\n"
+					"\t--get-service <service name> get named services from the Grassroots server.\n"
 					"\t--keyword-search <keyword>, perform a keyword search against all keyword-aware services.\n"
 					"\t--list-interested <resource>, get all services that are able to run against a given resource.\n"
 					"\t\tThe resource is in the form <protocol>://<name> e.g. file:///home/test.fa, https://my.data/object, irods://data.fa\n"

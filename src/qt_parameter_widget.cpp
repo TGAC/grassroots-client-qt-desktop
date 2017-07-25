@@ -235,6 +235,12 @@ void QTParameterWidget :: AddRow (QWidget *first_p, QWidget *second_p, const int
 }
 
 
+void QTParameterWidget :: ParameterWidgetAdded (Parameter *param_p, BaseParamWidget *widget_p)
+{
+	qpw_widgets_map.insert (param_p, widget_p);
+}
+
+
 void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 {
 	ParameterNode *node_p = reinterpret_cast <ParameterNode *> (params_p -> ps_params_p -> ll_head_p);
@@ -252,20 +258,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 				}
 			else
 				{
-					container_p = new ParamGroupBox (group_p, this);
-				}
-
-			ParameterNode *node_in_group_p = reinterpret_cast <ParameterNode *> (group_p -> pg_params_p -> ll_head_p);
-
-			while (node_in_group_p)
-				{
-					Parameter *param_p = node_in_group_p -> pn_parameter_p;
-
-					AddParameterWidget (param_p, container_p);
-
-					params_map.insert (param_p, param_p);
-
-					node_in_group_p = reinterpret_cast <ParameterNode *> (node_in_group_p -> pn_node.ln_next_p);
+					container_p = new ParamGroupBox (group_p, this, false, false);
 				}
 
 			int row = qpw_layout_p -> rowCount ();
@@ -280,24 +273,24 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 			param_group_node_p = reinterpret_cast <ParameterGroupNode *> (param_group_node_p -> pgn_node.ln_next_p);
 		}
 
-	while (node_p)
-		{
-			Parameter * const param_p = node_p -> pn_parameter_p;
+//	while (node_p)
+//		{
+//			Parameter * const param_p = node_p -> pn_parameter_p;
 
-			if (!params_map.contains (param_p))
-				{
-					AddParameterWidget (param_p);
-				}
+//			if (!params_map.contains (param_p))
+//				{
+//					AddParameterWidget (param_p);
+//				}
 
-			node_p = reinterpret_cast <ParameterNode *> (node_p -> pn_node.ln_next_p);
-		}		/* while (node_p) */
+//			node_p = reinterpret_cast <ParameterNode *> (node_p -> pn_node.ln_next_p);
+//		}		/* while (node_p) */
 
 }
 
 
-void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidgetContainer *container_p)
+void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidgetContainer *container_p, bool add_params_flag)
 {
-	BaseParamWidget *child_p = CreateWidgetForParameter (param_p);
+	BaseParamWidget *child_p = CreateWidgetForParameter (param_p, add_params_flag);
 
 	if (child_p)
 		{

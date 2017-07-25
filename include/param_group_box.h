@@ -38,7 +38,7 @@ signals:
 	void RemoveParamGroupBox (ParamGroupBox *box_p);
 
 public:
-	ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p, bool removeable_flag = false);
+	ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p, bool removable_flag, bool add_params_flag);
 
 	virtual ~ParamGroupBox ();
 
@@ -50,6 +50,8 @@ public:
 	virtual QWidget *GetWidget ();
 
 	virtual void CheckVisibility (ParameterLevel level);
+
+	void AddParamGroupWidgets (bool add_params_flag);
 
 protected:
 	void paintEvent (QPaintEvent *event_p);

@@ -75,7 +75,10 @@ public:
 	 * This is for when you have repeatable parameters.
 	 * @return The widget or 0 upon error.
 	 */
-	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p, bool add_param_flag = false);
+	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p, bool add_param_flag);
+
+	void ParameterWidgetAdded (Parameter *param_p, BaseParamWidget *widget_p);
+
 
 public slots:
 	void ResetToDefaults ();
@@ -110,7 +113,7 @@ private:
 	BaseParamWidget *GetWidgetForParameter (const Parameter * const param_p);
 
 	void AddRow (QWidget *first_p, QWidget *second_p, const int row_span);
-	void AddParameterWidget (Parameter *param_p,  ParameterWidgetContainer *container_p = 0);
+	void AddParameterWidget (Parameter *param_p,  ParameterWidgetContainer *container_p, bool add_params_flag);
 
 	void AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QLayout *info_layout_p);
 

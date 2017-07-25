@@ -35,6 +35,10 @@ private:
 	QGroupBox *rpgb_parent_box_p;
 	QTParameterWidget *rpgb_qt_param_widget_parent_p;
 
+
+	void AddRepeatableGroup ();
+
+
 private slots:
 	void AddRow (bool clicked_flag = false);
 };

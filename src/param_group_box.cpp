@@ -22,11 +22,11 @@
 #include "repeatable_param_group_box.h"
 
 
-ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p, bool removeable_flag)
+ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p, bool removable_flag, bool add_params_flag)
  : QGroupBox (group_p -> pg_name_s),
 	 pgb_parent_p (qt_param_widget_p),
 	 pgb_parameter_group_p (group_p),
-	 pgb_removable_flag (removeable_flag)
+	 pgb_removable_flag (removable_flag)
 {
 	setStyleSheet("QGroupBox { font-weight: bold; } ");
 
@@ -38,16 +38,16 @@ ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_p
 
 	pgb_layout_p = new QFormLayout;
 
-	if (removeable_flag)
+	if (removable_flag)
 		{
+			QHBoxLayout *layout_p = new QHBoxLayout;
 
-			QVBoxLayout *layout_p = new QVBoxLayout;
+			layout_p -> addLayout (pgb_layout_p);
 
 			QPushButton *remove_row_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
 			connect (remove_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxRemoved);
 			layout_p -> addWidget (remove_row_button_p);
 
-			layout_p -> addLayout (pgb_layout_p);
 
 			setLayout (layout_p);
 
@@ -59,24 +59,15 @@ ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_p
 			setLayout (pgb_layout_p);
 		}
 
+	AddParamGroupWidgets (add_params_flag);
 }
 
 
 ParamGroupBox *ParamGroupBox :: Clone (ParameterGroup *group_p)
 {
-	ParamGroupBox *cloned_box_p = new ParamGroupBox (group_p, pgb_parent_p, pgb_removable_flag);
-	const int size =  pgb_children.count ();
+	ParamGroupBox *cloned_box_p = new ParamGroupBox (group_p, pgb_parent_p, pgb_removable_flag, true);
 
-	for (int i = 0; i < size; ++ i)
-		{
-			BaseParamWidget *dest_widget_p = pgb_children.at (i) -> Clone (group_p);
-
-			if (dest_widget_p)
-				{
-					cloned_box_p -> AddParameterWidget (dest_widget_p);
-				}
-
-		}
+	AddParamGroupWidgets (true);
 
 	return cloned_box_p;
 }
@@ -87,6 +78,34 @@ ParamGroupBox :: ~ParamGroupBox ()
 {
 
 }
+
+
+void ParamGroupBox :: AddParamGroupWidgets (bool add_params_flag)
+{
+	if (pgb_parameter_group_p -> pg_params_p)
+		{
+			ParameterNode *node_p = (ParameterNode *) (pgb_parameter_group_p -> pg_params_p -> ll_head_p);
+
+			while (node_p)
+				{
+					Parameter *param_p = node_p -> pn_parameter_p;
+					BaseParamWidget *widget_p = pgb_parent_p -> CreateWidgetForParameter (param_p, add_params_flag);
+
+					if (widget_p)
+						{
+							AddParameterWidget (widget_p);
+							pgb_parent_p -> ParameterWidgetAdded (param_p, widget_p);
+
+							node_p = (ParameterNode *) (node_p -> pn_node.ln_next_p);
+						}
+					else
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to add widget for \"%s\"", param_p -> pa_name_s);
+						}
+				}
+		}
+}
+
 
 void ParamGroupBox :: AddParameterWidget (BaseParamWidget *param_widget_p)
 {

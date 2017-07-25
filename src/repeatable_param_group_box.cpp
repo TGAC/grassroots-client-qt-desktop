@@ -1,5 +1,6 @@
 #include "repeatable_param_group_box.h"
 #include "parameter_group.h"
+#include "string_utils.h"
 
 
 RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p)
@@ -25,7 +26,7 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
 
   layout_p -> addWidget (rpgb_add_row_btn_p);
 
-  AddRow (false);
+  AddRepeatableGroup ();
 }
 
 
@@ -56,37 +57,49 @@ void RepeatableParamGroupBox :: paintEvent (QPaintEvent *event_p)
 
 void RepeatableParamGroupBox :: AddRow (bool clicked_flag)
 {
-	ParamGroupBox *new_row_p = 0;
+	AddRepeatableGroup ();
+}
 
-	if (rpgb_children.size () > 0)
+
+void RepeatableParamGroupBox :: AddRepeatableGroup ()
+{
+	char *group_name_s = GetRepeatableParameterGroupName (rpgb_parameter_group_p);
+
+	if (group_name_s)
 		{
-			ParamGroupBox *first_row_p = rpgb_children.first ();
+			ParamGroupBox *new_row_p = 0;
 
-			new_row_p = first_row_p -> Clone (rpgb_parameter_group_p);
-		}
-	else
-		{
-			new_row_p = new ParamGroupBox (rpgb_parameter_group_p, this -> rpgb_qt_param_widget_parent_p, true);
-		}
-
-	if (new_row_p)
-		{
-			char *group_name_s = GetRepeatableParameterGroupName (rpgb_parameter_group_p);
-
-			if (group_name_s)
+			if (rpgb_children.size () > 0)
 				{
-					new_row_p -> setTitle (group_name_s);
+					ParameterGroup *new_group_p = CreateAndAddParameterGroupChild (rpgb_parameter_group_p, group_name_s, NULL, true, true);
+
+					if (new_group_p)
+						{
+							new_row_p = new ParamGroupBox (new_group_p, this -> rpgb_qt_param_widget_parent_p, true, true);
+						}
+					else
+						{
+
+						}
+
 				}
 			else
 				{
-
+					new_row_p = new ParamGroupBox (rpgb_parameter_group_p, this -> rpgb_qt_param_widget_parent_p, true, false);
 				}
 
-			rpgb_children.append (new_row_p);
-			rpgb_parent_box_p -> layout () -> addWidget (new_row_p);
+			if (new_row_p)
+				{
+					new_row_p -> setTitle (group_name_s);
 
-			connect (new_row_p, &ParamGroupBox :: RemoveParamGroupBox, this, &RepeatableParamGroupBox :: ParamGroupBoxRemoved);
-		}
+					rpgb_children.append (new_row_p);
+					rpgb_parent_box_p -> layout () -> addWidget (new_row_p);
+
+					connect (new_row_p, &ParamGroupBox :: RemoveParamGroupBox, this, &RepeatableParamGroupBox :: ParamGroupBoxRemoved);
+				}
+
+			FreeCopiedString (group_name_s);
+		}		/* if (group_name_s) */
 
 }
 

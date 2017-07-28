@@ -273,17 +273,17 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 			param_group_node_p = reinterpret_cast <ParameterGroupNode *> (param_group_node_p -> pgn_node.ln_next_p);
 		}
 
-//	while (node_p)
-//		{
-//			Parameter * const param_p = node_p -> pn_parameter_p;
+	while (node_p)
+		{
+			Parameter * const param_p = node_p -> pn_parameter_p;
 
-//			if (!params_map.contains (param_p))
-//				{
-//					AddParameterWidget (param_p);
-//				}
+			if (!params_map.contains (param_p))
+				{
+					AddParameterWidget (param_p, 0, false);
+				}
 
-//			node_p = reinterpret_cast <ParameterNode *> (node_p -> pn_node.ln_next_p);
-//		}		/* while (node_p) */
+			node_p = reinterpret_cast <ParameterNode *> (node_p -> pn_node.ln_next_p);
+		}		/* while (node_p) */
 
 }
 

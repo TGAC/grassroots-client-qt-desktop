@@ -226,11 +226,7 @@ void QTParameterWidget :: OpenLink (const QString &link_r)
 void QTParameterWidget :: AddRow (QWidget *first_p, QWidget *second_p, const int row_span)
 {
 	int row = qpw_layout_p -> rowCount ();
-/*
-	qpw_layout_p -> addWidget (first_p, row, 0);
-	qpw_layout_p -> addWidget (second_p, row, 1, row_span, 1, 0);
-	second_p -> setSizePolicy (QSizePolicy :: Expanding, QSizePolicy :: Expanding);
-*/
+
 	qpw_layout_p -> addRow (first_p, second_p);
 }
 
@@ -261,10 +257,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 				}
 
 			int row = qpw_layout_p -> rowCount ();
-/*
-			qpw_layout_p -> addWidget (box_p, row, 0, group_p -> pg_num_params, 2, Qt :: AlignVCenter);
-			qpw_layout_p -> setColumnStretch (0, 100);
-*/
+
 			QWidget *box_p = container_p -> GetWidget ();
 			qpw_layout_p -> addRow (box_p);
 			qpw_groupings.append (container_p);
@@ -302,8 +295,6 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidge
 				{
 					AddRow (child_p -> GetLabel (), child_p -> GetUIQWidget (), 1);
 				}
-
-	//		qpw_widgets_map.insert (param_p, child_p);
 
 			if (!CompareParameterLevels (param_p -> pa_level, qpw_level))
 				{

@@ -245,7 +245,6 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 {
 	ParameterNode *node_p = reinterpret_cast <ParameterNode *> (params_p -> ps_params_p -> ll_head_p);
 	ParameterGroupNode *param_group_node_p = reinterpret_cast <ParameterGroupNode *> (params_p -> ps_grouped_params_p -> ll_head_p);
-	QHash <Parameter *, Parameter *> params_map;
 
 	while (param_group_node_p)
 		{
@@ -277,7 +276,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 		{
 			Parameter * const param_p = node_p -> pn_parameter_p;
 
-			if (!params_map.contains (param_p))
+			if (!qpw_widgets_map.contains (param_p))
 				{
 					AddParameterWidget (param_p, 0, false);
 				}

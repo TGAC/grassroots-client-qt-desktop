@@ -35,7 +35,7 @@ DIR_GRASSROOTS_LIBS = $$DIR_GRASSROOTS_INSTALL_ROOT/lib
 DIR_GRASSROOTS_SHARED_SRC = $$DIR_GRASSROOTS_CORE/shared
 DIR_GRASSROOTS_SERVER_SRC = $$DIR_GRASSROOTS_CORE/server
 
-DIR_GRASSROOTS_EXTRAS = $$DIR_GRASSROOTS_INSTALL_ROOT/extras
+#DIR_GRASSROOTS_EXTRAS = $$DIR_GRASSROOTS_INSTALL_ROOT/extras
 
 DIR_GRASSROOTS_PARAMS = $$DIR_GRASSROOTS_SHARED_SRC/parameters
 DIR_GRASSROOTS_PARAMS_INC = $$DIR_GRASSROOTS_PARAMS/include
@@ -211,6 +211,15 @@ HEADERS  += \
     ../../include/parameter_widget_container.h
 
 
+BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \
+ -lboost_chrono \
+ -lboost_program_options \
+ -lboost_regex \
+ -lboost_thread \
+ -lboost_filesystem \
+ -lboost_system
+
+
 LIBS += -L$$DIR_GRASSROOTS_LIBS \
  -l$$GRASSROOTS_SERVICE_LIB_NAME \
  -l$$GRASSROOTS_MONGODB_LIB_NAME \
@@ -232,7 +241,8 @@ LIBS += -L$$DIR_GRASSROOTS_LIBS \
  -lirods_client \
  -lirods_plugin_dependencies \
  -lcurl \
- -lpthread
+ -lpthread \
+ $$BOOST_DEPS
 
 message ("GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)
 !isEqual(GRASSROOTS_DRMAA_LIB_NAME,"") {
@@ -247,3 +257,6 @@ INSTALLS += target
 OTHER_FILES += \
     dependencies.pri \
     example_dependencies.pri
+
+DISTFILES += \
+    dependencies.pri

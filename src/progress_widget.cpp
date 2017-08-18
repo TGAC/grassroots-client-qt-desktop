@@ -55,9 +55,7 @@ ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name
 
 			if (uuid_parse (uuid_s, id) == 0)
 				{
-					OperationStatus status;
-
-					if (GetStatusFromJSON (json_p, &status))
+					if (GetStatusFromJSON (json_p, &pw_current_status))
 						{
 							pw_json_p = json_deep_copy (json_p);
 
@@ -120,7 +118,7 @@ ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name
 											layout_p -> addWidget (errors_button_p);
 										}
 
-									SetStatus (status);
+									SetStatus (pw_current_status);
 
 									setLayout (layout_p);
 
@@ -252,9 +250,15 @@ void ProgressWidget :: SetStatus (OperationStatus status)
 				break;
 		}
 
-
 	pw_results_button_p -> setEnabled (results_flag);
 
 	pw_status_p -> setText (text_s);
+	pw_current_status = status;
+}
+
+
+OperationStatus ProgressWidget :: GetCurrentStatus () const
+{
+	return pw_current_status;
 }
 

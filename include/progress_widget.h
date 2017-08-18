@@ -47,6 +47,8 @@ public:
 
 	void SetStatus (OperationStatus status);
 
+	OperationStatus GetCurrentStatus () const;
+
 public slots:
 	void ShowResults (bool checked_flag = false);
 
@@ -63,6 +65,7 @@ private:
 	uuid_t pw_id;
 	ProgressWindow *pw_parent_p;
 	json_t *pw_json_p;
+	OperationStatus pw_current_status;
 
 	ProgressWidget (const json_t *json_p, const char *service_name_s, const char *service_description_s, ProgressWindow *parent_p);
 

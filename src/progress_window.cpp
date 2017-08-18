@@ -269,93 +269,120 @@ ProgressWidget *FindProgressWidgetByUUID (ProgressWidget **widgets_pp, const siz
 
 void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_t num_widgets)
 {
-	const uuid_t **ids_pp = (const uuid_t **) AllocMemoryArray (num_widgets, sizeof (const uuid_t *));
+	size_t num_ids = 0;
 
-	if (ids_pp)
+	for (size_t i = 0; i < num_widgets; ++ i)
 		{
-			for (size_t i = 0; i < num_widgets; ++ i)
+			OperationStatus status = (* (widgets_pp + i)) -> GetCurrentStatus ();
+
+			if (status == OS_STARTED || status == OS_PENDING)
 				{
-					* (ids_pp + i) = (* (widgets_pp + i)) -> GetUUID ();
+					++ num_ids;
 				}
+		}
 
-			Connection *connection_p = pw_data_p -> qcd_base_data.cd_connection_p;
-			const SchemaVersion *schema_p = pw_data_p -> qcd_base_data.cd_schema_p;
+	if (num_ids > 0)
+		{
+			const uuid_t **ids_pp = (const uuid_t **) AllocMemoryArray (num_ids, sizeof (uuid_t *));
 
-			json_t *req_p = GetServicesResultsRequest (ids_pp, num_widgets, connection_p, schema_p);
-
-			if (req_p)
+			if (ids_pp)
 				{
-					json_t *results_json_p = MakeRemoteJsonCall (req_p, connection_p);
+					const uuid_t **id_pp = ids_pp;
 
-					if (results_json_p)
+					for (size_t i = 0; i < num_widgets; ++ i)
 						{
-							if (json_is_array (results_json_p))
+							OperationStatus status = (* (widgets_pp + i)) -> GetCurrentStatus ();
+
+							if (status == OS_STARTED || status == OS_PENDING)
 								{
-									ResultsWindow *results_p = GetNewResultsWindow (pw_data_p);
-									bool show_results_flag = false;
+									const uuid_t *id_p = *id_pp;
 
-									size_t i;
-									json_t *job_p;
+									id_p = (* (widgets_pp + i)) -> GetUUID ();
+									++ id_pp;
+								}
+						}
 
-									json_array_foreach (results_json_p, i, job_p)
+					Connection *connection_p = pw_data_p -> qcd_base_data.cd_connection_p;
+					const SchemaVersion *schema_p = pw_data_p -> qcd_base_data.cd_schema_p;
+
+					json_t *req_p = GetServicesResultsRequest (ids_pp, num_ids, connection_p, schema_p);
+
+					if (req_p)
+						{
+							json_t *results_json_p = MakeRemoteJsonCall (req_p, connection_p);
+
+							if (results_json_p)
+								{
+									if (json_is_array (results_json_p))
 										{
-											const char *service_name_s = GetJSONString (job_p, SERVICE_NAME_S);
-											const char *service_description_s = GetJSONString (job_p, OPERATION_DESCRIPTION_S);
-											const char *service_uri_s =  GetJSONString (job_p, OPERATION_INFORMATION_URI_S);
+											ResultsWindow *results_p = GetNewResultsWindow (pw_data_p);
+											bool show_results_flag = false;
 
-											/* Get the job status */
-											OperationStatus status = OS_ERROR;
-											const char *value_s = GetJSONString (job_p, SERVICE_STATUS_S);
+											size_t i;
+											json_t *job_p;
 
-											if (value_s)
+											json_array_foreach (results_json_p, i, job_p)
 												{
-													status = GetOperationStatusFromString (value_s);
-												}
-											else
-												{
-													int i;
+													const char *service_name_s = GetJSONString (job_p, SERVICE_NAME_S);
+													const char *service_description_s = GetJSONString (job_p, OPERATION_DESCRIPTION_S);
+													const char *service_uri_s =  GetJSONString (job_p, OPERATION_INFORMATION_URI_S);
+
 													/* Get the job status */
+													OperationStatus status = OS_ERROR;
+													const char *value_s = GetJSONString (job_p, SERVICE_STATUS_S);
 
-													if (GetJSONInteger(job_p, SERVICE_STATUS_VALUE_S, &i))
+													if (value_s)
 														{
-															if ((i > OS_LOWER_LIMIT) && (i < OS_UPPER_LIMIT))
+															status = GetOperationStatusFromString (value_s);
+														}
+													else
+														{
+															int i;
+															/* Get the job status */
+
+															if (GetJSONInteger(job_p, SERVICE_STATUS_VALUE_S, &i))
 																{
-																	status = (OperationStatus) i;
+																	if ((i > OS_LOWER_LIMIT) && (i < OS_UPPER_LIMIT))
+																		{
+																			status = (OperationStatus) i;
+																		}
+																}
+														}
+
+
+													ProgressWidget *widget_p = FindProgressWidgetByUUID (widgets_pp, num_widgets, job_p);
+
+													if (widget_p)
+														{
+															widget_p -> SetStatus (status);
+
+															if ((status == OS_SUCCEEDED) || (status == OS_PARTIALLY_SUCCEEDED))
+																{
+																	//widget_p -> CacheResults (job_p);
+																	results_p -> AddAllResultsPagesFromJSON (job_p, service_name_s, service_description_s, service_uri_s);
+																	show_results_flag = true;
 																}
 														}
 												}
 
-
-											ProgressWidget *widget_p = FindProgressWidgetByUUID (widgets_pp, num_widgets, job_p);
-
-											if (widget_p)
+											if (show_results_flag)
 												{
-													widget_p -> SetStatus (status);
-
-													if ((status == OS_SUCCEEDED) || (status == OS_PARTIALLY_SUCCEEDED))
-														{
-															//widget_p -> CacheResults (job_p);
-															results_p -> AddAllResultsPagesFromJSON (job_p, service_name_s, service_description_s, service_uri_s);
-															show_results_flag = true;
-														}
+													results_p -> show ();
 												}
+
 										}
 
-									if (show_results_flag)
-										{
-											results_p -> show ();
-										}
+									json_decref (results_json_p);
+								}		/* if (statuses_json_p) */
 
-								}
+							json_decref (req_p);
+						}		/* if (req_p) */
 
-							json_decref (results_json_p);
-						}		/* if (statuses_json_p) */
+					FreeMemory (ids_pp);
+				}
 
-					json_decref (req_p);
-				}		/* if (req_p) */
-
-			FreeMemory (ids_pp);
 		}
+
 }
 
 

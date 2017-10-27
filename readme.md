@@ -48,7 +48,7 @@ The available options
 The client has a list of available services in the left-hand pane of its window and clicking on any of these will open the editor for that Service in the right-hand pane of the window. 
 
 Each widget in the editor has a label and if you hover the cursor over the the label or widget then a a help bubble will appear with further information. 
-The widgets can be grouped together as in the above example where there are three groups: Query Sequence Parameters, Available Databases provided by EI test Grassroots server 0, and General Algorithm Parameters. 
+The widgets can be grouped together as in the above example where there are three groups: *Query Sequence Parameters*, *Available Databases provided by EI test Grassroots server 0* and *General Algorithm Parameters*. 
 These groups can have a checkbox next to their titles and toggling this allows the group to be hidden or visible to allow you to ignore some options once they have set them to their desired values should they wish.
 The values for a Service can be restored to their default values by clicking on the *Restore Defaults* in the bottom right-hand corner of the editor window should you wish.
 

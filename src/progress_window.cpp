@@ -283,7 +283,7 @@ void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_
 
 	if (num_ids > 0)
 		{
-			const uuid_t **ids_pp = (const uuid_t **) AllocMemoryArray (num_ids, sizeof (uuid_t *));
+			const uuid_t **ids_pp = (const uuid_t **) AllocMemoryArray (num_ids, sizeof (const uuid_t *));
 
 			if (ids_pp)
 				{
@@ -295,9 +295,9 @@ void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_
 
 							if (status == OS_STARTED || status == OS_PENDING)
 								{
-									const uuid_t *id_p = *id_pp;
+									const uuid_t *id_p = (* (widgets_pp + i)) -> GetUUID ();
 
-									id_p = (* (widgets_pp + i)) -> GetUUID ();
+									*id_pp = id_p;
 									++ id_pp;
 								}
 						}

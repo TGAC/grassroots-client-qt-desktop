@@ -123,6 +123,10 @@ ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name
 									setLayout (layout_p);
 
 
+									QPushButton *delete_btn_p = new QPushButton (QIcon ("images/delete"), tr ("Delete"), this);
+									connect (delete_btn_p, &QPushButton :: clicked, this, &ProgressWidget :: DeleteFromParent);
+									layout_p -> addWidget (delete_btn_p);
+
 								}		/* if (pw_json_p) */
 							else
 								{
@@ -203,6 +207,15 @@ void ProgressWidget :: ShowErrors (bool checked_flag)
 			JSONViewer *viewer_p = new JSONViewer ();
 			viewer_p -> SetJSONData (errors_p);
 			viewer_p -> setVisible (true);
+		}
+}
+
+
+void ProgressWidget :: DeleteFromParent (bool checked_flag)
+{
+	if (!pw_parent_p -> RemoveProgressWidget (this))
+		{
+			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to remove progress widget");
 		}
 }
 

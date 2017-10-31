@@ -54,6 +54,8 @@ public slots:
 
 	void ShowErrors (bool checked_flag = false);
 
+	void DeleteFromParent (bool checked_flag = false);
+
 private:
 //	QProgressBar *pw_progress_p;
 	QLabel *pw_progress_label_p;

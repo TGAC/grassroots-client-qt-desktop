@@ -39,6 +39,7 @@ public:
 
 	bool AddProgressItemFromJSON (const json_t *json_p, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s);
 
+	bool RemoveProgressWidget (ProgressWidget *widget_p);
 
 	json_t *BuildResultsRequest ();
 

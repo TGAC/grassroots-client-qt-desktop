@@ -76,6 +76,12 @@ bool ProgressWindow :: AddProgressItemFromJSON (const json_t *json_p, const char
 			layout () -> addWidget (widget_p);
 
 
+			if (! (pw_results_button_p -> isEnabled ()))
+				{
+					pw_results_button_p -> setEnabled (true);
+				}
+
+
 			OperationStatus status;
 
 			if (GetStatusFromJSON (json_p, &status))
@@ -107,6 +113,45 @@ bool ProgressWindow :: AddProgressItemFromJSON (const json_t *json_p, const char
 	return success_flag;
 }
 
+
+bool ProgressWindow :: RemoveProgressWidget (ProgressWidget *widget_p)
+{
+	bool success_flag = false;
+	int index = -1;
+	const int last_index = pw_widgets.size () - 1;
+
+	for (int i = last_index; i >= 0; -- i)
+		{
+			if (pw_widgets.at (i) == widget_p)
+				{
+					index = i;
+					i = -1;		// force exit from loop
+				}
+		}
+
+	if (index != -1)
+		{
+			pw_widgets.remove (index);
+			layout () -> removeWidget (widget_p);
+			delete widget_p;
+			update ();
+			success_flag = true;
+
+			if (last_index == 0)
+				{
+					/*
+					 * We've removed the last ProgressWidget
+					 * so disable the refresh button.
+					 */
+
+					pw_results_button_p -> setEnabled (false);
+				}
+		}
+
+
+
+	return success_flag;
+}
 
 
 void ProgressWindow :: UpdateStatuses ()

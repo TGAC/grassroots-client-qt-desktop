@@ -3,7 +3,7 @@
 
 This builds a  graphical user interface desktop client to access a Grassroots server allowing you to query and run services, view results, *etc.* It uses a [Qt](https://www.qt.io)-based GUI. Its imagery uses the icons available from the [Amiga Image Storage System](http://www.masonicons.info/6.html) (AISS) by Martin Merz, Copyright (C) 2000-2016.
 
-![Screenshot of the Grassroots Qt desktop client](./grassroots_qt_client.png "Grassroots Qt Desktop Client")
+![Screenshot of the Grassroots Qt desktop client](grassroots_qt_client.png "Grassroots Qt Desktop Client")
 
 ## Installation
 
@@ -55,6 +55,6 @@ The values for a Service can be restored to their default values by clicking on 
 ### Running one or more Services
 
 You can choose to run a Service by ticking either the checkbox next to the Service name in the left-hand pane or the "Run .." checkbox below the widgets in the right-hand pane.
-Once you have chosen the Services that you want to run and set their values accordingly, you can run all of them by clicking on the *run* icon, ![Run icon](./run.png "Run icon") as shown above.
+Once you have chosen the Services that you want to run and set their values accordingly, you can run all of them by clicking on the *run* icon, ![Run icon](run.png "Run icon") as shown above.
 
 		

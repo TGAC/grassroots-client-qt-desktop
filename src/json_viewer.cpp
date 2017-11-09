@@ -226,9 +226,9 @@ QTreeWidgetItem *JSONViewer :: InsertData (QTreeWidgetItem *parent_p, const char
 		{
 			json_t *child_json_p;
 			size_t i;
+			QString parent_name = parent_p -> text (0);
 
-
-			if (strcmp (key_s, LINKED_SERVICES_S) == 0)
+			if ((parent_name.compare (LINKED_SERVICES_S) == 0) && (strcmp (key_s, SERVICES_NAME_S) == 0))
 				{
 					json_array_foreach (data_p, i, child_json_p)
 						{

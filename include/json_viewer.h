@@ -60,6 +60,9 @@ private:
 
 	void AddActions (QMenu *menu_p);
 
+	bool IsGrassrootsServiceNode (const json_t *data_p) const;
+
+
 private slots:
 	void PrepareMenu (const QPoint &pos_r);
 	void RunLinkedService (bool checked_flag);

@@ -29,6 +29,7 @@
 #include <QWebEngineView>
 #include <QGroupBox>
 #include <QList>
+#include <QVBoxLayout>
 
 #include "parameter.h"
 #include "parameter_set.h"
@@ -115,7 +116,7 @@ private:
 	void AddRow (QWidget *first_p, QWidget *second_p, const int row_span);
 	void AddParameterWidget (Parameter *param_p,  ParameterWidgetContainer *container_p, bool add_params_flag);
 
-	void AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QLayout *info_layout_p);
+	void AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QVBoxLayout *info_layout_p);
 
 
 	static const int QPW_NUM_COLUMNS;

@@ -15,7 +15,7 @@
 */
 #include <QLabel>
 #include <QDesktopServices>
-#include <QVBoxLayout>
+
 #include <QHBoxLayout>
 
 #include "qt_parameter_widget.h"
@@ -143,8 +143,44 @@ QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const d
 }
 
 
-void QTParameterWidget :: AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QLayout *info_layout_p)
+void QTParameterWidget :: AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QVBoxLayout *info_layout_p)
 {
+	QLabel *logo_p = 0;
+	QLabel *text_p = 0;
+
+	const char *provider_logo_s = GetProviderLogo (provider_p);
+
+	if (provider_logo_s)
+		{
+			CurlTool *curl_tool_p = AllocateCurlTool (CM_MEMORY);
+
+			if (curl_tool_p)
+				{
+					if (SetUriForCurlTool (curl_tool_p, provider_logo_s))
+						{
+							CURLcode res = RunCurlTool (curl_tool_p);
+
+							if (res == CURLE_OK)
+								{
+									size_t length = GetCurlToolDataSize (curl_tool_p);
+									const uchar *data_p = reinterpret_cast <const uchar *> (GetCurlToolData (curl_tool_p));
+
+									QPixmap pix;
+
+									if (pix.loadFromData (data_p, length))
+										{
+											logo_p = new QLabel;
+
+										//	logo_p -> setAlignment (Qt :: AlignRight);
+											logo_p -> setPixmap (pix);
+										}
+								}
+						}
+
+					FreeCurlTool (curl_tool_p);
+				}
+		}
+
 	const char *provider_name_s = GetProviderName (provider_p);
 
 	if (provider_name_s)
@@ -195,16 +231,32 @@ void QTParameterWidget :: AddProvider (const json_t *provider_p, const size_t i,
 							str.append (".");
 						}
 
-					QLabel *label_p = new QLabel (str, this);
+					text_p = new QLabel (str);
 					//label_p -> setWordWrap (true);
-					connect (label_p,  &QLabel :: linkActivated, this, &QTParameterWidget :: OpenLink);
-					label_p -> setSizePolicy (QSizePolicy :: Minimum, QSizePolicy :: Fixed);
-					label_p -> setAlignment (Qt :: AlignLeft);
+					connect (text_p,  &QLabel :: linkActivated, this, &QTParameterWidget :: OpenLink);
+					text_p -> setSizePolicy (QSizePolicy :: Minimum, QSizePolicy :: Fixed);
+					text_p -> setAlignment (Qt :: AlignLeft);
 					//label_p -> setFrameShape (QFrame :: Box);
 
-					info_layout_p -> addWidget (label_p);
+
+					if (logo_p)
+						{
+							QHBoxLayout *layout_p = new QHBoxLayout;
+
+							layout_p -> addWidget (text_p);
+							layout_p -> addWidget (logo_p);
+							info_layout_p -> addLayout (layout_p);
+						}
+					else
+						{
+							info_layout_p -> addWidget (text_p);
+						}
 				}
+
 		}
+
+
+
 }
 
 

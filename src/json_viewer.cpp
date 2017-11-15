@@ -13,6 +13,8 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
+#include <cstring>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QJsonDocument>
@@ -228,9 +230,9 @@ QTreeWidgetItem *JSONViewer :: InsertData (QTreeWidgetItem *parent_p, const char
 			size_t i;
 			QString parent_name = parent_p -> text (0);
 
-			if ((parent_name.compare (LINKED_SERVICES_S) == 0) && (strcmp (key_s, SERVICES_NAME_S) == 0))
+			json_array_foreach (data_p, i, child_json_p)
 				{
-					json_array_foreach (data_p, i, child_json_p)
+					if (IsGrassrootsServiceNode (child_json_p))
 						{
 							const char *service_name_s = GetJSONString (child_json_p, SERVICE_NAME_S);
 
@@ -256,27 +258,23 @@ QTreeWidgetItem *JSONViewer :: InsertData (QTreeWidgetItem *parent_p, const char
 									item_p -> setData (0, Qt :: UserRole, var);
 								}		/* if (item_p) */
 
-						}		/* json_array_foreach (data_p, i, child_json_p) */
-
-				}		/* if (strcmp (key_s, LINKED_SERVICES_S) == 0) */
-			else
-				{
-
-					child_node_p -> setIcon (0, QIcon ("images/brackets"));
-
-					json_array_foreach (data_p, i, child_json_p)
+						}		/* if (IsGrassrootsServiceNode (child_json_p)) */
+					else
 						{
 							char *value_s = ConvertIntegerToString (i);
 
 							if (value_s)
 								{
+									child_node_p -> setIcon (0, QIcon ("images/brackets"));
+
 									InsertData (child_node_p, value_s, child_json_p);
 
 									FreeCopiedString (value_s);
 								}
+
 						}
 
-				}
+				}		/* json_array_foreach (data_p, i, child_json_p) */
 
 		}
 	else if (json_is_string (data_p))
@@ -376,15 +374,11 @@ void JSONViewer :: SetJSONData (json_t *data_p)
 }
 
 
-
-
 void JSONViewer :: AddTopLevelNode (const char *key_s, json_t *data_p)
 {
 	QTreeWidgetItem *top_level_node_p = InsertData (NULL, key_s, data_p);
 
 }
-
-
 
 
 void JSONViewer :: SetSystemFont ()
@@ -404,3 +398,20 @@ void JSONViewer :: SetFixedFont ()
 	jv_tree_p -> setFont (f);
 }
 
+
+bool JSONViewer :: IsGrassrootsServiceNode (const json_t *data_p) const
+{
+	bool res = false;
+
+	if (json_is_object (data_p))
+		{
+			const char *type_s = GetJSONString (data_p, "@type");
+
+			if (type_s && (strcmp (type_s, TYPE_SERVICE_S) == 0))
+				{
+					res = true;
+				}
+		}
+
+	return res;
+}

@@ -312,7 +312,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			QWidget *box_p = container_p -> GetWidget ();
 			qpw_layout_p -> addRow (box_p);
-			qpw_groupings.append (container_p);
+			qpw_groupings.insert (group_p -> pg_name_s, container_p);
 
 			param_group_node_p = reinterpret_cast <ParameterGroupNode *> (param_group_node_p -> pgn_node.ln_next_p);
 		}
@@ -323,7 +323,14 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			if (!qpw_widgets_map.contains (param_p))
 				{
-					AddParameterWidget (param_p, 0, false);
+					ParameterWidgetContainer *container_p = 0;
+
+					if (param_p -> pa_group_p)
+						{
+							container_p = qpw_groupings.value (param_p -> pa_group_p -> pg_name_s);
+						}
+
+					AddParameterWidget (param_p, container_p, false);
 				}
 
 			node_p = reinterpret_cast <ParameterNode *> (node_p -> pn_node.ln_next_p);
@@ -432,9 +439,10 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 			widget_p -> CheckLevelDisplay (level, parent_widget_p);
 		}
 
+	QList <ParameterWidgetContainer *> groupings = qpw_groupings.values ();
 	for (int i = qpw_groupings.count () - 1; i >= 0; -- i)
 		{
-			ParameterWidgetContainer *container_p = qpw_groupings.at (i);
+			ParameterWidgetContainer *container_p = groupings.at (i);
 			container_p -> CheckVisibility (level);
 		}
 

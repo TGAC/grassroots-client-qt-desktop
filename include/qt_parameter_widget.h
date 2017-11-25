@@ -101,7 +101,7 @@ private:
 
 	QList <QWebEngineView *> qpw_browsers;
 
-	QList <ParameterWidgetContainer *> qpw_groupings;
+	QHash <const char *, ParameterWidgetContainer *> qpw_groupings;
 
 	const struct QTClientData *qpw_client_data_p;
 

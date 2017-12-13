@@ -249,7 +249,7 @@ void ResultsWindow :: LoadResults (const char * const filename_s)
 			const char *description_s = NULL;
 			const char *uri_s = NULL;
 
-			json_t *metadata_p = json_object_get (results_p, SERVICE_METADATA_S);
+			json_t *metadata_p = json_object_get (results_p, SERVICE_CATEGORY_S);
 
 			if (metadata_p)
 				{

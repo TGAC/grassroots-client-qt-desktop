@@ -175,7 +175,7 @@ char *DroppableTableWidget :: GetEntry (const char *start_s, const char *end_s)
 						}
 					else
 						{
-							value_s = CopyToNewString (first_value_p, 0, false);
+							value_s = EasyCopyToNewString (first_value_p);
 						}
 				}
 			else
@@ -358,7 +358,7 @@ char *DroppableTableWidget :: GetValueAsText ()
 						{
 							const char *data_s = GetByteBufferData (buffer_p);
 
-							value_s = CopyToNewString (data_s, 0, false);
+							value_s = EasyCopyToNewString (data_s);
 							qDebug () << value_s  << endl;
 						}
 

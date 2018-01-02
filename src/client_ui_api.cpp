@@ -104,7 +104,7 @@ static QTClientData *AllocateQTClientData (void)
 			 * object, In addition, argc must be greater than zero and argv must
 			 * contain at least one valid character string.
 			 */
-			data_p -> qcd_dummy_arg_s = CopyToNewString ("Grassroots Client", 0, false);
+			data_p -> qcd_dummy_arg_s = EasyCopyToNewString ("Grassroots Client");
 
 			if (data_p -> qcd_dummy_arg_s)
 				{

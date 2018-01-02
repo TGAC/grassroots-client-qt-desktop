@@ -54,7 +54,7 @@ void TextViewer :: SetText (const char *value_s)
 	QByteArray ba = s.toLocal8Bit ();
 	const char *data_s = ba.data ();
 
-	return CopyToNewString (data_s, 0, false);
+	return EasyCopyToNewString (data_s);
 }
 
 

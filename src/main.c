@@ -109,7 +109,7 @@ int main (int argc, char *argv [])
 
 											if (protocol_s)
 												{
-													query_s = CopyToNewString (ptr + strlen (delimiter_s), 0, false);
+													query_s = EasyCopyToNewString (ptr + strlen (delimiter_s));
 
 													if (query_s)
 														{

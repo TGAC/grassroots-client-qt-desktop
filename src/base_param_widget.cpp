@@ -24,7 +24,7 @@ BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget
 	: bpw_param_p (param_p),
 		bpw_parent_p (parent_p)
 {
-	bpw_param_name_s = CopyToNewString (param_p -> pa_name_s, 0, false);	
+	bpw_param_name_s = EasyCopyToNewString (param_p -> pa_name_s);
 	bpw_label_p = new QLabel (GetUIName (param_p));
 
 	if (param_p -> pa_description_s)

@@ -150,7 +150,7 @@ char *JSONViewer :: GetText () const
 	QString s = jv_viewer_p ->  toPlainText ();
 	QByteArray ba = s.toLocal8Bit ();
 	const char *data_s = ba.constData ();
-	return CopyToNewString (data_s, 0, false);
+	return EasyCopyToNewString (data_s);
 }
 
 

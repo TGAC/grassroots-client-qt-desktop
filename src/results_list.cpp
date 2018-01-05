@@ -27,11 +27,13 @@
 #include "matched_service_list_widget_item.h"
 #include "text_viewer.h"
 #include "viewer_widget.h"
+#include "ui_utils.h"
 
 #include "json_util.h"
 #include "data_resource.h"
 #include "string_utils.h"
 #include "filesystem_utils.h"
+#include "json_tools.h"
 
 
 ResultsList :: ResultsList (ResultsPage *parent_p)
@@ -260,13 +262,19 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 
 									if (service_s)
 										{
-											char *icon_path_s = MakeFilename ("images", service_s);
+											const char *icon_path_s = GetOperationIconURIFromJSON (resource_json_p);
 
 											if (icon_path_s)
 												{
-													item_p -> setIcon (QIcon (icon_path_s));
+													QIcon *icon_p = UIUtils :: GetRemoteIconImage (icon_path_s);
+
+													if (icon_p)
+														{
+															item_p -> setIcon (*icon_p);
+															delete icon_p;
+														}
+
 													icon_flag = true;
-													FreeCopiedString (icon_path_s);
 												}
 										}
 

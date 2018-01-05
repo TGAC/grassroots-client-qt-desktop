@@ -23,7 +23,7 @@
 #include "streams.h"
 
 
-const char *ResultsWidget :: RW_SERVICES_TAB_TITLE_S = "Services";
+const char *ResultsWidget :: RW_SERVICES_TAB_TITLE_S = "Applications";
 
 
 ResultsWidget :: ResultsWidget (QWidget *parent_p)
@@ -124,12 +124,12 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 	int index = -1;
 	ResultsList *services_list_p = NULL;
 
-	/* Find the "interested servces page" */
+	/* Find the "interested services page" */
 	for (int i = count () - 1; i >= 0; -- i)
 		{
 			QString tab_text = tabText (i);
 
-			if (tab_text.compare (RW_SERVICES_TAB_TITLE_S))
+			if (tab_text.compare (RW_SERVICES_TAB_TITLE_S) == 0)
 				{
 					index = i;
 					i = 0;
@@ -137,7 +137,7 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 		}
 
 	/*
-	 * If we couldn't find  the "interested servces page",
+	 * If we couldn't find  the "interested services page",
 	 * then create it
 	 */
 	if (index == -1)

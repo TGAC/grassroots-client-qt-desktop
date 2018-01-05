@@ -22,12 +22,15 @@
 #define UI_UTILS_H
 
 #include <QWidget>
+#include <QIcon>
 
 class UIUtils
 {
 public:
 
 	static void CentreWidget (QWidget *parent_p, QWidget *child_p);
+
+	static QIcon *GetRemoteIconImage (const char * const icon_path_s);
 };
 
 #endif // UI_UTILS_H

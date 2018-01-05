@@ -17,7 +17,7 @@
 #include <QDesktopWidget>
 
 #include "ui_utils.h"
-
+#include "curl_tools.h"
 
 void UIUtils :: CentreWidget (QWidget *parent_p, QWidget *child_p)
 {
@@ -72,3 +72,34 @@ void UIUtils :: CentreWidget (QWidget *parent_p, QWidget *child_p)
 	child_p -> move (x, y);
 }
 
+
+QIcon *UIUtils :: GetRemoteIconImage (const char * const icon_path_s)
+{
+	QIcon *icon_p = 0;
+	CurlTool *curl_tool_p = AllocateCurlTool (CM_MEMORY);
+
+	if (curl_tool_p)
+		{
+			if (SetUriForCurlTool (curl_tool_p, icon_path_s))
+				{
+					CURLcode res = RunCurlTool (curl_tool_p);
+
+					if (res == CURLE_OK)
+						{
+							size_t length = GetCurlToolDataSize (curl_tool_p);
+							const uchar *data_p = reinterpret_cast <const uchar *> (GetCurlToolData (curl_tool_p));
+
+							QPixmap pix;
+
+							if (pix.loadFromData (data_p, length))
+								{
+									icon_p = new QIcon (pix);
+								}
+						}
+				}
+
+			FreeCurlTool (curl_tool_p);
+		}
+
+	return icon_p;
+}

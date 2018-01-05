@@ -122,7 +122,7 @@ void MainWindow :: ProcessResults (json_t *results_json_p)
 
 			json_array_foreach (services_json_p, i, job_p)
 				{
-					const char *service_name_s = GetJSONString (job_p, JOB_SERVICE_S);
+					const char *service_name_s = GetJSONString (job_p, SERVICE_NAME_S);
 
 					if (service_name_s)
 						{
@@ -139,7 +139,13 @@ void MainWindow :: ProcessResults (json_t *results_json_p)
 
 									if (results_p)
 										{
-											results_p -> AddInterestedService (job_p, service_name_s);
+											if (results_p -> AddInterestedService (job_p, service_name_s))
+												{
+													if (!show_results_flag)
+														{
+															show_results_flag = true;
+														}
+												}
 										}
 									else
 										{

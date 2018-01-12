@@ -24,4 +24,4 @@ DIR_IRODS_BOOST_LIBS = /opt/irods-externals/boost1.60.0-0/lib
 DIR_GRASSROOTS_EXTRAS = $$DIR_GRASSROOTS_INSTALL_ROOT/extras
 
 DRMAA_TYPE = slurm
-GRASSROOTS_DRMAA_LIB_NAME = grassroots_drmaa_slurm
+GRASSROOTS_DRMAA_LIB_NAME = grassroots_drmaa

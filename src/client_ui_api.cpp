@@ -233,9 +233,10 @@ static json_t *DisplayResultsInQTClient (ClientData *client_data_p, json_t *resp
 
 	if (! (qt_data_p -> qcd_init_flag))
 		{
-			qt_data_p -> qcd_init_flag = true;
-			qt_data_p -> qcd_app_p -> exec ();
+			qt_data_p -> qcd_window_p -> ProcessResults (response_p);
+			RunQTClient (client_data_p);
 		}
+
 
 
 	return res_p;

@@ -130,7 +130,7 @@ INCLUDEPATH += \
   $$DIR_GRASSROOTS_SERVER_INC \
   $$DIR_GRASSROOTS_NETWORK_INC \
   $$DIR_GRASSROOTS_HANDLER_INC \
-  $$(DIR_GRASSROOTS_TASK_INC) \
+  $$DIR_GRASSROOTS_TASK_INC \
 
 
 
@@ -171,8 +171,8 @@ SOURCES += \
 		$$DIR_GRASSROOTS_QT_SRC/src/servce_ui.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/standard_list_widget_item.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/results_page.cpp \
-    ../../src/repeatable_param_group_box.cpp \
-    ../../src/parameter_widget_container.cpp
+		$$DIR_GRASSROOTS_QT_SRC/src/repeatable_param_group_box.cpp \
+		$$DIR_GRASSROOTS_QT_SRC/src/parameter_widget_container.cpp
 
 HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -212,8 +212,8 @@ HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/matched_service_list_widget_item.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/standard_list_widget_item.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/results_page.h \
-    ../../include/repeatable_param_group_box.h \
-    ../../include/parameter_widget_container.h
+		$$DIR_GRASSROOTS_QT_SRC/include/repeatable_param_group_box.h \
+		$$DIR_GRASSROOTS_QT_SRC/include/parameter_widget_container.h
 
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \

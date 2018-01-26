@@ -7,7 +7,7 @@
 # The Qt client library will be copied to the the clients drawer
 # located there and the libraries in the lib drawer there will 
 # be used by this client
-DIR_GRASSROOTS_INSTALL_ROOT = /opt/grassroots-0/grassroots
+DIR_GRASSROOTS_INSTALL_ROOT = /home/billy/Applications/grassroots/0/grassroots/lib
 
 # This is the path to the Grassroots core development packages
 # containing the reuired header files
@@ -23,5 +23,5 @@ DIR_IRODS_BOOST_LIBS = /opt/irods-externals/boost1.60.0-0/lib
 
 DIR_GRASSROOTS_EXTRAS = $$DIR_GRASSROOTS_INSTALL_ROOT/extras
 
-DRMAA_TYPE = slurm
+DRMAA_TYPE = htcondor
 GRASSROOTS_DRMAA_LIB_NAME = grassroots_drmaa

@@ -112,6 +112,8 @@ GRASSROOTS_MONGOC_LIB_NAME = mongoc-1.0
 GRASSROOTS_BSON_LIB_NAME = bson-1.0
 
 
+DIR_DRMAA_LIB = /home/billy/Applications/htcondor/lib
+
 DIR_IRODS_LIBS = $$DIR_IRODS_HOME/usr/lib
 
 
@@ -224,6 +226,9 @@ BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \
  -lboost_filesystem \
  -lboost_system
 
+DRMAA_DEPS = -L $$DIR_DRMAA_LIB \
+ -ldrmaa
+
 
 LIBS += -L$$DIR_GRASSROOTS_LIBS \
  -l$$GRASSROOTS_SERVICE_LIB_NAME \
@@ -247,7 +252,8 @@ LIBS += -L$$DIR_GRASSROOTS_LIBS \
  -lirods_plugin_dependencies \
  -lcurl \
  -lpthread \
- $$BOOST_DEPS
+ $$BOOST_DEPS \
+ $$DRMAA_DEPS
 
 message ("GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)
 !isEqual(GRASSROOTS_DRMAA_LIB_NAME,"") {

@@ -122,7 +122,7 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 {
 	bool success_flag = false;
 	int index = -1;
-	ResultsList *services_list_p = NULL;
+	ResultsProvider *results_p = NULL;
 
 	/* Find the "interested services page" */
 	for (int i = count () - 1; i >= 0; -- i)
@@ -147,7 +147,7 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 			if (page_p)
 				{
 					insertTab (count (), page_p, RW_SERVICES_TAB_TITLE_S);
-					services_list_p = page_p -> GetResultsList ();
+					results_p = page_p -> GetResultsProvider ();
 				}
 			else
 				{
@@ -160,7 +160,7 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 
 			if (page_p)
 				{
-					services_list_p = page_p -> GetResultsList ();
+					results_p = page_p -> GetResultsProvider ();
 				}
 			else
 				{
@@ -170,13 +170,14 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 		}		/* if (index == -1) else */
 
 
-	if (services_list_p)
+	if (results_p)
 		{
-			if (services_list_p -> AddItemFromJSON (service_name_s, job_p))
+			if (results_p -> AddItemFromJSON (service_name_s, job_p))
 				{
 					success_flag = true;
 				}
-		}		/* if (services_list_p) */
+
+		}		/* if (results_p) */
 	else
 		{
 			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to get %s page", RW_SERVICES_TAB_TITLE_S);

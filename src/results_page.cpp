@@ -29,17 +29,17 @@
 ResultsPage :: ResultsPage (ResultsWidget *parent_p)
 	: QWidget (parent_p)
 {
-	rp_results_list_p = new ResultsList (this);
+	rp_results_p = new ResultsList (this, 0);
 	SetUp (parent_p, 0, 0, 0, 0);
 }
 
 
-ResultsPage :: ResultsPage (const json_t *results_list_json_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s, ResultsWidget *parent_p)
-	: QWidget (parent_p)
+ResultsPage :: ResultsPage (const json_t *results_json_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s, ResultsWidget *parent_p)
+	: QWidget (parent_p), rp_results_p (0)
 {
-	rp_results_list_p = new ResultsList (this);
+	rp_results_p = ResultsProvider :: GetResultsProvider (this, results_json_p, service_name_s);
 
-	if (rp_results_list_p -> SetListFromJSON (job_name_s, results_list_json_p))
+	if (rp_results_p)
 		{
 			SetUp (parent_p, job_name_s, service_name_s, service_description_s, service_uri_s);
 		}
@@ -95,7 +95,10 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 
 	layout_p -> addLayout (labels_layout_p);
 
-	layout_p -> addWidget (rp_results_list_p);
+	if (rp_results_p)
+		{
+			layout_p -> addWidget (rp_results_p);
+		}
 
 	connect (this, &ResultsPage :: ServiceRequested, parent_p, &ResultsWidget :: SelectService);
 	connect (this, &ResultsPage :: RunServiceRequested, parent_p, &ResultsWidget :: RunService);
@@ -143,7 +146,7 @@ void ResultsPage :: OpenWebLink (const char * const uri_s)
 
 
 
-ResultsList *ResultsPage :: GetResultsList () const
+ResultsProvider *ResultsPage :: GetResultsProvider () const
 {
-	return rp_results_list_p;
+	return rp_results_p;
 }

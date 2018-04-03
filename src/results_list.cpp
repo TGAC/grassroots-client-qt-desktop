@@ -36,17 +36,20 @@
 #include "json_tools.h"
 
 
-ResultsList :: ResultsList (ResultsPage *parent_p)
-	:	QWidget (parent_p),
-		rl_parent_p (parent_p)
+ResultsList :: ResultsList (ResultsPage *parent_p, const json_t *results_list_json_p, const char * const service_name_s)
+ : ResultsProvider (parent_p)
 {
 	QLayout *layout_p = new QVBoxLayout;
 
 	rl_list_p = new QListWidget;
 
-	connect (rl_list_p, &QListWidget :: itemDoubleClicked, this,  &ResultsList :: OpenItemLink);
+	if (SetListFromJSON (service_name_s, results_list_json_p))
+		{
+			connect (rl_list_p, &QListWidget :: itemDoubleClicked, this,  &ResultsList :: OpenItemLink);
 
-	layout_p -> addWidget (rl_list_p);
+			layout_p -> addWidget (rl_list_p);
+		}
+
 
 	setLayout (layout_p);
 }
@@ -145,7 +148,7 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 
 							JSONListWidgetItem *item_p = new JSONListWidgetItem (s, rl_list_p);
 
-							connect (item_p, &JSONListWidgetItem :: RunServiceRequested, rl_parent_p, &ResultsPage :: RunService);
+							connect (item_p, &JSONListWidgetItem :: RunServiceRequested, rp_parent_p, &ResultsPage :: RunService);
 
 							icon_path_s = "images/list_objects";
 
@@ -178,7 +181,7 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 
 											json_array_foreach (linked_services_p, i, linked_service_p)
 												{
-													QWidget *parent_p = rl_parent_p -> parentWidget ();
+													QWidget *parent_p = rp_parent_p -> parentWidget ();
 													ResultsWidget *rw_p = dynamic_cast <ResultsWidget *> (parent_p);
 
 													bool b = rw_p-> AddResultsPageFromJSON (linked_service_p, "service_name_s", "service_description_s", "service_uri_s");
@@ -230,7 +233,7 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 							item_p -> setData (Qt :: UserRole, v);
 
 
-							connect (item_p,  &StandardListWidgetItem :: WebLinkSelected, rl_parent_p, &ResultsPage :: OpenWebLink);
+							connect (item_p,  &StandardListWidgetItem :: WebLinkSelected, rp_parent_p, &ResultsPage :: OpenWebLink);
 
 							if (icon_path_s)
 								{
@@ -292,7 +295,7 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 
 									item_p -> setToolTip (description_s);
 
-									connect (item_p, &ServiceListWidgetItem :: ServiceRequested, rl_parent_p, &ResultsPage :: SelectService);
+									connect (item_p, &ServiceListWidgetItem :: ServiceRequested, rp_parent_p, &ResultsPage :: SelectService);
 
 									success_flag = true;
 								}

@@ -27,15 +27,15 @@
 #include <QWebEngineView>
 
 #include "jansson.h"
+#include "results_provider.h"
+
 
 class ResultsPage;
 
-class ResultsList : public QWidget
+class ResultsList : public ResultsProvider
 {
 	Q_OBJECT
 
-public slots:
-	bool SetListFromJSON (const char * const name_s, const json_t *results_list_json_p);
 
 private slots:
 	void OpenItemLink (QListWidgetItem *item_p);
@@ -46,11 +46,11 @@ public:
 	/***** FUNCTIONS *****/
 	/*********************/
 
-	ResultsList (ResultsPage *parent_p);
+	ResultsList (ResultsPage *parent_p, const json_t *results_list_json_p, const char * const service_name_s);
 
 	~ResultsList ();
 
-	bool AddItemFromJSON (const char * const name_s, const json_t *json_p);
+	virtual bool AddItemFromJSON (const char * const name_s, const json_t *json_p);
 
 
 private:
@@ -58,8 +58,9 @@ private:
 	/*********************/
 	/***** VARIABLES *****/
 	/*********************/
-	ResultsPage *rl_parent_p;
 	QListWidget *rl_list_p;
+
+	bool SetListFromJSON (const char * const name_s, const json_t *results_list_json_p);
 
 };
 

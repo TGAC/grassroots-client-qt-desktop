@@ -22,6 +22,7 @@
 
 #include "results_page.h"
 #include "results_widget.h"
+#include "results_list.h"
 
 #include "json_util.h"
 
@@ -29,7 +30,7 @@
 ResultsPage :: ResultsPage (ResultsWidget *parent_p)
 	: QWidget (parent_p)
 {
-	rp_results_p = new ResultsList (this, 0);
+	rp_results_p = new ResultsList (this, 0, 0);
 	SetUp (parent_p, 0, 0, 0, 0);
 }
 
@@ -37,7 +38,7 @@ ResultsPage :: ResultsPage (ResultsWidget *parent_p)
 ResultsPage :: ResultsPage (const json_t *results_json_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s, ResultsWidget *parent_p)
 	: QWidget (parent_p), rp_results_p (0)
 {
-	rp_results_p = ResultsProvider :: GetResultsProvider (this, results_json_p, service_name_s);
+	rp_results_p = new ResultsList (this, results_json_p, service_name_s);
 
 	if (rp_results_p)
 		{
@@ -100,6 +101,10 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 			layout_p -> addWidget (rp_results_p);
 		}
 
+	rt_label_p = new QLabel;
+	layout_p -> addWidget (rt_label_p);
+
+
 	connect (this, &ResultsPage :: ServiceRequested, parent_p, &ResultsWidget :: SelectService);
 	connect (this, &ResultsPage :: RunServiceRequested, parent_p, &ResultsWidget :: RunService);
 }
@@ -128,6 +133,11 @@ void ResultsPage :: RunService (json_t *request_p)
 }
 
 
+void ResultsPage :: SetText (const char * const message_s)
+{
+	rt_label_p -> setText (message_s);
+}
+
 
 void ResultsPage :: OpenWebLink (const char * const uri_s)
 {
@@ -146,7 +156,7 @@ void ResultsPage :: OpenWebLink (const char * const uri_s)
 
 
 
-ResultsProvider *ResultsPage :: GetResultsProvider () const
+ResultsList *ResultsPage :: GetResultsList () const
 {
 	return rp_results_p;
 }

@@ -26,7 +26,11 @@
 #include <QWebEngineView>
 #include <QWidget>
 
-#include "results_list.h"
+#include "jansson.h"
+
+//#include "results_list.h"
+
+class ResultsList;
 
 class ResultsWidget;
 
@@ -39,7 +43,9 @@ public:
 	ResultsPage (const json_t *results_list_json_p, const char *job_name_s, const char * const service_name_s, const char * const description_s, const char * const uri_s, ResultsWidget *parent_p = 0);
   ~ResultsPage ();
 
-  ResultsProvider *GetResultsProvider () const;
+  ResultsList *GetResultsList () const;
+
+  void SetText (const char * const message_s);
 
 signals:
 	void ServiceRequested (const char *service_name_s, const json_t *params_json_p);
@@ -52,7 +58,8 @@ public slots:
 
 private:
   QList <QWebEngineView *> rp_browsers;
-  ResultsProvider *rp_results_p;
+  ResultsList *rp_results_p;
+  QLabel *rt_label_p;
 	const char *rp_job_name_s;
 
 	void SetUp (ResultsWidget *parent_p, const char * const job_name_s, const char *service_name_s, const char * const description_s, const char * const uri_s);

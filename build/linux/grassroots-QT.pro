@@ -112,7 +112,7 @@ GRASSROOTS_MONGOC_LIB_NAME = mongoc-1.0
 GRASSROOTS_BSON_LIB_NAME = bson-1.0
 
 
-DIR_DRMAA_LIB = /home/billy/Applications/htcondor/lib
+DIR_DRMAA_LIB = /home/billy/Applications/condor/lib
 
 DIR_IRODS_LIBS = $$DIR_IRODS_HOME/usr/lib
 
@@ -175,8 +175,8 @@ SOURCES += \
 		$$DIR_GRASSROOTS_QT_SRC/src/results_page.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/repeatable_param_group_box.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/parameter_widget_container.cpp \
-    $$DIR_GRASSROOTS_QT_SRC/src/results_provider.cpp \
-    $$DIR_GRASSROOTS_QT_SRC/src/results_text.cpp
+#    $$DIR_GRASSROOTS_QT_SRC/src/results_provider.cpp \
+#    $$DIR_GRASSROOTS_QT_SRC/src/results_text.cpp
 
 HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -218,8 +218,8 @@ HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/results_page.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/repeatable_param_group_box.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/parameter_widget_container.h \
-    $$DIR_GRASSROOTS_QT_SRC/include/results_provider.h \
-    $$DIR_GRASSROOTS_QT_SRC/include/results_text.h
+#    $$DIR_GRASSROOTS_QT_SRC/include/results_provider.h \
+#    $$DIR_GRASSROOTS_QT_SRC/include/results_text.h
 
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \

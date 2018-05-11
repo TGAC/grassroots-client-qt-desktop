@@ -60,7 +60,7 @@ private:
   QList <QWebEngineView *> rp_browsers;
   ResultsList *rp_results_p;
   QLabel *rt_label_p;
-	const char *rp_job_name_s;
+  char *rp_job_name_s;
 
 	void SetUp (ResultsWidget *parent_p, const char * const job_name_s, const char *service_name_s, const char * const description_s, const char * const uri_s);
 };

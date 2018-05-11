@@ -41,6 +41,10 @@ public:
 
 	virtual void ShowData ();
 
+signals:
+	void RunServiceRequested (json_t *request_p);
+
+
 protected:
 	json_t *jlwi_json_data_p;
 
@@ -48,8 +52,6 @@ protected:
 
 	bool AddLinkedService (const json_t *linked_service_p);
 
-signals:
-	void RunServiceRequested (json_t *request_p);
 
 private slots:
 	void RunLinkedService (json_t *request_p);

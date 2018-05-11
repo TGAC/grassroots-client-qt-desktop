@@ -25,7 +25,7 @@
 #include "results_list.h"
 
 #include "json_util.h"
-
+#include "string_utils.h"
 
 ResultsPage :: ResultsPage (ResultsWidget *parent_p)
 	: QWidget (parent_p)
@@ -58,11 +58,10 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 
 	QFormLayout *labels_layout_p = new QFormLayout;
 
-	rp_job_name_s = job_name_s;
-
-	if (job_name_s)
+	rp_job_name_s = CopyToNewString (job_name_s, 0, false);
+	if (rp_job_name_s)
 		{
-			QLabel *label_p = new QLabel (job_name_s);
+			QLabel *label_p = new QLabel (rp_job_name_s);
 			labels_layout_p -> addRow ("Job:", label_p);
 		}
 
@@ -102,8 +101,7 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 		}
 
 	rt_label_p = new QLabel;
-	layout_p -> addWidget (rt_label_p);
-
+	layout_p -> addWidget (rt_label_p);	
 
 	connect (this, &ResultsPage :: ServiceRequested, parent_p, &ResultsWidget :: SelectService);
 	connect (this, &ResultsPage :: RunServiceRequested, parent_p, &ResultsWidget :: RunService);
@@ -114,7 +112,10 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 
 ResultsPage :: ~ResultsPage ()
 {
-
+	if (rp_job_name_s)
+		{
+			FreeCopiedString (rp_job_name_s);
+		}
 }
 
 

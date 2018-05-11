@@ -38,7 +38,7 @@
 
 
 ResultsList :: ResultsList (ResultsPage *parent_p, const json_t *results_list_json_p, const char * const service_name_s)
-: QWidget (parent_p)
+: QWidget (parent_p), rp_parent_p (parent_p)
 {
 	QLayout *layout_p = new QVBoxLayout;
 

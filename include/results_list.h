@@ -27,12 +27,11 @@
 #include <QWebEngineView>
 
 #include "jansson.h"
-#include "results_provider.h"
 
 
 class ResultsPage;
 
-class ResultsList : public ResultsProvider
+class ResultsList : public QWidget
 {
 	Q_OBJECT
 
@@ -59,6 +58,7 @@ private:
 	/***** VARIABLES *****/
 	/*********************/
 	QListWidget *rl_list_p;
+	ResultsPage *rp_parent_p;
 
 	bool SetListFromJSON (const char * const name_s, const json_t *results_list_json_p);
 

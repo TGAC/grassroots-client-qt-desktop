@@ -1,4 +1,3 @@
-#include "results_provider.h"
 
 #include "results_list.h"
 #include "results_text.h"

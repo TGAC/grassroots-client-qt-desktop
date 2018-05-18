@@ -122,7 +122,7 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 {
 	bool success_flag = false;
 	int index = -1;
-	ResultsProvider *results_p = NULL;
+	ResultsList *results_p = NULL;
 
 	/* Find the "interested services page" */
 	for (int i = count () - 1; i >= 0; -- i)
@@ -147,7 +147,7 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 			if (page_p)
 				{
 					insertTab (count (), page_p, RW_SERVICES_TAB_TITLE_S);
-					results_p = page_p -> GetResultsProvider ();
+					results_p = page_p -> GetResultsList ();
 				}
 			else
 				{
@@ -160,7 +160,7 @@ bool ResultsWidget :: AddInterestedService (json_t *job_p, const char *service_n
 
 			if (page_p)
 				{
-					results_p = page_p -> GetResultsProvider ();
+					results_p = page_p -> GetResultsList ();
 				}
 			else
 				{

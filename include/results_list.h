@@ -28,7 +28,6 @@
 
 #include "jansson.h"
 
-
 class ResultsPage;
 
 class ResultsList : public QWidget

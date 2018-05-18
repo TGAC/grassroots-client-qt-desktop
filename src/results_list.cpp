@@ -34,6 +34,7 @@
 #include "string_utils.h"
 #include "filesystem_utils.h"
 #include "json_tools.h"
+#include "results_page.h"
 
 
 ResultsList :: ResultsList (ResultsPage *parent_p, const json_t *results_list_json_p, const char * const service_name_s)

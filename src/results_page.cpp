@@ -22,14 +22,16 @@
 
 #include "results_page.h"
 #include "results_widget.h"
+#include "results_list.h"
 
 #include "json_util.h"
-
+#include "string_utils.h"
 
 ResultsPage :: ResultsPage (ResultsWidget *parent_p)
 	: QWidget (parent_p)
 {
-	rp_results_list_p = new ResultsList (this, 0, NULL);
+	rp_results_list_p = new ResultsList (this, 0, 0);
+
 	SetUp (parent_p, 0, 0, 0, 0);
 }
 
@@ -57,11 +59,10 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 
 	QFormLayout *labels_layout_p = new QFormLayout;
 
-	rp_job_name_s = job_name_s;
-
-	if (job_name_s)
+	rp_job_name_s = CopyToNewString (job_name_s, 0, false);
+	if (rp_job_name_s)
 		{
-			QLabel *label_p = new QLabel (job_name_s);
+			QLabel *label_p = new QLabel (rp_job_name_s);
 			labels_layout_p -> addRow ("Job:", label_p);
 		}
 
@@ -103,7 +104,8 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 			layout_p -> addWidget (rp_results_list_p);
 		}
 
-
+	rp_message_p = new QLabel;
+	layout_p -> addWidget (rp_message_p);
 
 	connect (this, &ResultsPage :: ServiceRequested, parent_p, &ResultsWidget :: SelectService);
 	connect (this, &ResultsPage :: RunServiceRequested, parent_p, &ResultsWidget :: RunService);
@@ -114,7 +116,10 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 
 ResultsPage :: ~ResultsPage ()
 {
-
+	if (rp_job_name_s)
+		{
+			FreeCopiedString (rp_job_name_s);
+		}
 }
 
 
@@ -132,6 +137,11 @@ void ResultsPage :: RunService (json_t *request_p)
 		}
 }
 
+
+void ResultsPage :: SetMessage (const char * const message_s)
+{
+	rp_message_p -> setText (message_s);
+}
 
 
 void ResultsPage :: OpenWebLink (const char * const uri_s)
@@ -156,9 +166,4 @@ ResultsList *ResultsPage :: GetResultsList () const
 	return rp_results_list_p;
 }
 
-
-void ResultsPage :: SetMessage (const char * const message_s)
-{
-	rp_message_p -> setText (message_s);
-}
 

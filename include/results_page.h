@@ -26,7 +26,11 @@
 #include <QWebEngineView>
 #include <QWidget>
 
-#include "results_list.h"
+#include "jansson.h"
+
+//#include "results_list.h"
+
+class ResultsList;
 
 class ResultsWidget;
 
@@ -56,7 +60,7 @@ private:
   QList <QWebEngineView *> rp_browsers;
   ResultsList *rp_results_list_p;
   QLabel *rp_message_p;
-	const char *rp_job_name_s;
+  char *rp_job_name_s;
 
 	void SetUp (ResultsWidget *parent_p, const char * const job_name_s, const char *service_name_s, const char * const description_s, const char * const uri_s);
 };

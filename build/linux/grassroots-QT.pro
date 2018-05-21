@@ -112,7 +112,7 @@ GRASSROOTS_MONGOC_LIB_NAME = mongoc-1.0
 GRASSROOTS_BSON_LIB_NAME = bson-1.0
 
 
-DIR_DRMAA_LIB = /home/billy/Applications/condor/lib
+DIR_DRMAA_LIB = /home/billy/Applications/htcondor/lib
 
 DIR_IRODS_LIBS = $$DIR_IRODS_HOME/usr/lib
 

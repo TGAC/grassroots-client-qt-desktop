@@ -416,7 +416,7 @@ void MainWindow :: LoadConfigurationFile (QString &filename_r)
 
 void MainWindow :: SaveConfiguration ()
 {
-	QString filename = QFileDialog :: getSaveFileName (this, tr ("Save Configuration"), "wheatis_config.json", tr ("JSON (*.json)"));
+	QString filename = QFileDialog :: getSaveFileName (this, tr ("Save Configuration"), "grassroots_client_config.json", tr ("JSON (*.json)"));
 
 	if (! (filename.isNull () || filename.isEmpty ()))
 		{

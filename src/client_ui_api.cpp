@@ -197,6 +197,20 @@ static json_t *RunQTClient (ClientData *client_data_p)
 	QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_data_p);
 	json_t *res_p = NULL;
 
+	if (qt_data_p -> qcd_base_data.cd_connection_p -> co_type == CT_WEB)
+		{
+			WebConnection *conn_p = (WebConnection *) (qt_data_p -> qcd_base_data.cd_connection_p);
+
+			if (conn_p -> wc_uri_s)
+				{
+					QString s (qt_data_p -> qcd_dummy_arg_s);
+					s.append (" - ");
+					s.append (conn_p -> wc_uri_s);
+
+					qt_data_p -> qcd_window_p -> setWindowTitle (s);
+				}
+		}
+
 	qt_data_p -> qcd_window_p -> show ();
 
 	if (! (qt_data_p -> qcd_init_flag))

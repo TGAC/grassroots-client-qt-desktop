@@ -37,6 +37,7 @@ ProgressWindow :: ProgressWindow (QMainWindow *parent_p, QTClientData *data_p)
  // connect (pw_timer_p, &QTimer :: timeout, this, &ProgressWindow :: UpdateStatuses);
 
   pw_timer_started_flag = false;
+  pw_timer_p = 0;
 
 	pw_results_button_p = new QPushButton (QIcon ("images/go"), tr ("Refresh all jobs"));
 	connect (pw_results_button_p, &QPushButton :: clicked, this, &ProgressWindow :: ViewResults);
@@ -382,14 +383,14 @@ void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_
 														}
 													else
 														{
-															int i;
+															int k;
 															/* Get the job status */
 
-															if (GetJSONInteger(job_p, SERVICE_STATUS_VALUE_S, &i))
+															if (GetJSONInteger(job_p, SERVICE_STATUS_VALUE_S, &k))
 																{
-																	if ((i > OS_LOWER_LIMIT) && (i < OS_UPPER_LIMIT))
+																	if ((k > OS_LOWER_LIMIT) && (k < OS_UPPER_LIMIT))
 																		{
-																			status = (OperationStatus) i;
+																			status = (OperationStatus) k;
 																		}
 																}
 														}

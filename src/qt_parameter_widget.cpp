@@ -223,6 +223,11 @@ bool QTParameterWidget :: AddListForSchemaTerms (const LinkedList *terms_p, cons
 
 			if (label_p)
 				{
+					if (term_p -> st_description_s)
+						{
+							label_p -> setToolTip (term_p -> st_description_s);
+						}
+
 					list_layout_p -> addWidget (label_p);
 					connect (label_p,  &QLabel :: linkActivated, this, &QTParameterWidget :: OpenLink);
 				}

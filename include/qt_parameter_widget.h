@@ -33,6 +33,7 @@
 
 #include "parameter.h"
 #include "parameter_set.h"
+#include "service_metadata.h"
 #include "base_param_widget.h"
 #include "param_group_box.h"
 #include "parameter_widget_container.h"
@@ -49,7 +50,7 @@ class QTParameterWidget : public QWidget
 
 
 public:
-	QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, const PrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const struct QTClientData *client_data_p);
+	QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, ServiceMetadata *metadata_p, const PrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const struct QTClientData *client_data_p);
 
 	virtual ~QTParameterWidget ();
 
@@ -118,6 +119,11 @@ private:
 
 	void AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QVBoxLayout *info_layout_p);
 
+	void AddServiceMetadata (const ServiceMetadata *metadata_p, QBoxLayout *layout_p);
+
+	bool AddListForSchemaTerms (const LinkedList *terms_p, const char * const key_s, QFormLayout *layout_p);
+
+	bool AddLabelForSchemaTerm (const SchemaTerm *term_p, const char * const key_s, QFormLayout *layout_p);
 
 	static const int QPW_NUM_COLUMNS;
 };

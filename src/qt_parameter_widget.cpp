@@ -46,7 +46,7 @@
 const int QTParameterWidget :: QPW_NUM_COLUMNS = 2;
 
 
-QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, const PrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const QTClientData *client_data_p)
+QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, ServiceMetadata *metadata_p, const PrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const QTClientData *client_data_p)
 :	qpw_params_p (parameters_p),
 	qpw_prefs_widget_p (prefs_widget_p),
 	qpw_widgets_map (QHash <Parameter *, BaseParamWidget *> ()),
@@ -123,6 +123,11 @@ QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const d
 		}		/* if (provider_p) */
 
 
+	if (metadata_p)
+		{
+			AddServiceMetadata (metadata_p, info_layout_p);
+		}		/* if (metadata_p) */
+
 	QFrame *line_p = new QFrame;
 	line_p -> setFrameShape (QFrame :: HLine);
 	QPalette palette = line_p -> palette ();
@@ -140,6 +145,148 @@ QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const d
 			AddParameters (qpw_params_p);
 		}		/* if (parameters_p) */
 
+}
+
+
+void QTParameterWidget :: AddServiceMetadata (const ServiceMetadata *metadata_p, QBoxLayout *layout_p)
+{
+	QFormLayout *metadata_layout_p = new QFormLayout;
+
+	if (metadata_p -> sm_application_category_p)
+		{
+			if (!AddLabelForSchemaTerm (metadata_p -> sm_application_category_p, "Category:", metadata_layout_p))
+				{
+
+				}
+		}
+
+	if (metadata_p -> sm_application_subcategory_p)
+		{
+			if (!AddLabelForSchemaTerm (metadata_p -> sm_application_subcategory_p, "SubCategory:", metadata_layout_p))
+				{
+
+				}
+		}
+
+	if (metadata_p -> sm_input_types_p)
+		{
+			if (!AddListForSchemaTerms (metadata_p -> sm_input_types_p, "Input:", metadata_layout_p))
+				{
+
+				}
+		}
+
+	if (metadata_p -> sm_output_types_p)
+		{
+			if (!AddListForSchemaTerms (metadata_p -> sm_output_types_p, "Output:", metadata_layout_p))
+				{
+
+				}
+		}
+
+
+	layout_p -> addLayout (metadata_layout_p);
+}
+
+
+bool QTParameterWidget :: AddListForSchemaTerms (const LinkedList *terms_p, const char * const key_s, QFormLayout *layout_p)
+{
+	QVBoxLayout *list_layout_p = new QVBoxLayout;
+	bool success_flag = true;
+	SchemaTermNode *node_p = (SchemaTermNode *) terms_p -> ll_head_p;
+
+	while (node_p && success_flag)
+		{
+			const SchemaTerm *term_p = node_p -> stn_term_p;
+
+			QString str;
+			char *url_s = GetExpandedContextTerm (term_p -> st_url_s);
+
+			str.append ("<a href=\"");
+
+			if (url_s)
+				{
+					str.append (url_s);
+					FreeCopiedString (url_s);
+				}
+			else
+				{
+					str.append (term_p -> st_url_s);
+				}
+
+			str.append ("\">");
+
+			str.append (term_p -> st_name_s);
+			str.append ("</a>");
+
+			QLabel *label_p = new QLabel (str, this);
+
+			if (label_p)
+				{
+					list_layout_p -> addWidget (label_p);
+					connect (label_p,  &QLabel :: linkActivated, this, &QTParameterWidget :: OpenLink);
+				}
+			else
+				{
+					success_flag = false;
+				}
+
+			node_p = (SchemaTermNode *) node_p -> stn_node.ln_next_p;
+		}
+
+
+	if (success_flag)
+		{
+			layout_p -> addRow (new QLabel (key_s), list_layout_p);
+		}
+	else
+		{
+			delete list_layout_p;
+		}
+
+
+	return success_flag;
+}
+
+
+bool QTParameterWidget :: AddLabelForSchemaTerm (const SchemaTerm *term_p, const char * const key_s, QFormLayout *layout_p)
+{
+	bool success_flag = false;
+	QString str;
+
+	str.append ("<a href=\"");
+
+	char *url_s = GetExpandedContextTerm (term_p -> st_url_s);
+
+	if (url_s)
+		{
+			str.append (url_s);
+			FreeCopiedString (url_s);
+		}
+	else
+		{
+			str.append (term_p -> st_url_s);
+		}
+	str.append ("\">");
+
+	str.append (term_p -> st_name_s);
+	str.append ("</a>");
+
+	QLabel *label_p = new QLabel (str, this);
+
+	if (label_p)
+		{
+			if (term_p -> st_description_s)
+				{
+					label_p -> setToolTip (term_p -> st_description_s);
+				}
+
+			layout_p -> addRow (new QLabel (key_s), label_p);
+			connect (label_p,  &QLabel :: linkActivated, this, &QTParameterWidget :: OpenLink);
+			success_flag = true;
+		}
+
+	return success_flag;
 }
 
 

@@ -33,7 +33,7 @@
 	#define SERVICE_PREFS_WIDGET_DEBUG (DEBUG_NONE)
 #endif
 
-ServicePrefsWidget::ServicePrefsWidget (const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t *provider_p, ParameterSet *params_p, QTClientData *client_data_p, QWidget *parent_p)
+ServicePrefsWidget::ServicePrefsWidget (const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t *provider_p, ParameterSet *params_p, ServiceMetadata *metadata_p, QTClientData *client_data_p, QWidget *parent_p)
 : QWidget (parent_p),
 	spw_service_name_s (service_name_s),
 	spw_client_data_p (client_data_p),
@@ -43,7 +43,7 @@ ServicePrefsWidget::ServicePrefsWidget (const char * const service_name_s, const
 	QScrollArea *scroller_p = new QScrollArea;
 	scroller_p -> setBackgroundRole (QPalette :: Button);
 	scroller_p -> setSizePolicy (QSizePolicy :: Expanding, QSizePolicy :: Expanding);
-	spw_params_widget_p = new QTParameterWidget (service_name_s, service_description_s, service_info_uri_s, provider_p, params_p, NULL, PL_BASIC, spw_client_data_p);
+	spw_params_widget_p = new QTParameterWidget (service_name_s, service_description_s, service_info_uri_s, provider_p, params_p, metadata_p, NULL, PL_BASIC, spw_client_data_p);
 
 	spw_params_widget_p -> setSizePolicy (QSizePolicy :: Expanding, QSizePolicy :: Expanding);
 	scroller_p -> setWidget (spw_params_widget_p);

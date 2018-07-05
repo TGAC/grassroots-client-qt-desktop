@@ -32,7 +32,8 @@
 
 
 ResultsWindow :: ResultsWindow (MainWindow *parent_p, QTClientData *client_data_p)
-	: rw_data_p (0),
+	: QWidget (0),
+	 rw_data_p (0),
 		rw_client_data_p (client_data_p)
 {
 	QVBoxLayout *layout_p = new QVBoxLayout;

@@ -1,4 +1,4 @@
-# Desktop client
+# Desktop client {#desktop_client_guide}
 
 
 This builds a  graphical user interface desktop client to access a Grassroots server allowing you to query and run services, view results, *etc.* It uses a [Qt](https://www.qt.io)-based GUI. Its imagery uses the icons available from the [Amiga Image Storage System](http://www.masonicons.info/6.html) (AISS) by Martin Merz, Copyright (C) 2000-2016.

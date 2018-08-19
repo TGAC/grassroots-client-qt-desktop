@@ -23,5 +23,6 @@ DIR_IRODS_BOOST_LIBS = /opt/irods-externals/boost1.60.0-0/lib
 
 DIR_GRASSROOTS_EXTRAS = $$DIR_GRASSROOTS_INSTALL_ROOT/extras
 
+DIR_DRMAA_LIB = /home/billy/Applications/condor/lib
 DRMAA_TYPE = htcondor
 GRASSROOTS_DRMAA_LIB_NAME = grassroots_drmaa

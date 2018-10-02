@@ -23,6 +23,7 @@
 
 
 #include "param_check_box.h"
+#include "param_date_widget.h"
 #include "param_double_spin_box.h"
 #include "param_spin_box.h"
 #include "param_combo_box.h"
@@ -672,6 +673,10 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 
 					case PT_TABLE:
 						widget_p = new ParamTableWidget (param_p, this);
+						break;
+
+					case PT_TIME:
+						widget_p = new ParamDateWidget (param_p, this);
 						break;
 
 					default:

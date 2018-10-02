@@ -171,7 +171,8 @@ SOURCES += \
 	$$DIR_GRASSROOTS_QT_SRC/src/text_viewer.cpp \
 	$$DIR_GRASSROOTS_QT_SRC/src/ui_utils.cpp \
 	$$DIR_GRASSROOTS_QT_SRC/src/viewable_widget.cpp \
-	$$DIR_GRASSROOTS_QT_SRC/src/viewer_widget.cpp
+	$$DIR_GRASSROOTS_QT_SRC/src/viewer_widget.cpp \
+    ../../src/param_date_widget.cpp
 
 HEADERS  += \
 	$$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -212,7 +213,8 @@ HEADERS  += \
 	$$DIR_GRASSROOTS_QT_SRC/include/text_viewer.h \
 	$$DIR_GRASSROOTS_QT_SRC/include/ui_utils.h \
 	$$DIR_GRASSROOTS_QT_SRC/include/viewable_widget.h \
-	$$DIR_GRASSROOTS_QT_SRC/include/viewer_widget.h
+	$$DIR_GRASSROOTS_QT_SRC/include/viewer_widget.h \
+    ../../include/param_date_widget.h
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \
  -lboost_chrono \

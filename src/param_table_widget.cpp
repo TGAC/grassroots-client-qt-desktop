@@ -29,6 +29,10 @@
 #include "byte_buffer.h"
 
 
+const char * const ParamTableWidget :: PTW_COLUMN_HEADERS_S = "COLUMN_HEADERS";
+
+
+
 DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, char row_delimiter, char column_delimter)
 : QTableWidget (parent_p)
 {
@@ -36,6 +40,8 @@ DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, char row_delimi
 	SetRowDelimiter (row_delimiter);
 	SetColumnDelimiter (column_delimter);
 	dtw_unpack_text_content_flag = true;
+
+	setSizePolicy (QSizePolicy :: MinimumExpanding, QSizePolicy :: MinimumExpanding);
 
 	setContextMenuPolicy (Qt :: CustomContextMenu);
 	connect (this, &DroppableTableWidget :: customContextMenuRequested, this, &DroppableTableWidget :: ShowPopupMenu);
@@ -472,15 +478,18 @@ void DroppableTableWidget :: LoadText (const char *filename_s)
 ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 :		BaseParamWidget (param_p, parent_p)
 {
+	ptw_scroller_p = new QScrollArea (parent_p);
 	ptw_delimiter = ',';
 	ptw_table_p = new DroppableTableWidget (parent_p, '\n', '|');
+
+	ptw_scroller_p -> setWidget (ptw_table_p);
 }
 
 
 ParamTableWidget ::	~ParamTableWidget ()
 {
-	delete ptw_table_p;
-	ptw_table_p = NULL;
+	delete ptw_scroller_p;
+	ptw_scroller_p = NULL;
 }
 
 
@@ -502,7 +511,7 @@ void ParamTableWidget :: SetDefaultValue ()
 
 QWidget *ParamTableWidget :: GetQWidget ()
 {
-	return ptw_table_p;
+	return ptw_scroller_p;
 }
 
 
@@ -527,32 +536,105 @@ bool ParamTableWidget :: StoreParameterValue ()
 bool ParamTableWidget :: SetValueFromText (const char *value_s)
 {
 	bool success_flag  = true;
-	const char *current_row_s = value_s;
-	const char *next_row_s  = strchr (current_row_s, '\n');
-	int row = 0;
 
-	while (next_row_s)
+	if (value_s)
 		{
-			char *row_s = CopyToNewString (current_row_s, next_row_s - current_row_s, false);
-
-			if (row_s)
+			if (*value_s != '\n')
 				{
-					ptw_table_p -> SetRow (row, row_s);
-					FreeCopiedString (row_s);
-				}
+					const char *current_header_s = value_s + l;
+					const char *next_header_s = strchr (current_header_s, ptw_delimiter);
+					QStringList headers_list;
 
-			current_row_s = next_row_s + 1;
+					while (next_header_s)
+						{
+							char *header_s = CopyToNewString (current_header_s, next_header_s - current_header_s, false);
 
-			if (*current_row_s != '\0')
+							if (header_s)
+								{
+									headers_list.append (header_s);
+									FreeCopiedString (header_s);
+								}
+
+							current_header_s = next_header_s + 1;
+
+							if ((*current_header_s != '\0') && (*current_header_s != '\n'))
+								{
+									next_header_s = strchr (current_header_s, '\n');
+								}
+							else
+								{
+									current_header_s = NULL;
+									next_header_s = NULL;
+								}
+
+						}		/* while (next_header_s) */
+
+					if (current_header_s)
+						{
+							char *header_s = CopyToNewString (current_header_s, next_header_s - current_header_s, false);
+
+							if (header_s)
+								{
+									headers_list.append (header_s);
+									FreeCopiedString (header_s);
+								}
+						}
+
+					ptw_table_p -> setVerticalHeaderLabels (headers_list);
+
+
+				}		/* if (*value_s != '\n') */
+
+			size_t l = strlen (PTW_COLUMN_HEADERS_S);
+
+			if (strncmp (value_s, PTW_COLUMN_HEADERS_S, l) == 0)
 				{
-					next_row_s = strchr (current_row_s, '\n');
-					++ row;
-				}
+				}		/* if (strncmp (value_s, PTW_COLUMN_HEADERS_S, l)) */
 			else
 				{
-					next_row_s = NULL;
+					const char *current_row_s = value_s;
+					const char *next_row_s  = strchr (current_row_s, '\n');
+					int row = 0;
+
+					while (next_row_s)
+						{
+							char *row_s = CopyToNewString (current_row_s, next_row_s - current_row_s, false);
+
+							if (row_s)
+								{
+									ptw_table_p -> SetRow (row, row_s);
+									FreeCopiedString (row_s);
+								}
+
+							current_row_s = next_row_s + 1;
+
+							if (*current_row_s != '\0')
+								{
+									next_row_s = strchr (current_row_s, '\n');
+									++ row;
+								}
+							else
+								{
+									current_row_s = NULL;
+									next_row_s = NULL;
+								}
+
+						}		/* while (next_row_s) */
+
+					if (current_row_s)
+						{
+							char *row_s = EasyCopyToNewString (current_row_s);
+
+							if (row_s)
+								{
+									ptw_table_p -> SetRow (row, row_s);
+									FreeCopiedString (row_s);
+								}
+						}
+
 				}
 		}
+
 
 	return success_flag;
 

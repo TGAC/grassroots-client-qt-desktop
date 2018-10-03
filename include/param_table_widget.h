@@ -26,6 +26,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QPoint>
+#include <QScrollArea>
 
 #include "parameter.h"
 
@@ -80,6 +81,8 @@ class ParamTableWidget : public BaseParamWidget
 	Q_OBJECT
 
 public:
+	static const char * const PTW_COLUMN_HEADERS_S;
+
 	ParamTableWidget (Parameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~ParamTableWidget ();
 
@@ -97,6 +100,7 @@ public:
 	virtual void ShowErrors (const json_t *errors_p);
 
 protected:
+	QScrollArea *ptw_scroller_p;
 	DroppableTableWidget *ptw_table_p;
 	char ptw_delimiter;
 

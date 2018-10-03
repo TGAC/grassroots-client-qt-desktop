@@ -377,6 +377,50 @@ bool DroppableTableWidget :: SetValueFromText (const char *data_s)
 {
 	bool success_flag = false;
 
+	if (data_s)
+		{
+			const char *start_row_p = data_s;
+			const char *end_row_p = strchr (start_row_p, dtw_row_delimiter);
+			int x = 0;
+
+			/*
+			 * loop over each row
+			 */
+			while (start_row_p && end_row_p)
+				{
+					/*
+					 * loop over each column
+					 */
+					int y = 0;
+					const char *start_column_p = start_row_p;
+					const char *end_column_p = strchr (start_column_p, dtw_column_delimiter);
+
+					while (end_column_p)
+						{
+
+
+							start_column_p = end_column_p + 1;
+							if (*start_column_p != '\0')
+								{
+									end_column_p = strchr (start_column_p, dtw_column_delimiter);
+								}
+
+							++ y;
+						}		/* while (end_column_p) */
+
+
+
+					start_row_p = end_row_p + 1;
+					if (*start_row_p != '\0')
+						{
+							end_row_p = strchr (start_row_p, dtw_row_delimiter);
+						}
+
+					++ x;
+				} /* while (start_row_p && end_row_p) */
+
+		}		/* if (data_s) */
+
 	return success_flag;
 }
 
@@ -448,6 +492,11 @@ void ParamTableWidget :: RemoveConnection ()
 void ParamTableWidget :: SetDefaultValue ()
 {
 	const char *value_s = bpw_param_p -> pa_default.st_string_value_s;
+
+	if (value_s)
+		{
+			SetValueFromText (value_s);
+		}
 }
 
 
@@ -477,12 +526,12 @@ bool ParamTableWidget :: StoreParameterValue ()
 
 bool ParamTableWidget :: SetValueFromText (const char *value_s)
 {
-	bool success_flag  = false;
+	bool success_flag  = true;
 	const char *current_row_s = value_s;
-	const char *next_row_s;
+	const char *next_row_s  = strchr (current_row_s, '\n');
 	int row = 0;
 
-	while ((next_row_s = strchr (current_row_s, '\n')) != NULL)
+	while (next_row_s)
 		{
 			char *row_s = CopyToNewString (current_row_s, next_row_s - current_row_s, false);
 
@@ -492,8 +541,17 @@ bool ParamTableWidget :: SetValueFromText (const char *value_s)
 					FreeCopiedString (row_s);
 				}
 
-			current_row_s = next_row_s;
-			++ row;
+			current_row_s = next_row_s + 1;
+
+			if (*current_row_s != '\0')
+				{
+					next_row_s = strchr (current_row_s, '\n');
+					++ row;
+				}
+			else
+				{
+					next_row_s = NULL;
+				}
 		}
 
 	return success_flag;

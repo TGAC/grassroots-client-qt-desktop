@@ -99,10 +99,13 @@ public:
 
 	virtual void ShowErrors (const json_t *errors_p);
 
+	bool SetColumnHeaders (const char *value_s);
+
 protected:
 	QScrollArea *ptw_scroller_p;
 	DroppableTableWidget *ptw_table_p;
-	char ptw_delimiter;
+	char ptw_column_delimiter;
+	char ptw_row_delimiter;
 
 	virtual QWidget *GetQWidget ();
 };

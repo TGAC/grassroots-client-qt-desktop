@@ -24,7 +24,15 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (Parameter * const param_p, QTParameter
 :		BaseParamWidget (param_p, parent_p)
 {
 	pdsb_spinner_p = new QDoubleSpinBox (parent_p);
-	pdsb_spinner_p -> setDecimals (4);
+	int default_precision = 4;
+	const char *prec_value_s = GetParameterKeyValue (param_p, PA_DOUBLE_PRECISION_S);
+
+	if (prec_value_s)
+		{
+			GetValidInteger (&prec_value_s, &default_precision);
+		}
+
+	pdsb_spinner_p -> setDecimals (default_precision);
 
 	if (param_p -> pa_bounds_p)
 		{

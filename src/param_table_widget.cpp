@@ -487,7 +487,7 @@ ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidg
 		}
 	else
 		{
-			ptw_column_delimiter = ',';
+			ptw_column_delimiter = *PA_TABLE_DEFAULT_COLUMN_DELIMITER_S;
 		}
 
 	value_s = GetParameterKeyValue (param_p, PA_TABLE_ROW_DELIMITER_S);
@@ -498,7 +498,7 @@ ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidg
 		}
 	else
 		{
-			ptw_row_delimiter = '\n';
+			ptw_row_delimiter = *PA_TABLE_DEFAULT_ROW_DELIMITER_S;
 		}
 
 	ptw_table_p = new DroppableTableWidget (parent_p, ptw_row_delimiter, ptw_column_delimiter);

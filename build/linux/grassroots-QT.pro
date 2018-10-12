@@ -175,7 +175,7 @@ SOURCES += \
     ../../src/param_date_widget.cpp
 
 HEADERS  += \
-	$$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
+				$$DIR_GRASSROOTS_DIR_GRASSROOTS_INSTALL_ROOTQT_SRC/include/base_param_widget.h \
 	$$DIR_GRASSROOTS_QT_SRC/include/client_ui_api.h \
 	$$DIR_GRASSROOTS_QT_SRC/include/droppable_target_widget.h \
 	$$DIR_GRASSROOTS_QT_SRC/include/file_chooser_widget.h \
@@ -214,7 +214,8 @@ HEADERS  += \
 	$$DIR_GRASSROOTS_QT_SRC/include/ui_utils.h \
 	$$DIR_GRASSROOTS_QT_SRC/include/viewable_widget.h \
 	$$DIR_GRASSROOTS_QT_SRC/include/viewer_widget.h \
-    ../../include/param_date_widget.h
+    ../../include/param_date_widget.h \
+    ../../include/base_param_widget.h
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \
  -lboost_chrono \
@@ -237,20 +238,20 @@ LIBS += -L$$DIR_GRASSROOTS_LIBS \
  -l$$GRASSROOTS_SERVER_LIB_NAME \
  -l$$GRASSROOTS_NETWORK_LIB_NAME \
  -l$$GRASSROOTS_HANDLER_LIB_NAME \
- -l$$GRASSROOTS_IRODS_LIB_NAME \
+# -l$$GRASSROOTS_IRODS_LIB_NAME \
  -L$$DIR_GRASSROOTS_UUID_LIB -l$$GRASSROOTS_UUID_LIB_NAME \
  -L$$DIR_GRASSROOTS_JANSSON_LIB  -l$$GRASSROOTS_JANSSON_LIB_NAME \
  -L$$DIR_GRASSROOTS_HTMLCXX_LIB -l$$GRASSROOTS_HTMLCXX_LIB_NAME \
  -L$$DIR_GRASSROOTS_HCXSELECT_LIB -l$$GRASSROOTS_HCXSELECT_LIB_NAME \
  -L$$DIR_GRASSROOTS_MONGOC_LIB -l$$GRASSROOTS_MONGOC_LIB_NAME \
  -l$$GRASSROOTS_BSON_LIB_NAME \
- -L$$DIR_IRODS_LIBS \
- -lirods_common \
- -lirods_client \
- -lirods_plugin_dependencies \
+# -L$$DIR_IRODS_LIBS \
+# -lirods_common \
+# -lirods_client \
+# -lirods_plugin_dependencies \
  -lpthread \
- $$BOOST_DEPS \
- $$DRMAA_DEPS \
+# $$BOOST_DEPS \
+# $$DRMAA_DEPS \
  -lcurl 
  
 message ("GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)

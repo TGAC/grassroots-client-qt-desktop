@@ -218,7 +218,7 @@ void DroppableTableWidget :: SetRow (const int row, const char *data_s)
 
 	while (loop_flag)
 		{
-			char *value_s = NULL;
+			char *value_s = nullptr;
 
 			if (*current_token_s != dtw_column_delimiter)
 				{
@@ -309,6 +309,75 @@ bool DroppableTableWidget :: IsTableEmpty () const
 	return true;
 }
 
+//char *DroppableTableWidget :: OldGetValueAsText ()
+//{
+//	char *value_s = NULL;
+
+//	if (!IsTableEmpty ())
+//		{
+//			ByteBuffer *buffer_p = AllocateByteBuffer (1024);
+
+//			if (buffer_p)
+//				{
+//					const int num_rows = rowCount ();
+//					const int num_cols = columnCount ();
+//					bool success_flag = true;
+
+//					for (int i = 0; i < num_rows; ++ i)
+//						{
+//							for (int j = 0; j < num_cols; ++ j)
+//								{
+//									QTableWidgetItem *item_p = item (i, j);
+
+//									if (item_p)
+//										{
+//											QString s = item_p -> text ().trimmed ();
+//											QByteArray ba = s.toLocal8Bit ();
+//											const char *item_value_s = ba.constData ();
+
+//											success_flag = AppendStringToByteBuffer (buffer_p, item_value_s);
+//										}
+
+//									if (success_flag)
+//										{
+//											success_flag = AppendToByteBuffer (buffer_p, &dtw_column_delimiter, 1);
+//										}
+
+//									if (!success_flag)
+//										{
+//											i = num_rows;
+//											j = num_cols;
+//										}
+//								}
+
+//							if (success_flag)
+//								{
+//									if (!AppendToByteBuffer (buffer_p, &dtw_row_delimiter, 1))
+//										{
+//											success_flag = false;
+//											i = num_rows;
+//										}
+//								}
+//						}
+
+//					if (success_flag)
+//						{
+//							const char *data_s = GetByteBufferData (buffer_p);
+
+//							value_s = EasyCopyToNewString (data_s);
+//							qDebug () << value_s  << endl;
+//						}
+
+//					FreeByteBuffer (buffer_p);
+//				}
+
+
+//		}		/* if (!IsTableEmpty ()) */
+
+//	return value_s;
+//}
+
+
 
 char *DroppableTableWidget :: GetValueAsText ()
 {
@@ -316,9 +385,9 @@ char *DroppableTableWidget :: GetValueAsText ()
 
 	if (!IsTableEmpty ())
 		{
-			ByteBuffer *buffer_p = AllocateByteBuffer (1024);
+			json_t *rows_p = json_array ();
 
-			if (buffer_p)
+			if (rows_p)
 				{
 					const int num_rows = rowCount ();
 					const int num_cols = columnCount ();
@@ -326,57 +395,79 @@ char *DroppableTableWidget :: GetValueAsText ()
 
 					for (int i = 0; i < num_rows; ++ i)
 						{
-							for (int j = 0; j < num_cols; ++ j)
+							json_t *row_p = json_object ();
+
+							if (row_p)
 								{
-									QTableWidgetItem *item_p = item (i, j);
-
-									if (item_p)
+									if (json_array_append_new (rows_p, row_p) == 0)
 										{
-											QString s = item_p -> text ().trimmed ();
-											QByteArray ba = s.toLocal8Bit ();
-											const char *item_value_s = ba.constData ();
+											for (int j = 0; j < num_cols; ++ j)
+												{
+													QTableWidgetItem *item_p = item (i, j);
 
-											success_flag = AppendStringToByteBuffer (buffer_p, item_value_s);
-										}
+													if (item_p)
+														{
+															QString column_heading = horizontalHeaderItem (j) -> text ().trimmed ();
 
-									if (success_flag)
+															if (column_heading.size () == 0)
+																{
+																	column_heading = QString :: number (j);
+																}
+
+															QByteArray column_heading_ba = column_heading.toLocal8Bit ();
+															const char *column_heading_s = column_heading_ba.constData ();
+
+															QString value_s = item_p -> text ().trimmed ();
+															QByteArray ba = value_s.toLocal8Bit ();
+															const char *item_value_s = ba.constData ();
+
+															if (!SetJSONString (row_p, column_heading_s, item_value_s))
+																{
+																	success_flag = false;
+																}
+														}
+
+													if (!success_flag)
+														{
+															i = num_rows;
+															j = num_cols;
+														}
+												}
+
+										}		/* if (json_array_append_new (rows_p, row_p) == 0) */
+									else
 										{
-											success_flag = AppendToByteBuffer (buffer_p, &dtw_column_delimiter, 1);
-										}
-
-									if (!success_flag)
-										{
-											i = num_rows;
-											j = num_cols;
-										}
-								}
-
-							if (success_flag)
-								{
-									if (!AppendToByteBuffer (buffer_p, &dtw_row_delimiter, 1))
-										{
+											json_decref (row_p);
 											success_flag = false;
-											i = num_rows;
 										}
-								}
-						}
+
+								}		/* if (row_p) */
+
+						}		/* for (int i = 0; i < num_rows; ++ i) */
 
 					if (success_flag)
 						{
-							const char *data_s = GetByteBufferData (buffer_p);
+							char *data_s = json_dumps (rows_p, JSON_INDENT (2));
 
-							value_s = EasyCopyToNewString (data_s);
+							if (data_s)
+								{
+									value_s = EasyCopyToNewString (data_s);
+									free (data_s);
+								}
+
 							qDebug () << value_s  << endl;
 						}
 
-					FreeByteBuffer (buffer_p);
-				}
+
+				}		/* if (rows_p) */
 
 
 		}		/* if (!IsTableEmpty ()) */
 
 	return value_s;
 }
+
+
 
 
 

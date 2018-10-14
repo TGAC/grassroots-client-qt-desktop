@@ -40,6 +40,8 @@ class DroppableTableWidget : public QTableWidget
 public slots:
 	void ShowPopupMenu (const QPoint &p);
 
+	void CheckCell (int row, int column);
+
 public:
 	DroppableTableWidget (QWidget *parent_p, char row_delimiter, char column_delimter);
 
@@ -99,7 +101,7 @@ public:
 
 	virtual void ShowErrors (const json_t *errors_p);
 
-	bool SetColumnHeaders (const char *value_s);
+	bool SetColumnHeaders (Parameter *param_p);
 
 protected:
 	QScrollArea *ptw_scroller_p;

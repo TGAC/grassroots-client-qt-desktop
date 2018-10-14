@@ -46,7 +46,62 @@ DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, char row_delimi
 	setContextMenuPolicy (Qt :: CustomContextMenu);
 
 	connect (this, &DroppableTableWidget :: customContextMenuRequested, this, &DroppableTableWidget :: ShowPopupMenu);
+
+	connect (this, &QTableWidget :: cellChanged, this, &DroppableTableWidget :: CheckCell);
+
 }
+
+
+void DroppableTableWidget :: CheckCell (int row, int column)
+{
+	QTableWidgetItem *column_header_p = horizontalHeaderItem (column);
+
+	if (column_header_p)
+		{
+			QVariant v = column_header_p -> data (Qt::UserRole);
+
+			if (v.isValid ())
+				{
+					QByteArray ba = v.toByteArray ();
+					const char *value_s = ba.constData ();
+
+					if (value_s)
+						{
+							QTableWidgetItem *cell_p = item (row, column);
+							QString s (cell_p -> text ());
+
+							if (strcmp (value_s, PA_TYPE_BOOLEAN_S) == 0)
+								{
+
+								}
+							else if (strcmp (value_s, PA_TYPE_CHARACTER_S) == 0)
+								{
+
+								}
+							else if (strcmp (value_s, PA_TYPE_INTEGER_S) == 0)
+								{
+
+								}
+							else if (strcmp (value_s, PA_TYPE_NUMBER_S) == 0)
+								{
+									bool success_flag = false;
+
+									double d = s.toDouble (&success_flag);
+
+									if (!success_flag)
+										{
+
+										}
+								}
+							else if (strcmp (value_s, PA_TYPE_BOOLEAN_S) == 0)
+								{
+
+								}
+						}
+				}
+		}
+}
+
 
 
 void DroppableTableWidget :: SetColumnDelimiter (char delimiter)
@@ -598,14 +653,10 @@ ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidg
 	ptw_scroller_p -> setWidgetResizable (true);
 	ptw_scroller_p -> setWidget (ptw_table_p);
 
-	value_s = GetParameterKeyValue (param_p, PA_TABLE_COLUMN_HEADINGS_S);
 
-	if (value_s)
+
+	if (!SetColumnHeaders (param_p))
 		{
-			if (!SetColumnHeaders (value_s))
-				{
-
-				}
 		}
 }
 
@@ -656,15 +707,17 @@ bool ParamTableWidget :: StoreParameterValue ()
 }
 
 
-bool ParamTableWidget :: SetColumnHeaders (const char *value_s)
+bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 {
 	bool success_flag = false;
+
+	const char *value_s = GetParameterKeyValue (param_p, PA_TABLE_COLUMN_HEADINGS_S);
 
 	if (value_s)
 		{
 			const char *current_header_s = value_s;
 			const char *next_header_s = strchr (current_header_s, ptw_column_delimiter);
-			QStringList headers_list;
+			int i = 0;
 
 			while (next_header_s)
 				{
@@ -672,7 +725,16 @@ bool ParamTableWidget :: SetColumnHeaders (const char *value_s)
 
 					if (header_s)
 						{
-							headers_list.append (header_s);
+							QTableWidgetItem *column_header_p = ptw_table_p -> horizontalHeaderItem (i);
+							column_header_p -> setText (header_s);
+
+							const char *type_s = GetParameterKeyValue (param_p, header_s);
+							if (type_s)
+								{
+									QVariant v (type_s);
+									column_header_p -> setData (Qt::UserRole, v);
+								}
+
 							FreeCopiedString (header_s);
 						}
 
@@ -688,6 +750,7 @@ bool ParamTableWidget :: SetColumnHeaders (const char *value_s)
 							next_header_s = NULL;
 						}
 
+					++ i;
 				}		/* while (next_header_s) */
 
 			if (current_header_s)
@@ -696,16 +759,24 @@ bool ParamTableWidget :: SetColumnHeaders (const char *value_s)
 
 					if (header_s)
 						{
-							headers_list.append (header_s);
+							QTableWidgetItem *column_header_p = ptw_table_p -> horizontalHeaderItem (i);
+							column_header_p -> setText (header_s);
+
+							const char *type_s = GetParameterKeyValue (param_p, header_s);
+							if (type_s)
+								{
+									QVariant v (type_s);
+									column_header_p -> setData (Qt::UserRole, v);
+								}
+
 							FreeCopiedString (header_s);
 						}
 				}
 
-
-			int i = headers_list.size ();
 			ptw_table_p -> setColumnCount (i);
 			ptw_table_p -> setRowCount (i);
-			ptw_table_p -> setHorizontalHeaderLabels (headers_list);
+
+
 			success_flag = true;
 
 		}		/* if (*value_s != '\n') */

@@ -438,6 +438,8 @@ char *DroppableTableWidget :: GetValueAsText ()
 {
 	char *value_s = NULL;
 
+
+
 	if (!IsTableEmpty ())
 		{
 			json_t *rows_p = json_array ();
@@ -460,9 +462,12 @@ char *DroppableTableWidget :: GetValueAsText ()
 												{
 													QTableWidgetItem *item_p = item (i, j);
 
+
 													if (item_p)
 														{
 															QString column_heading = horizontalHeaderItem (j) -> text ().trimmed ();
+
+															qDebug () << "getting column " <<  horizontalHeaderItem (j) -> text () << " for column " << j << endl;
 
 															if (column_heading.size () == 0)
 																{
@@ -710,7 +715,6 @@ bool ParamTableWidget :: StoreParameterValue ()
 bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 {
 	bool success_flag = false;
-
 	const char *value_s = GetParameterKeyValue (param_p, PA_TABLE_COLUMN_HEADINGS_S);
 
 	if (value_s)
@@ -718,6 +722,13 @@ bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 			const char *current_header_s = value_s;
 			const char *next_header_s = strchr (current_header_s, ptw_column_delimiter);
 			int i = 0;
+			QVector <QTableWidgetItem *> column_headers;
+			qDebug () << "headers: " << value_s << endl;
+
+			qDebug () << "current_header_s: " << current_header_s << endl;
+			qDebug () << "next_header_s: " << next_header_s << endl;
+
+			ptw_table_p -> setRowCount (5);
 
 			while (next_header_s)
 				{
@@ -725,14 +736,28 @@ bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 
 					if (header_s)
 						{
-							QTableWidgetItem *column_header_p = ptw_table_p -> horizontalHeaderItem (i);
-							column_header_p -> setText (header_s);
+							QTableWidgetItem *column_header_p = new QTableWidgetItem (header_s);
 
-							const char *type_s = GetParameterKeyValue (param_p, header_s);
-							if (type_s)
+							qDebug () << "header_s: " << header_s << endl;
+
+
+							if (column_header_p)
 								{
-									QVariant v (type_s);
-									column_header_p -> setData (Qt::UserRole, v);
+									const char *type_s = GetParameterKeyValue (param_p, header_s);
+
+									if (type_s)
+										{
+											QVariant v (type_s);
+											column_header_p -> setData (Qt::UserRole, v);
+										}
+
+									qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << endl;
+
+									column_headers.append (column_header_p);
+								}
+							else
+								{
+									qDebug () << "failed to create column header for header_s: " << header_s << endl;
 								}
 
 							FreeCopiedString (header_s);
@@ -759,27 +784,46 @@ bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 
 					if (header_s)
 						{
-							QTableWidgetItem *column_header_p = ptw_table_p -> horizontalHeaderItem (i);
-							column_header_p -> setText (header_s);
+							QTableWidgetItem *column_header_p = new QTableWidgetItem (header_s);
 
-							const char *type_s = GetParameterKeyValue (param_p, header_s);
-							if (type_s)
+							if (column_header_p)
 								{
-									QVariant v (type_s);
-									column_header_p -> setData (Qt::UserRole, v);
+									const char *type_s = GetParameterKeyValue (param_p, header_s);
+
+									if (type_s)
+										{
+											QVariant v (type_s);
+											column_header_p -> setData (Qt::UserRole, v);
+										}
+
+									column_headers.append (column_header_p);
 								}
 
 							FreeCopiedString (header_s);
 						}
 				}
 
-			ptw_table_p -> setColumnCount (i);
-			ptw_table_p -> setRowCount (i);
+			i = column_headers.length ();
 
+			if (i > 0)
+				{
+					ptw_table_p -> setColumnCount (i);
+
+					-- i;
+					while (i >= 0)
+						{
+							ptw_table_p -> setHorizontalHeaderItem (i, column_headers.at (i));
+							-- i;
+						}
+				}
 
 			success_flag = true;
 
-		}		/* if (*value_s != '\n') */
+		}		/* if (value_s) */
+	else
+		{
+			qDebug () << "no headers: " << endl;
+		}
 
 	return success_flag;
 }

@@ -4,6 +4,7 @@
 
 #include <QWidget>
 #include <QCalendarWidget>
+#include <QCheckBox>
 
 #include "parameter.h"
 #include "base_param_widget.h"
@@ -33,8 +34,9 @@ protected:
 
 
 private:
+	QWidget *pdw_root_widget_p;
 	QCalendarWidget  *pdw_calendar_p;
-
+	QCheckBox *pdw_checkbox_p;
 };
 
 

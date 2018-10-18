@@ -14,6 +14,7 @@
 ** limitations under the License.
 */
 #include <QDebug>
+#include <QHBoxLayout>
 
 #include "param_date_widget.h"
 
@@ -27,13 +28,27 @@
 ParamDateWidget :: ParamDateWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 : BaseParamWidget (param_p, parent_p)
 {
+	pdw_checkbox_p = new QCheckBox (parent_p);
 	pdw_calendar_p = new QCalendarWidget (parent_p);
+
+	QHBoxLayout *layout_p = new QHBoxLayout;
+
+	layout_p -> addWidget (pdw_checkbox_p);
+	layout_p -> addWidget (pdw_calendar_p);
+
+	pdw_root_widget_p = new QWidget (parent_p);
+	pdw_root_widget_p -> setLayout (layout_p);
+
+	pdw_checkbox_p -> setEnabled (true);
+	pdw_checkbox_p -> setChecked (true);
+
+	connect (pdw_checkbox_p, &QAbstractButton :: clicked, pdw_calendar_p, &QWidget :: setEnabled);
 }
 
 
 ParamDateWidget ::	~ParamDateWidget ()
 {
-	delete pdw_calendar_p;
+	delete pdw_root_widget_p;
 }
 
 
@@ -48,9 +63,12 @@ bool ParamDateWidget :: StoreParameterValue ()
 		{
 			memset (time_p, 0, sizeof (struct tm));
 
-			time_p -> tm_year = d.year () - 1900;
-			time_p -> tm_mon = d.month () - 1;
-			time_p -> tm_mday = d.day ();
+			if (pdw_checkbox_p -> isChecked ())
+				{
+					time_p -> tm_year = d.year () - 1900;
+					time_p -> tm_mon = d.month () - 1;
+					time_p -> tm_mday = d.day ();
+				}
 
 			success_flag = SetParameterValue (bpw_param_p, time_p, true);
 
@@ -65,13 +83,19 @@ bool ParamDateWidget :: StoreParameterValue ()
 void ParamDateWidget :: SetDefaultValue ()
 {
 	struct tm *time_p = bpw_param_p -> pa_default.st_time_p;
+	bool enabled_flag = true;
 
 	if (time_p)
-		{
-			QDate d (1900 + (time_p -> tm_year), 1 + (time_p -> tm_mon), time_p -> tm_mday);
+		{			
+			if (time_p -> tm_year != 0)
+				{
+					QDate d (1900 + (time_p -> tm_year), 1 + (time_p -> tm_mon), time_p -> tm_mday);
 
-			pdw_calendar_p -> setSelectedDate (d);
+					pdw_calendar_p -> setSelectedDate (d);
+				}
 		}
+
+	pdw_checkbox_p -> setEnabled (enabled_flag);
 }
 
 
@@ -94,6 +118,7 @@ bool ParamDateWidget :: SetValueFromText (const char *value_s)
 				}
 		}
 
+
 	return success_flag;
 }
 
@@ -113,5 +138,5 @@ bool ParamDateWidget :: SetValueFromJSON (const json_t * const value_p)
 
 QWidget *ParamDateWidget :: GetQWidget ()
 {
-	return pdw_calendar_p;
+	return pdw_root_widget_p;
 }

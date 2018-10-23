@@ -320,15 +320,6 @@ void DroppableTableWidget :: SetRow (const int row, const char *data_s)
 					setItem (row, col, item_p);
 				}
 
-
-			if (row == 0)
-				{
-					QFont font;
-					font.setBold (true);
-
-					item_p -> setFont (font);
-				}
-
 			qDebug () << "num rows " << rowCount () << " num cols " << columnCount ();
 
 			++ col;

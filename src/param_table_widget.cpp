@@ -33,8 +33,8 @@ const char * const ParamTableWidget :: PTW_COLUMN_HEADERS_S = "COLUMN_HEADERS";
 
 
 
-DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, char row_delimiter, char column_delimter)
-: QTableWidget (parent_p)
+DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, ParamTableWidget *param_table_widget_p, char row_delimiter, char column_delimter)
+: QTableWidget (parent_p), dtw_param_table_widget_p (param_table_widget_p)
 {
 	setAcceptDrops (true);
 	SetRowDelimiter (row_delimiter);
@@ -176,13 +176,14 @@ bool DroppableTableWidget :: dropMimeData (int row, int column, const QMimeData 
 void DroppableTableWidget :: ShowPopupMenu (const QPoint &p)
 {
 	QMenu *menu_p = new QMenu (this);
-
 	QAction *action_p = new QAction (tr ("Clear Table"), this);
-	connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: clear);
+
+	connect (action_p, &QAction :: triggered, dtw_param_table_widget_p, &ParamTableWidget :: ClearTable);
 	menu_p -> addAction (action_p);
 
 	menu_p->exec (mapToGlobal (p));
 }
+
 
 
 char *DroppableTableWidget :: GetEntry (const char *start_s, const char *end_s)
@@ -643,7 +644,7 @@ ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidg
 			ptw_row_delimiter = *PA_TABLE_DEFAULT_ROW_DELIMITER_S;
 		}
 
-	ptw_table_p = new DroppableTableWidget (parent_p, ptw_row_delimiter, ptw_column_delimiter);
+	ptw_table_p = new DroppableTableWidget (parent_p, this, ptw_row_delimiter, ptw_column_delimiter);
 
 	ptw_scroller_p = new QScrollArea (parent_p);
 	ptw_scroller_p -> setWidgetResizable (true);
@@ -700,6 +701,12 @@ bool ParamTableWidget :: StoreParameterValue ()
 		}
 
 	return success_flag;
+}
+
+void ParamTableWidget :: ClearTable (bool triggered_flag)
+{
+	ptw_table_p -> clear ();
+	SetColumnHeaders (bpw_param_p);
 }
 
 

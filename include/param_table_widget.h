@@ -33,6 +33,8 @@
 #include "base_param_widget.h"
 
 
+class ParamTableWidget;
+
 class DroppableTableWidget : public QTableWidget
 {
 	Q_OBJECT
@@ -43,7 +45,7 @@ public slots:
 	void CheckCell (int row, int column);
 
 public:
-	DroppableTableWidget (QWidget *parent_p, char row_delimiter, char column_delimter);
+	DroppableTableWidget (QWidget *parent_p, ParamTableWidget *param_table_widget_p, char row_delimiter, char column_delimter);
 
 	void SetRow (const int row, const char *data_s);
 
@@ -71,6 +73,7 @@ protected:
 	virtual bool dropMimeData (int row, int column, const QMimeData * data, Qt::DropAction action);
 
 private:
+	ParamTableWidget *dtw_param_table_widget_p;
 	char dtw_row_delimiter;
 	char dtw_column_delimiter;
 	bool dtw_unpack_text_content_flag;
@@ -102,6 +105,9 @@ public:
 	virtual void ShowErrors (const json_t *errors_p);
 
 	bool SetColumnHeaders (Parameter *param_p);
+
+public slots:
+	void ClearTable (bool triggered_flag = false);
 
 protected:
 	QScrollArea *ptw_scroller_p;

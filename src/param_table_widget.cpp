@@ -457,14 +457,28 @@ char *DroppableTableWidget :: GetValueAsText ()
 
 													if (item_p)
 														{
-															QString column_heading = horizontalHeaderItem (j) -> text ().trimmed ();
+															QString column_heading;
+															QTableWidgetItem *column_header_p = horizontalHeaderItem (j) ;
 
-															qDebug () << "getting column " <<  horizontalHeaderItem (j) -> text () << " for column " << j << endl;
+															column_heading.clear ();
+
+															if (column_header_p)
+																{
+																	QVariant column_data = column_header_p -> data (Qt :: DisplayRole);
+
+																	if ((column_data.isValid ()) && (!column_data.isNull ()))
+																		{
+																			column_heading = column_data.toString ().trimmed ();
+																		}
+																}
 
 															if (column_heading.size () == 0)
 																{
 																	column_heading = QString :: number (j);
 																}
+
+															qDebug () << "getting column " <<  column_heading << " for column " << j << endl;
+
 
 															QByteArray column_heading_ba = column_heading.toLocal8Bit ();
 															const char *column_heading_s = column_heading_ba.constData ();

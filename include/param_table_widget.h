@@ -45,7 +45,7 @@ public slots:
 	void CheckCell (int row, int column);
 
 public:
-	DroppableTableWidget (QWidget *parent_p, ParamTableWidget *param_table_widget_p, char row_delimiter, char column_delimter);
+	DroppableTableWidget (QWidget *parent_p, ParamTableWidget *param_table_widget_p, char row_delimiter, char column_delimter, const bool first_row_as_headers_flag);
 
 	void SetRow (const int row, const char *data_s);
 
@@ -77,7 +77,7 @@ private:
 	char dtw_row_delimiter;
 	char dtw_column_delimiter;
 	bool dtw_unpack_text_content_flag;
-
+	bool dtw_first_row_as_headers_flag;
 };
 
 

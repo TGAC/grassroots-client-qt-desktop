@@ -33,8 +33,8 @@ const char * const ParamTableWidget :: PTW_COLUMN_HEADERS_S = "COLUMN_HEADERS";
 
 
 
-DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, ParamTableWidget *param_table_widget_p, char row_delimiter, char column_delimter)
-: QTableWidget (parent_p), dtw_param_table_widget_p (param_table_widget_p)
+DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, ParamTableWidget *param_table_widget_p, char row_delimiter, char column_delimter, const bool first_row_as_headers_flag)
+: QTableWidget (parent_p), dtw_param_table_widget_p (param_table_widget_p), dtw_first_row_as_headers_flag (first_row_as_headers_flag)
 {
 	setAcceptDrops (true);
 	SetRowDelimiter (row_delimiter);
@@ -441,8 +441,14 @@ char *DroppableTableWidget :: GetValueAsText ()
 					const int num_rows = rowCount ();
 					const int num_cols = columnCount ();
 					bool success_flag = true;
+					int i = 0;
 
-					for (int i = 0; i < num_rows; ++ i)
+					if (dtw_first_row_as_headers_flag)
+						{
+							++ i;
+						}
+
+					for ( ; i < num_rows; ++ i)
 						{
 							json_t *row_p = json_object ();
 
@@ -454,13 +460,21 @@ char *DroppableTableWidget :: GetValueAsText ()
 												{
 													QTableWidgetItem *item_p = item (i, j);
 
-
 													if (item_p)
 														{
+															QTableWidgetItem *column_header_p = 0;
 															QString column_heading;
-															QTableWidgetItem *column_header_p = horizontalHeaderItem (j) ;
-
 															column_heading.clear ();
+
+															if (dtw_first_row_as_headers_flag)
+																{
+																	column_header_p = item (0, j);
+																}
+															else
+																{
+																	column_header_p = horizontalHeaderItem (j);
+																}
+
 
 															if (column_header_p)
 																{
@@ -471,6 +485,7 @@ char *DroppableTableWidget :: GetValueAsText ()
 																			column_heading = column_data.toString ().trimmed ();
 																		}
 																}
+
 
 															if (column_heading.size () == 0)
 																{
@@ -636,6 +651,8 @@ void DroppableTableWidget :: LoadText (const char *filename_s)
 ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 :		BaseParamWidget (param_p, parent_p)
 {
+	bool first_row_headers_flag = false;
+
 	const char *value_s = GetParameterKeyValue (param_p, PA_TABLE_COLUMN_DELIMITER_S);
 
 	if (value_s)
@@ -658,7 +675,17 @@ ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidg
 			ptw_row_delimiter = *PA_TABLE_DEFAULT_ROW_DELIMITER_S;
 		}
 
-	ptw_table_p = new DroppableTableWidget (parent_p, this, ptw_row_delimiter, ptw_column_delimiter);
+	value_s = GetParameterKeyValue (param_p, PA_TABLE_COLUMN_HEADERS_PLACEMENT_S);
+
+	if (value_s)
+		{
+			if (strcmp (value_s, PA_TABLE_COLUMN_HEADERS_PLACEMENT_FIRST_ROW_S) == 0)
+				{
+					first_row_headers_flag = true;
+				}
+		}
+
+	ptw_table_p = new DroppableTableWidget (parent_p, this, ptw_row_delimiter, ptw_column_delimiter, first_row_headers_flag);
 
 	ptw_scroller_p = new QScrollArea (parent_p);
 	ptw_scroller_p -> setWidgetResizable (true);

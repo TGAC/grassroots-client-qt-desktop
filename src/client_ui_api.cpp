@@ -39,7 +39,7 @@
 #include "viewer_widget.h"
 
 #ifdef _DEBUG
-	#define CLIENT_UI_API_DEBUG (DEBUG_FINE)
+	#define CLIENT_UI_API_DEBUG (DEBUG_INFO)
 #else
 	#define CLIENT_UI_API_DEBUG (DEBUG_NONE)
 #endif

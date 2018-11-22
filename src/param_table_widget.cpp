@@ -144,11 +144,11 @@ void DroppableTableWidget :: dropEvent (QDropEvent *event_p)
 					QByteArray ba = filename.toLocal8Bit ();
 					const char * const filename_s = ba.constData ();
 
-					qDebug () << "dropped " << filename;
+					//qDebug () << "dropped " << filename;
 
 					LoadText (filename_s);
 
-					qDebug () << "rows " << rowCount () << " cols " << columnCount ();
+					//qDebug () << "rows " << rowCount () << " cols " << columnCount ();
 
 				}		/* if (! (filename.isEmpty ())) */
 
@@ -321,7 +321,7 @@ void DroppableTableWidget :: SetRow (const int row, const char *data_s)
 					setItem (row, col, item_p);
 				}
 
-			qDebug () << "num rows " << rowCount () << " num cols " << columnCount ();
+			//qDebug () << "num rows " << rowCount () << " num cols " << columnCount ();
 
 			++ col;
 
@@ -492,7 +492,7 @@ char *DroppableTableWidget :: GetValueAsText ()
 																	column_heading = QString :: number (j);
 																}
 
-															qDebug () << "getting column " <<  column_heading << " for column " << j << endl;
+															//qDebug () << "getting column " <<  column_heading << " for column " << j << endl;
 
 
 															QByteArray column_heading_ba = column_heading.toLocal8Bit ();
@@ -644,7 +644,7 @@ void DroppableTableWidget :: LoadText (const char *filename_s)
 			fclose (in_f);
 		}
 
-	qDebug () << "rows " << rowCount () << " cols " << columnCount ();
+	//qDebug () << "rows " << rowCount () << " cols " << columnCount ();
 }
 
 
@@ -748,6 +748,8 @@ void ParamTableWidget :: ClearTable (bool triggered_flag)
 {
 	ptw_table_p -> clear ();
 	SetColumnHeaders (bpw_param_p);
+
+	SetParameterValue (bpw_param_p, NULL, true);
 }
 
 
@@ -762,10 +764,10 @@ bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 			const char *next_header_s = strchr (current_header_s, ptw_column_delimiter);
 			int i = 0;
 			QVector <QTableWidgetItem *> column_headers;
-			qDebug () << "headers: " << value_s << endl;
+			//qDebug () << "headers: " << value_s << endl;
 
-			qDebug () << "current_header_s: " << current_header_s << endl;
-			qDebug () << "next_header_s: " << next_header_s << endl;
+			//qDebug () << "current_header_s: " << current_header_s << endl;
+			//qDebug () << "next_header_s: " << next_header_s << endl;
 
 			ptw_table_p -> setRowCount (5);
 

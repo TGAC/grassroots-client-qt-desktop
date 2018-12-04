@@ -44,7 +44,6 @@ signals:
 
 public slots:
 	void SetBasicInterfaceLevel ();
-	void SetIntermediateInterfaceLevel ();
 	void SetAdvancedInterfaceLevel ();
 	void LoadConfiguration ();
 	void SaveConfiguration ();

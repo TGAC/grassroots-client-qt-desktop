@@ -61,11 +61,11 @@ MainWindow :: MainWindow (QTClientData *data_p)
 	mw_tabs_p = new QTabWidget;
 	setCentralWidget (mw_tabs_p);
 
-	mw_prefs_widget_p = new PrefsWidget (this, PL_BASIC, false, data_p);
+	mw_prefs_widget_p = new PrefsWidget (this, PL_SIMPLE, false, data_p);
 	connect (mw_prefs_widget_p, &PrefsWidget :: RunServices, this, &MainWindow :: RunServices);
 	mw_tabs_p -> addTab (mw_prefs_widget_p, QIcon ("images/list_wand"), "All Services");
 
-	mw_keyword_widget_p = new KeywordWidget (this, PL_BASIC);
+	mw_keyword_widget_p = new KeywordWidget (this, PL_SIMPLE);
 	connect (mw_keyword_widget_p, &KeywordWidget :: RunKeywordSearch, this, &MainWindow :: RunKeywordSearch);
 	mw_tabs_p -> addTab (mw_keyword_widget_p, QIcon ("images/list_search"), "Run by search");
 
@@ -559,14 +559,6 @@ void MainWindow :: AddActions ()
 	sub_menu_p -> addAction (action_p);
 	interface_levels_p -> addAction (action_p);
 
-	// Intermediate Level
-	action_p = new QAction (tr ("Intermediate"), this);
-	action_p -> setStatusTip (tr ("Intermediate"));
-	action_p -> setCheckable (true);
-	connect (action_p, &QAction :: triggered, this, &MainWindow :: SetIntermediateInterfaceLevel);
-	sub_menu_p -> addAction (action_p);
-	interface_levels_p -> addAction (action_p);
-
 	// Advanced Lavel
 	action_p = new QAction (tr ("Advanced"), this);
 	action_p -> setStatusTip (tr ("Advanced"));
@@ -582,13 +574,7 @@ void MainWindow :: AddActions ()
 
 void MainWindow :: SetBasicInterfaceLevel ()
 {
-	mw_prefs_widget_p -> SetInterfaceLevel (PL_BASIC);
-}
-
-
-void MainWindow :: SetIntermediateInterfaceLevel ()
-{
-	mw_prefs_widget_p -> SetInterfaceLevel (PL_INTERMEDIATE);
+	mw_prefs_widget_p -> SetInterfaceLevel (PL_SIMPLE);
 }
 
 

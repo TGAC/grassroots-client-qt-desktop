@@ -211,7 +211,9 @@ static json_t *RunQTClient (ClientData *client_data_p)
 				}
 		}
 
+
 	qt_data_p -> qcd_window_p -> show ();
+	qt_data_p -> qcd_window_p -> update ();
 
 	if (! (qt_data_p -> qcd_init_flag))
 		{

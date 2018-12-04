@@ -72,6 +72,8 @@ MainWindow :: MainWindow (QTClientData *data_p)
 	setWindowTitle (data_p -> qcd_dummy_arg_s);
 	setWindowIcon (QIcon ("images/cog"));
 
+	mw_current_level = PL_SIMPLE;
+
 	AddActions ();
 
 	QSize screen_size = QDesktopWidget ().availableGeometry (this).size ();
@@ -345,7 +347,7 @@ void MainWindow :: RunKeywordSearch (QString keywords)
 
 void MainWindow :: CreateAndAddServicePage (const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t *provider_p, ParameterSet *params_p, ServiceMetadata *metadata_p)
 {
-	mw_prefs_widget_p -> CreateAndAddServicePage (service_name_s, service_description_s, service_info_uri_s, service_icon_uri_s, provider_p, params_p, metadata_p);
+	mw_prefs_widget_p -> CreateAndAddServicePage (service_name_s, service_description_s, service_info_uri_s, service_icon_uri_s, provider_p, params_p, metadata_p, mw_current_level);
 }
 
 
@@ -554,7 +556,7 @@ void MainWindow :: AddActions ()
 	action_p = new QAction (tr ("Basic"), this);
 	action_p -> setStatusTip (tr ("Basic"));
 	action_p -> setCheckable (true);
-	action_p -> setChecked (true);
+	action_p -> setChecked (mw_current_level == PL_SIMPLE);
 	connect (action_p, &QAction :: triggered, this, &MainWindow :: SetBasicInterfaceLevel);
 	sub_menu_p -> addAction (action_p);
 	interface_levels_p -> addAction (action_p);
@@ -563,6 +565,7 @@ void MainWindow :: AddActions ()
 	action_p = new QAction (tr ("Advanced"), this);
 	action_p -> setStatusTip (tr ("Advanced"));
 	action_p -> setCheckable (true);
+	action_p -> setChecked (mw_current_level == PL_ADVANCED);
 	connect (action_p, &QAction :: triggered, this, &MainWindow :: SetAdvancedInterfaceLevel);
 	sub_menu_p -> addAction (action_p);
 	interface_levels_p -> addAction (action_p);
@@ -574,13 +577,17 @@ void MainWindow :: AddActions ()
 
 void MainWindow :: SetBasicInterfaceLevel ()
 {
-	mw_prefs_widget_p -> SetInterfaceLevel (PL_SIMPLE);
+	mw_current_level = PL_SIMPLE;
+	mw_prefs_widget_p -> SetInterfaceLevel (mw_current_level);
+	update ();
 }
 
 
 void MainWindow :: SetAdvancedInterfaceLevel ()
 {
-	mw_prefs_widget_p -> SetInterfaceLevel (PL_ADVANCED);
+	mw_current_level = PL_SIMPLE;
+	mw_prefs_widget_p -> SetInterfaceLevel (mw_current_level);
+	update ();
 }
 
 

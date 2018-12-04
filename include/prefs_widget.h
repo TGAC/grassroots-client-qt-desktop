@@ -66,8 +66,8 @@ public:
 	ParameterLevel GetCurrentParameterLevel () const;
 
 
-	void CreateAndAddServicePage (const json_t * const service_json_p);
-	void CreateAndAddServicePage (const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t *provider_p, ParameterSet *params_p, ServiceMetadata *metadata_p);
+	void CreateAndAddServicePage (const json_t * const service_json_p, ParameterLevel level);
+	void CreateAndAddServicePage (const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t *provider_p, ParameterSet *params_p, ServiceMetadata *metadata_p, ParameterLevel level);
 
 	bool SetServiceParams (json_t *service_config_p);
 

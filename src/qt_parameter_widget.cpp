@@ -194,7 +194,7 @@ bool QTParameterWidget :: AddListForSchemaTerms (const LinkedList *terms_p, cons
 {
 	QVBoxLayout *list_layout_p = new QVBoxLayout;
 	bool success_flag = true;
-	SchemaTermNode *node_p = (SchemaTermNode *) terms_p -> ll_head_p;
+	SchemaTermNode *node_p = reinterpret_cast <SchemaTermNode *> (terms_p -> ll_head_p);
 
 	while (node_p && success_flag)
 		{
@@ -237,7 +237,7 @@ bool QTParameterWidget :: AddListForSchemaTerms (const LinkedList *terms_p, cons
 					success_flag = false;
 				}
 
-			node_p = (SchemaTermNode *) node_p -> stn_node.ln_next_p;
+			node_p = reinterpret_cast <SchemaTermNode *> (node_p -> stn_node.ln_next_p);
 		}
 
 
@@ -298,8 +298,8 @@ bool QTParameterWidget :: AddLabelForSchemaTerm (const SchemaTerm *term_p, const
 
 void QTParameterWidget :: AddProvider (const json_t *provider_p, const size_t i, const size_t last_index, QVBoxLayout *info_layout_p)
 {
-	QLabel *logo_p = 0;
-	QLabel *text_p = 0;
+	QLabel *logo_p = nullptr;
+	QLabel *text_p = nullptr;
 
 	const char *provider_logo_s = GetProviderLogo (provider_p);
 
@@ -450,7 +450,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 	while (param_group_node_p)
 		{
 			ParameterGroup *group_p = param_group_node_p -> pgn_param_group_p;
-			ParameterWidgetContainer *container_p = 0;
+			ParameterWidgetContainer *container_p = nullptr;
 
 			if (group_p -> pg_repeatable_flag)
 				{
@@ -472,11 +472,12 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 	while (node_p)
 		{
+			
 			Parameter * const param_p = node_p -> pn_parameter_p;
 
 			if (!qpw_widgets_map.contains (param_p))
 				{
-					ParameterWidgetContainer *container_p = 0;
+					ParameterWidgetContainer *container_p = nullptr;
 
 					if (param_p -> pa_group_p)
 						{
@@ -508,10 +509,13 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidge
 					AddRow (child_p -> GetLabel (), child_p -> GetUIQWidget (), 1);
 				}
 
-			if (!CompareParameterLevels (param_p -> pa_level, qpw_level))
-				{
-					child_p -> SetVisible (false);
-				}
+			ParameterWidgetAdded (param_p, child_p);
+
+
+//			if (!CompareParameterLevels (param_p -> pa_level, qpw_level))
+//				{
+//					child_p -> SetVisible (false);
+//				}
 		}
 }
 
@@ -520,7 +524,7 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidge
 
 BaseParamWidget *QTParameterWidget :: GetWidgetForParameter (const char * const param_name_s) const
 {
-	BaseParamWidget *widget_p = 0;
+	BaseParamWidget *widget_p = nullptr;
 
 	const QList <Parameter *> keys = qpw_widgets_map.keys ();
 
@@ -588,7 +592,6 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 	for (i = qpw_widgets_map.constBegin (); i != qpw_widgets_map.constEnd (); ++ i)
 		{
 			BaseParamWidget *widget_p = reinterpret_cast <BaseParamWidget *> (i.value ());
-
 			widget_p -> CheckLevelDisplay (level, parent_widget_p);
 		}
 
@@ -605,7 +608,7 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 
 BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * const param_p, bool add_param_flag)
 {
-	BaseParamWidget *widget_p = 0;
+	BaseParamWidget *widget_p = nullptr;
 
 	if (param_p -> pa_options_p)
 		{

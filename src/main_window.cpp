@@ -78,7 +78,7 @@ MainWindow :: MainWindow (QTClientData *data_p)
 
 	QSize screen_size = QDesktopWidget ().availableGeometry (this).size ();
 	resize (screen_size * 0.5);
-	move (screen_size.width () * 0.25, screen_size.height () * 0.25);
+	move (static_cast <int> (screen_size.width () * 0.25), static_cast <int> (screen_size.height () * 0.25));
 }
 
 
@@ -116,7 +116,7 @@ void MainWindow :: ProcessResults (json_t *results_json_p)
 		{
 			ProgressWindow *progress_p = mw_client_data_p -> qcd_progress_p;
 			bool show_progress_flag = false;
-			ResultsWindow *results_p = 0;
+			ResultsWindow *results_p = nullptr;
 			bool show_results_flag = false;
 
 			size_t i;
@@ -177,7 +177,7 @@ void MainWindow :: ProcessResults (json_t *results_json_p)
 												{
 													if ((i > OS_LOWER_LIMIT) && (i < OS_UPPER_LIMIT))
 														{
-															status = (OperationStatus) i;
+															status = static_cast <OperationStatus> (i);
 														}
 												}
 										}
@@ -585,7 +585,7 @@ void MainWindow :: SetBasicInterfaceLevel ()
 
 void MainWindow :: SetAdvancedInterfaceLevel ()
 {
-	mw_current_level = PL_SIMPLE;
+	mw_current_level = PL_ADVANCED;
 	mw_prefs_widget_p -> SetInterfaceLevel (mw_current_level);
 	update ();
 }

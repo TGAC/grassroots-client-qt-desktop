@@ -40,7 +40,7 @@ BaseParamWidget *BaseParamWidget :: Clone (ParameterGroup *group_p) const
 
 	if (dest_param_p)
 		{
-			BaseParamWidget *dest_widget_p = 0;
+			BaseParamWidget *dest_widget_p = nullptr;
 
 			if (group_p)
 				{
@@ -59,7 +59,7 @@ BaseParamWidget *BaseParamWidget :: Clone (ParameterGroup *group_p) const
 				}
 		}
 
-	return 0;
+	return nullptr;
 }
 
 
@@ -118,27 +118,27 @@ void BaseParamWidget :: CheckLevelDisplay (const ParameterLevel ui_level, const 
 		{
 			if (!CompareParameterLevels (bpw_param_p -> pa_level, ui_level))
 				{
-					if (this_widget_p -> isVisibleTo (parent_widget_p))
-						{
+					//if (this_widget_p -> isVisibleTo (parent_widget_p))
+					//	{
 							this_widget_p -> hide ();
 
 							if (bpw_label_p)
 								{
 									bpw_label_p -> hide ();
 								}
-						}
+					//	}
 				}
 			else
 				{
-					if (! (this_widget_p -> isVisibleTo (parent_widget_p)))
-						{
+					//if (! (this_widget_p -> isVisibleTo (parent_widget_p)))
+					//	{
 							this_widget_p -> show ();
 
 							if (bpw_label_p)
 								{
 									bpw_label_p -> show ();
 								}
-						}
+					//	}
 				}
 		}
 }

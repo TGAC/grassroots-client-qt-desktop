@@ -450,7 +450,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 	while (param_group_node_p)
 		{
 			ParameterGroup *group_p = param_group_node_p -> pgn_param_group_p;
-			ParameterWidgetContainer *container_p = 0;
+			ParameterWidgetContainer *container_p = nullptr;
 
 			if (group_p -> pg_repeatable_flag)
 				{
@@ -476,7 +476,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			if (!qpw_widgets_map.contains (param_p))
 				{
-					ParameterWidgetContainer *container_p = 0;
+					ParameterWidgetContainer *container_p = nullptr;
 
 					if (param_p -> pa_group_p)
 						{

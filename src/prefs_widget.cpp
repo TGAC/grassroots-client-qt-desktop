@@ -91,7 +91,7 @@ void PrefsWidget :: CreateAndAddServicePage (const json_t * const service_json_p
 
 			if (service_description_s)
 				{
-					ParameterSet *params_p = CreateParameterSetFromJSON (service_json_p, true);
+					ParameterSet *params_p = CreateParameterSetFromJSON (service_json_p, NULL, true);
 
 					if (params_p)
 						{

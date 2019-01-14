@@ -35,7 +35,7 @@ ServicesList :: ServicesList (QWidget *parent_p)
   connect (sl_services_p, &QListWidget :: itemChanged, this, &ServicesList :: CheckServiceRunStatus);
 
   QGroupBox *box_p = new QGroupBox (tr ("Services"));
-  box_p -> setAlignment (Qt :: AlignRight);
+  box_p -> setAlignment (Qt :: AlignCenter);
   QHBoxLayout *services_layout_p = new QHBoxLayout;
 
   services_layout_p -> addWidget (sl_services_p);
@@ -59,6 +59,7 @@ ServicesList :: ServicesList (QWidget *parent_p)
 
 	QSizePolicy p;
 	p.setHorizontalPolicy (QSizePolicy :: MinimumExpanding);
+	p.setVerticalPolicy (QSizePolicy :: MinimumExpanding);
 	sl_services_p -> setSizePolicy (p);
 }
 

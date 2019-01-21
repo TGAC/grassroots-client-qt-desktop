@@ -71,7 +71,7 @@ void RepeatableParamGroupBox :: AddRepeatableGroup ()
 
 			if (rpgb_children.size () > 0)
 				{
-					ParameterGroup *new_group_p = CreateAndAddParameterGroupChild (rpgb_parameter_group_p, group_name_s, NULL, true, true);
+					ParameterGroup *new_group_p = CreateAndAddParameterGroupChild (rpgb_parameter_group_p, group_name_s, NULL, true);
 
 					if (new_group_p)
 						{

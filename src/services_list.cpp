@@ -35,7 +35,7 @@ ServicesList :: ServicesList (QWidget *parent_p)
   connect (sl_services_p, &QListWidget :: itemChanged, this, &ServicesList :: CheckServiceRunStatus);
 
   QGroupBox *box_p = new QGroupBox (tr ("Services"));
-  box_p -> setAlignment (Qt :: AlignRight);
+  box_p -> setAlignment (Qt :: AlignCenter);
   QHBoxLayout *services_layout_p = new QHBoxLayout;
 
   services_layout_p -> addWidget (sl_services_p);
@@ -59,6 +59,7 @@ ServicesList :: ServicesList (QWidget *parent_p)
 
 	QSizePolicy p;
 	p.setHorizontalPolicy (QSizePolicy :: MinimumExpanding);
+	p.setVerticalPolicy (QSizePolicy :: MinimumExpanding);
 	sl_services_p -> setSizePolicy (p);
 }
 
@@ -95,7 +96,7 @@ void ServicesList :: AddService (const char * const service_name_s, ServicePrefs
 {
 	const char * const icon_path_s = services_widget_p -> GetServiceIconUri ();
 	QString service_name (service_name_s);
-	ServicesListItem *item_p = 0;
+	ServicesListItem *item_p = nullptr;
 
 	if (icon_path_s)
 		{

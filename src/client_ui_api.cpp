@@ -203,9 +203,11 @@ static json_t *RunQTClient (ClientData *client_data_p)
 
 			if (conn_p -> wc_uri_s)
 				{
+					qt_data_p -> qcd_server_url_s = conn_p -> wc_uri_s;
+
 					QString s (qt_data_p -> qcd_dummy_arg_s);
 					s.append (" - ");
-					s.append (conn_p -> wc_uri_s);
+					s.append (qt_data_p -> qcd_server_url_s);
 
 					qt_data_p -> qcd_window_p -> setWindowTitle (s);
 				}

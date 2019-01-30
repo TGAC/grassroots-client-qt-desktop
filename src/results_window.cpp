@@ -71,7 +71,12 @@ ResultsWindow :: ResultsWindow (MainWindow *parent_p, QTClientData *client_data_
 
 	layout_p -> addWidget (buttons_p);
 
-	setWindowTitle (tr ("Results"));
+
+	QString s (tr ("Results"));
+	s.append (" - ");
+	s.append (client_data_p -> qcd_server_url_s);
+
+	setWindowTitle (s);
 	setWindowIcon (QIcon ("images/viewas_list"));
 	setLayout (layout_p);
 

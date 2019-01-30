@@ -44,6 +44,7 @@ typedef struct QTClientData
 	QLinkedList <ViewerWidget *> *qcd_viewer_widgets_p;
 	QLinkedList <ResultsWindow *> *qcd_results_widgets_p;
 	char *qcd_dummy_arg_s;
+	char *qcd_server_url_s;
 	bool qcd_init_flag;
 } QTClientData;
 

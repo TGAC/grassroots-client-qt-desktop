@@ -30,7 +30,11 @@ ProgressWindow :: ProgressWindow (QMainWindow *parent_p, QTClientData *data_p)
 :	pw_data_p (data_p)
 {
 
-	setWindowTitle (tr ("Jobs Progress"));
+	QString s (tr ("Jobs Progress"));
+	s.append (" - ");
+	s.append (data_p -> qcd_server_url_s);
+
+	setWindowTitle (s);
 	setWindowIcon (QIcon ("images/progress"));
 
   //pw_timer_p = new QTimer (this);

@@ -58,7 +58,7 @@ public slots:
 	void RunKeywordServices ();
 	void GetNamedServices ();
 	void ConnectToServer ();
-
+	void ShowProgressWindow ();
 
 public:
 	MainWindow (struct QTClientData *data_p);

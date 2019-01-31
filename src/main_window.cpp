@@ -545,6 +545,14 @@ void MainWindow :: AddActions ()
 	menu_p -> addAction (action_p);
 
 
+	// View Menu
+	menu_p = menu_bar_p -> addMenu (tr ("&View"));
+
+	// View progress window
+	action_p = new QAction (tr ("Progress"), this);
+	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: ShowProgressWindow);
+	menu_p -> addAction (action_p);
+
 
 	// Tools Menu
 	menu_p = menu_bar_p -> addMenu (tr ("&Tools"));
@@ -626,3 +634,8 @@ void MainWindow :: ConnectToServer ()
 }
 
 
+void MainWindow :: ShowProgressWindow ()
+{
+	mw_client_data_p -> qcd_progress_p -> show ();
+	mw_client_data_p -> qcd_progress_p -> raise ();
+}

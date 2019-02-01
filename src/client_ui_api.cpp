@@ -46,7 +46,7 @@
 
 static int s_dummy_argc = 1;
 
-static QTClientData *AllocateQTClientData (void);
+static QTClientData *AllocateQTClientData (Connection *connection_p);
 static void FreeQTClientData (QTClientData *qt_data_p);
 
 static const char *GetQTClientName (ClientData *client_data_p);
@@ -58,12 +58,12 @@ static int AddServiceToQTClient (ClientData *client_data_p, const char * const s
 
 Client *GetClient (Connection *connection_p)
 {
-	Client *client_p = NULL;
-	QTClientData *data_p = AllocateQTClientData ();
+	Client *client_p = nullptr;
+	QTClientData *data_p = AllocateQTClientData (connection_p);
 
 	if (data_p)
 		{
-			client_p = (Client *) AllocMemory (sizeof (Client));
+			client_p = static_cast <Client *> (AllocMemory (sizeof (Client)));
 
 			if (client_p)
 				{
@@ -91,9 +91,9 @@ bool ReleaseClient (Client *client_p)
 }
 
 
-static QTClientData *AllocateQTClientData (void)
+static QTClientData *AllocateQTClientData (Connection *connection_p)
 {
-	QTClientData *data_p = (QTClientData *) AllocMemory (sizeof (QTClientData));
+	QTClientData *data_p = static_cast <QTClientData *> (AllocMemory (sizeof (QTClientData)));
 
 	if (data_p)
 		{
@@ -126,6 +126,18 @@ static QTClientData *AllocateQTClientData (void)
 					data_p -> qcd_window_p = new MainWindow (data_p);
 					data_p -> qcd_window_p -> setWindowIcon (QIcon ("images/cog"));
 
+					data_p -> qcd_server_url_s = nullptr;
+					if (connection_p -> co_type == CT_WEB)
+						{
+							WebConnection *conn_p = reinterpret_cast <WebConnection *> (connection_p);
+
+							if (conn_p -> wc_uri_s)
+								{
+									data_p -> qcd_server_url_s = conn_p -> wc_uri_s;
+								}
+						}
+
+
 					QObject :: connect (data_p -> qcd_window_p, &MainWindow :: Closed, data_p -> qcd_app_p, &QApplication :: quit);
 
 					data_p -> qcd_results_widgets_p = new QLinkedList <ResultsWindow *>;
@@ -139,7 +151,7 @@ static QTClientData *AllocateQTClientData (void)
 			else
 				{
 					FreeMemory (data_p);
-					data_p = NULL;
+					data_p = nullptr;
 				}
 		}
 
@@ -195,24 +207,16 @@ static const char *GetQTClientDescription (ClientData *client_data_p)
 static json_t *RunQTClient (ClientData *client_data_p)
 {
 	QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_data_p);
-	json_t *res_p = NULL;
+	json_t *res_p = nullptr;
+	QString s (qt_data_p -> qcd_dummy_arg_s);
 
-	if (qt_data_p -> qcd_base_data.cd_connection_p -> co_type == CT_WEB)
+	if (qt_data_p -> qcd_server_url_s)
 		{
-			WebConnection *conn_p = (WebConnection *) (qt_data_p -> qcd_base_data.cd_connection_p);
-
-			if (conn_p -> wc_uri_s)
-				{
-					qt_data_p -> qcd_server_url_s = conn_p -> wc_uri_s;
-
-					QString s (qt_data_p -> qcd_dummy_arg_s);
-					s.append (" - ");
-					s.append (qt_data_p -> qcd_server_url_s);
-
-					qt_data_p -> qcd_window_p -> setWindowTitle (s);
-				}
+			s.append (" - ");
+			s.append (qt_data_p -> qcd_server_url_s);
 		}
 
+	qt_data_p -> qcd_window_p -> setWindowTitle (s);
 
 	qt_data_p -> qcd_window_p -> show ();
 	qt_data_p -> qcd_window_p -> update ();
@@ -241,7 +245,7 @@ static int AddServiceToQTClient (ClientData *client_data_p, const char * const s
 
 static json_t *DisplayResultsInQTClient (ClientData *client_data_p, json_t *response_p)
 {
-	json_t *res_p = NULL;
+	json_t *res_p = nullptr;
 
 	#if CLIENT_UI_API_DEBUG >= DL_FINE
 	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, response_p, "response:\n");

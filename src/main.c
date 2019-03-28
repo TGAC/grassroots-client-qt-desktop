@@ -61,6 +61,7 @@ int main (int argc, char *argv [])
 					"\t--get-service <service name> get named services from the Grassroots server.\n"
 					"\t--keyword-search <keyword>, perform a keyword search against all keyword-aware services.\n"
 					"\t--list-interested <resource>, get all services that are able to run against a given resource.\n"
+					"\t--get-service-data <service_name>, get the JSON for Lucene indexing.\n"
 					"\t\tThe resource is in the form <protocol>://<name> e.g. file:///home/test.fa, https://my.data/object, irods://data.fa\n"
 					);
 			return 0;
@@ -163,6 +164,19 @@ int main (int argc, char *argv [])
 									printf ("named service argument missing");
 								}
 						}
+					else if (strcmp (argv [i], "--get-service-data") == 0)
+						{
+							op = OP_GET_SERVICE_INFO;
+
+							if ((i + 1) < argc)
+								{
+									keyword_s = argv [++ i];
+								}
+							else
+								{
+									printf ("named service argument missing");
+								}
+						}
 					else
 						{
 							printf ("Unknown argument: \"%s\"", argv [i]);
@@ -244,6 +258,13 @@ int main (int argc, char *argv [])
 									case OP_GET_NAMED_SERVICES:
 										{
 											GetNamedServicesInClient (client_p, keyword_s, user_p);
+										}
+										break;
+
+
+									case OP_GET_SERVICE_INFO:
+										{
+
 										}
 										break;
 

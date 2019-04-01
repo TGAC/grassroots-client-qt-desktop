@@ -264,7 +264,7 @@ int main (int argc, char *argv [])
 
 									case OP_GET_SERVICE_INFO:
 										{
-
+											GetNamedServicesIndexingDataInClient (client_p, keyword_s, user_p);
 										}
 										break;
 

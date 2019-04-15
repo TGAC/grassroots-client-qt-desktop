@@ -760,103 +760,59 @@ bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 
 	if (value_s)
 		{
-			const char *current_header_s = value_s;
-			const char *next_header_s = strchr (current_header_s, ptw_column_delimiter);
-			int i = 0;
-			QVector <QTableWidgetItem *> column_headers;
-			//qDebug () << "headers: " << value_s << endl;
+			json_error_t json_err;
+			json_t *value_p = json_loads (value_s, 0, &json_err);
 
-			//qDebug () << "current_header_s: " << current_header_s << endl;
-			//qDebug () << "next_header_s: " << next_header_s << endl;
-
-			ptw_table_p -> setRowCount (5);
-
-			while (next_header_s)
+			if (value_p)
 				{
-					char *header_s = CopyToNewString (current_header_s, next_header_s - current_header_s, false);
-
-					if (header_s)
+					if (json_is_array (value_p))
 						{
-							QTableWidgetItem *column_header_p = new QTableWidgetItem (header_s);
+							QVector <QTableWidgetItem *> column_headers;
+							const size_t num_columns = json_array_size (value_p);
+							size_t i;
 
-							qDebug () << "header_s: " << header_s << endl;
+							ptw_table_p -> setColumnCount (num_columns);
 
-
-							if (column_header_p)
+							for (i = 0; i < num_columns; ++ i)
 								{
-									const char *type_s = GetParameterKeyValue (param_p, header_s);
+									json_t *column_info_p = json_array_get (value_p, i);
 
-									if (type_s)
+									const char *name_s = GetJSONString (column_info_p, PARAM_NAME_S);
+
+									if (name_s)
 										{
-											QVariant v (type_s);
-											column_header_p -> setData (Qt::UserRole, v);
+											QTableWidgetItem *column_header_p = new QTableWidgetItem (name_s);
+
+											qDebug () << "name_s: " << name_s << endl;
+
+											if (column_header_p)
+												{
+													const char *type_s = GetJSONString (column_info_p, PARAM_TYPE_S);
+
+													if (type_s)
+														{
+															QVariant v (type_s);
+															column_header_p -> setData (Qt::UserRole, v);
+														}
+
+													qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << endl;
+
+													ptw_table_p -> setHorizontalHeaderItem (i, column_header_p);
+
+												}
+											else
+												{
+													qDebug () << "failed to create column header for header_s: " << name_s << endl;
+												}
 										}
 
-									qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << endl;
-
-									column_headers.append (column_header_p);
-								}
-							else
-								{
-									qDebug () << "failed to create column header for header_s: " << header_s << endl;
 								}
 
-							FreeCopiedString (header_s);
 						}
 
-					current_header_s = next_header_s + 1;
-
-					if ((*current_header_s != '\0') && (*current_header_s != ptw_row_delimiter))
-						{
-							next_header_s = strchr (current_header_s, ptw_column_delimiter);
-						}
-					else
-						{
-							current_header_s = NULL;
-							next_header_s = NULL;
-						}
-
-					++ i;
-				}		/* while (next_header_s) */
-
-			if (current_header_s)
-				{
-					char *header_s = CopyToNewString (current_header_s, next_header_s - current_header_s, false);
-
-					if (header_s)
-						{
-							QTableWidgetItem *column_header_p = new QTableWidgetItem (header_s);
-
-							if (column_header_p)
-								{
-									const char *type_s = GetParameterKeyValue (param_p, header_s);
-
-									if (type_s)
-										{
-											QVariant v (type_s);
-											column_header_p -> setData (Qt::UserRole, v);
-										}
-
-									column_headers.append (column_header_p);
-								}
-
-							FreeCopiedString (header_s);
-						}
+					json_decref (value_p);
 				}
 
-			i = column_headers.length ();
-
-			if (i > 0)
-				{
-					ptw_table_p -> setColumnCount (i);
-
-					-- i;
-					while (i >= 0)
-						{
-							ptw_table_p -> setHorizontalHeaderItem (i, column_headers.at (i));
-							-- i;
-						}
-				}
 
 			success_flag = true;
 

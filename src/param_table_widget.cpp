@@ -815,6 +815,7 @@ bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 
 
 			success_flag = true;
+			ptw_table_p -> setRowCount (5);
 
 		}		/* if (value_s) */
 	else

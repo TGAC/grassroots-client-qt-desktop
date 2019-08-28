@@ -121,7 +121,7 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 		{
 			const char *title_s = GetJSONString (resource_json_p, RESOURCE_TITLE_S);
 			const char *description_s = GetJSONString (resource_json_p, RESOURCE_DESCRIPTION_S);			
-			const char *icon_path_s = NULL;
+			const char *icon_path_s = GetJSONString (resource_json_p, "so:image");
 
 			if (strcmp (protocol_s, PROTOCOL_INLINE_S) == 0)
 				{
@@ -130,6 +130,7 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 					if (data_p)
 						{
 							QString s;
+							QIcon *icon_p = nullptr;
 
 							if (name_s)
 								{
@@ -151,7 +152,20 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 
 							connect (item_p, &JSONListWidgetItem :: RunServiceRequested, rp_parent_p, &ResultsPage :: RunService);
 
-							icon_path_s = "images/list_objects";
+							if (icon_path_s)
+								{
+									icon_p = UIUtils :: GetRemoteIconImage (icon_path_s);
+								}
+
+							if (!icon_p)
+								{
+									icon_p = new QIcon ("images/list_objects");
+								}
+
+							if (icon_p)
+								{
+									item_p -> setIcon (*icon_p);
+								}
 
 							item_p -> SetJSONData (data_p);
 
@@ -161,11 +175,6 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 								}
 
 							item_p -> setToolTip (description_s);
-
-							if (icon_path_s)
-								{
-									item_p -> setIcon (QIcon (icon_path_s));
-								}
 
 							success_flag = true;
 
@@ -201,7 +210,7 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 
 					if (value_s)
 						{
-							StandardListWidgetItem *item_p = 0;
+							StandardListWidgetItem *item_p = nullptr;
 
 							if (strcmp (protocol_s, PROTOCOL_FILE_S) == 0)
 								{

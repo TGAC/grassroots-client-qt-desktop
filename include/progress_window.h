@@ -25,6 +25,8 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QVector>
+#include <QVBoxLayout>
+#include <QListWidget>
 
 #include "progress_widget.h"
 #include "jansson.h"
@@ -54,9 +56,9 @@ public slots:
 private:
 	QTimer *pw_timer_p;
 	bool pw_timer_started_flag;
-	QVector <ProgressWidget *> pw_widgets;
 	QTClientData *pw_data_p;
 	QPushButton *pw_results_button_p;
+	QListWidget *pw_list_p;
 };
 
 #endif // PROGRESS_WINDOW_H

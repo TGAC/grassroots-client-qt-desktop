@@ -29,7 +29,7 @@
 
 ProgressWidget *ProgressWidget :: CreateProgressWidgetFromJSON (const json_t *json_p, ProgressWindow *parent_p, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s)
 {
-	ProgressWidget *widget_p = NULL;
+	ProgressWidget *widget_p = nullptr;
 	try
 		{
 			widget_p = new ProgressWidget (json_p, service_name_s, service_description_s, parent_p);
@@ -39,6 +39,8 @@ ProgressWidget *ProgressWidget :: CreateProgressWidgetFromJSON (const json_t *js
 
 		}
 
+
+
 	return widget_p;
 }
 
@@ -46,7 +48,7 @@ ProgressWidget *ProgressWidget :: CreateProgressWidgetFromJSON (const json_t *js
 
 ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name_s, const char *service_description_s, ProgressWindow *parent_p)
 {
-	const char *error_s = NULL;
+	const char *error_s = nullptr;
 	const char *uuid_s = GetJSONString (json_p, JOB_UUID_S);
 
 	if (uuid_s)
@@ -110,7 +112,7 @@ ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name
 
 									pw_parent_p = parent_p;
 
-									if ((errors_p != 0) && (json_object_size (errors_p) > 0))
+									if ((errors_p != nullptr) && (json_object_size (errors_p) > 0))
 										{
 											QPushButton *errors_button_p = new QPushButton (tr ("View Errors"));
 											errors_button_p -> setEnabled (true);
@@ -127,7 +129,12 @@ ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name
 									connect (delete_btn_p, &QPushButton :: clicked, this, &ProgressWidget :: DeleteFromParent);
 									layout_p -> addWidget (delete_btn_p);
 
-								}		/* if (pw_json_p) */
+									QSizePolicy p (QSizePolicy :: MinimumExpanding, QSizePolicy :: MinimumExpanding);
+									setSizePolicy (p);
+
+									setMinimumWidth (sizeHint().width());
+									setMinimumHeight (sizeHint().height());
+							}		/* if (pw_json_p) */
 							else
 								{
 									error_s = "Failed to copy job data";

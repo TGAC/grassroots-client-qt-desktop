@@ -59,6 +59,7 @@ private:
 	QTClientData *pw_data_p;
 	QPushButton *pw_results_button_p;
 	QListWidget *pw_list_p;
+	QVector <ProgressWidget *> pw_widgets;
 };
 
 #endif // PROGRESS_WINDOW_H

@@ -17,13 +17,14 @@ QWidget *ProgressWidgetDelegate :: createEditor (QWidget *parent_p, const QStyle
 
 void ProgressWidgetDelegate :: setEditorData (QWidget *editor_p, const QModelIndex &index_r) const
 {
-
+  QVariant v = index_r.model () -> data (index_r, Qt :: EditRole);
 }
 
 
 void ProgressWidgetDelegate :: setModelData (QWidget *editor_p, QAbstractItemModel *model_p, const QModelIndex &index_r) const
 {
-
+  QVariant v = index_r.model () -> data (index_r, Qt :: EditRole);
+  v.data();
 }
 
 

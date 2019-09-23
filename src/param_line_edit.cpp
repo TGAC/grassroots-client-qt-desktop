@@ -27,6 +27,12 @@ ParamLineEdit :: ParamLineEdit (Parameter * const param_p, QTParameterWidget * c
 	ple_text_box_p = new QLineEdit (parent_p);
 	ple_text_box_p -> setEchoMode (echo);
 
+
+	if (bpw_param_p -> pa_refresh_service_flag)
+		{
+			QObject ::  connect (ple_text_box_p,  &QLineEdit :: textChanged, parent_p, &QTParameterWidget :: RefreshService);
+		}
+
 }
 
 

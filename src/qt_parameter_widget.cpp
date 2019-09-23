@@ -141,10 +141,14 @@ QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const d
 	layout_p -> addLayout (qpw_layout_p);
 
 
+	qpw_refresh_active = false;
+
 	if (qpw_params_p)
 		{
 			AddParameters (qpw_params_p);
 		}		/* if (parameters_p) */
+
+	qpw_refresh_active = true;
 
 }
 
@@ -582,6 +586,16 @@ void QTParameterWidget :: ResetToDefaults ()
 			widget_p -> SetDefaultValue ();
 		}
 
+}
+
+
+void QTParameterWidget :: RefreshService ()
+{
+	/* Is the widget live or still adding its widgets? */
+	if (qpw_refresh_active)
+		{
+
+		}
 }
 
 

@@ -19,7 +19,7 @@
 class DroppableJSONBox : public DroppableTextBox
 {
 public:
-	DroppableJSONBox (QWidget *parent_p);
+	DroppableJSONBox (QTParameterWidget *parent_p);
 	virtual bool SetFromJSON (const json_t * const value_p);
 
 protected:
@@ -47,7 +47,7 @@ public:
 	virtual bool StoreParameterValue ();
 
 protected:
-	virtual bool CreateDroppableTextBox (QWidget *parent_p);
+	virtual bool CreateDroppableTextBox (QTParameterWidget *parent_p);
 
 };
 

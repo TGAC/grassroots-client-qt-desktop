@@ -85,8 +85,11 @@ public:
 public slots:
 	void ResetToDefaults ();
 
+	void RefreshService ();
+
 private slots:
 	void OpenLink (const QString &link_r);
+
 
 private:
 	ParameterSet *qpw_params_p;
@@ -106,7 +109,7 @@ private:
 
 	const struct QTClientData *qpw_client_data_p;
 
-
+	bool qpw_refresh_active;
 
 
 	/**

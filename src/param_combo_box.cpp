@@ -185,6 +185,11 @@ ParamComboBox :: ParamComboBox (Parameter * const param_p, QTParameterWidget * c
 : BaseParamWidget (param_p, parent_p), pcb_group_p (0)
 {
 	pcb_combo_box_p = new QComboBox (parent_p);
+
+	if (param_p -> pa_refresh_service_flag)
+		{
+			QObject ::  connect (pcb_combo_box_p, &QComboBox :: currentTextChanged, parent_p, &QTParameterWidget :: RefreshService);
+		}
 }
 
 
@@ -192,6 +197,7 @@ ParamComboBox ::	~ParamComboBox ()
 {
 	delete pcb_combo_box_p;
 }
+
 
 
 bool ParamComboBox :: StoreParameterValue ()

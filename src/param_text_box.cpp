@@ -26,7 +26,7 @@
 #include "byte_buffer.h"
 
 
-DroppableTextBox :: DroppableTextBox (QWidget *parent_p)
+DroppableTextBox :: DroppableTextBox (QTParameterWidget *parent_p)
 : QPlainTextEdit (parent_p)
 {
 	setAcceptDrops (true);
@@ -137,9 +137,14 @@ ParamTextBox :: ParamTextBox (Parameter * const param_p, QTParameterWidget * con
 
 
 
-bool ParamTextBox :: CreateDroppableTextBox (QWidget *parent_p)
+bool ParamTextBox :: CreateDroppableTextBox (QTParameterWidget *parent_p)
 {
 	ptb_text_box_p = new DroppableTextBox (parent_p);
+
+	if (bpw_param_p -> pa_refresh_service_flag)
+		{
+			QObject ::  connect (ptb_text_box_p,  &DroppableTextBox :: textChanged, parent_p, &QTParameterWidget :: RefreshService);
+		}
 
 	return true;
 }

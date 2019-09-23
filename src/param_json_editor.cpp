@@ -24,7 +24,7 @@
 #include "string_utils.h"
 
 
-DroppableJSONBox :: DroppableJSONBox (QWidget *parent_p)
+DroppableJSONBox :: DroppableJSONBox (QTParameterWidget *parent_p)
 	: DroppableTextBox (parent_p)
 {}
 
@@ -73,9 +73,9 @@ ParamJSONEditor :: ParamJSONEditor (Parameter * const param_p, QTParameterWidget
 
 
 
-bool ParamJSONEditor :: CreateDroppableTextBox (QWidget *parent_p)
+bool ParamJSONEditor :: CreateDroppableTextBox (QTParameterWidget *parent_p)
 {
-	ptb_text_box_p =  new DroppableJSONBox (parent_p);
+	ptb_text_box_p = new DroppableJSONBox (parent_p);
 
 	return true;
 }

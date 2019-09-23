@@ -43,6 +43,12 @@ ParamDateWidget :: ParamDateWidget (Parameter * const param_p, QTParameterWidget
 	pdw_checkbox_p -> setChecked (true);
 
 	connect (pdw_checkbox_p, &QAbstractButton :: clicked, pdw_calendar_p, &QWidget :: setEnabled);
+
+	if (bpw_param_p -> pa_refresh_service_flag)
+		{
+			QObject ::  connect (pdw_calendar_p,  &QCalendarWidget :: selectionChanged, parent_p, &QTParameterWidget :: RefreshService);
+		}
+
 }
 
 

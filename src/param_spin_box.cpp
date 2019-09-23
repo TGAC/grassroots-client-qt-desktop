@@ -57,6 +57,10 @@ ParamSpinBox :: ParamSpinBox (Parameter * const param_p, QTParameterWidget * con
 				}
 		}
 
+	if (param_p -> pa_refresh_service_flag)
+		{
+			QObject ::  connect (psb_spin_box_p,  qOverload <int> (&QSpinBox::valueChanged), parent_p, &QTParameterWidget :: RefreshService);
+		}
 }
 
 

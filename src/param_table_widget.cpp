@@ -696,6 +696,11 @@ ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidg
 	if (!SetColumnHeaders (param_p))
 		{
 		}
+
+	if (param_p -> pa_refresh_service_flag)
+		{
+			QObject ::  connect (ptw_table_p,  &QTableWidget :: itemChanged, parent_p, &QTParameterWidget :: RefreshService);
+		}
 }
 
 

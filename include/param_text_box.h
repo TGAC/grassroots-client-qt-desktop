@@ -34,7 +34,7 @@
 class DroppableTextBox : public QPlainTextEdit
 {
 public:
-	DroppableTextBox (QWidget *parent_p);
+	DroppableTextBox (QTParameterWidget *parent_p);
 	~DroppableTextBox ();
 
 	void LoadText (const char *filename_s);
@@ -74,7 +74,7 @@ protected:
 
 	virtual QWidget *GetQWidget ();
 
-	virtual bool CreateDroppableTextBox (QWidget *parent_p);
+	virtual bool CreateDroppableTextBox (QTParameterWidget *parent_p);
 
 };
 

@@ -68,7 +68,6 @@ public:
 
 	virtual void ShowErrors (const json_t *errors_p);
 
-
 protected:
 	Parameter * const bpw_param_p;
 	QTParameterWidget * const bpw_parent_p;

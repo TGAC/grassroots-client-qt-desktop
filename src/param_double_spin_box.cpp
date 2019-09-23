@@ -43,6 +43,12 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (Parameter * const param_p, QTParameter
 		{
 			pdsb_spinner_p -> setMaximum (1000000.0);
 		}
+
+
+	if (param_p -> pa_refresh_service_flag)
+		{
+			QObject ::  connect (pdsb_spinner_p,  qOverload <double> (&QDoubleSpinBox::valueChanged), parent_p, &QTParameterWidget :: RefreshService);
+		}
 }
 
 

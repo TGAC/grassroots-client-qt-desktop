@@ -44,7 +44,7 @@ public:
 
 	bool GetRunFlag () const;
 
-	json_t *GetServiceParamsAsJSON (bool full_flag) const;
+	json_t *GetServiceParamsAsJSON (bool full_flag, const ParameterLevel level) const;
 
 	const char *GetServiceName () const;
 

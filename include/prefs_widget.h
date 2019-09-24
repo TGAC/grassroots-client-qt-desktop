@@ -73,7 +73,7 @@ public:
 
 	bool SetServiceErrors (const char *service_name_s, const json_t * const errors_p);
 
-	virtual json_t *GetUserValuesAsJSON (bool full_flag);
+	virtual json_t *GetUserValuesAsJSON (const bool full_flag, const ParameterLevel level);
 
 	ServicePrefsWidget *GetServicePrefsWidget (const char * const service_name_s);
 

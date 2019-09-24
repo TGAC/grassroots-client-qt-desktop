@@ -205,7 +205,7 @@ void PrefsWidget :: SetInterfaceLevel (ParameterLevel level)
 }
 
 
-json_t *PrefsWidget :: GetUserValuesAsJSON (bool full_flag)
+json_t *PrefsWidget :: GetUserValuesAsJSON (const bool full_flag, const ParameterLevel level)
 {
 	json_t *root_p = json_array ();
 
@@ -225,7 +225,7 @@ json_t *PrefsWidget :: GetUserValuesAsJSON (bool full_flag)
 			while (success_flag && (i < num_services))
 				{
 					ServicePrefsWidget *spw_p = pw_service_widgets.at (i);
-					json_t *service_json_p = spw_p -> GetServiceParamsAsJSON (full_flag);
+					json_t *service_json_p = spw_p -> GetServiceParamsAsJSON (full_flag, level);
 
 					if (service_json_p)
 						{

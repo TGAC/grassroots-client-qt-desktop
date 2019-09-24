@@ -47,7 +47,7 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (Parameter * const param_p, QTParameter
 
 	if (param_p -> pa_refresh_service_flag)
 		{
-			QObject ::  connect (pdsb_spinner_p,  qOverload <double> (&QDoubleSpinBox::valueChanged), parent_p, &QTParameterWidget :: RefreshService);
+			QObject ::  connect (pdsb_spinner_p, static_cast <void (QDoubleSpinBox :: *) (double)> (&QDoubleSpinBox :: valueChanged), parent_p, &QTParameterWidget :: RefreshService);
 		}
 }
 

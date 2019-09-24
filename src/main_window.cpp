@@ -353,7 +353,7 @@ void MainWindow :: CreateAndAddServicePage (const char * const service_name_s, c
 
 json_t *MainWindow :: GetUserValuesAsJSON (bool all_flag) const
 {
-	return mw_prefs_widget_p -> GetUserValuesAsJSON (all_flag);
+	return mw_prefs_widget_p -> GetUserValuesAsJSON (all_flag, mw_current_level);
 }
 
 

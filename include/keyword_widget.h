@@ -36,7 +36,7 @@ class KeywordWidget : public QWidget, public RunnableWidget
 public:
 	KeywordWidget (QWidget *parent_p, ParameterLevel initial_level);
 
-	virtual json_t *GetUserValuesAsJSON (bool full_flag);
+	virtual json_t *GetUserValuesAsJSON (const bool full_flag, const ParameterLevel level);
 
 signals:
 	void RunKeywordSearch (QString s);

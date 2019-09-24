@@ -54,7 +54,7 @@ void KeywordWidget :: TextEntered ()
 }
 
 
-json_t *KeywordWidget :: GetUserValuesAsJSON (bool full_flag)
+json_t *KeywordWidget :: GetUserValuesAsJSON (const bool full_flag, const ParameterLevel level)
 {
 	return NULL;
 }

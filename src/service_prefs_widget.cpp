@@ -120,7 +120,7 @@ bool ServicePrefsWidget :: GetRunFlag () const
 }
 
 
-json_t *ServicePrefsWidget :: GetServiceParamsAsJSON (bool full_flag) const
+json_t *ServicePrefsWidget :: GetServiceParamsAsJSON (bool full_flag, const ParameterLevel level) const
 {
 	json_t *res_p = nullptr;
 	ParameterSet *params_p = spw_params_widget_p -> GetParameterSet ();
@@ -130,7 +130,7 @@ json_t *ServicePrefsWidget :: GetServiceParamsAsJSON (bool full_flag) const
 			const SchemaVersion *sv_p = spw_client_data_p -> qcd_base_data.cd_schema_p;
 
 			const bool run_flag = GetRunFlag ();
-			res_p = GetServiceRunRequest (spw_service_name_s, params_p, sv_p, run_flag);
+			res_p = GetServiceRunRequest (spw_service_name_s, params_p, sv_p, run_flag, level);
 		}
 
 	return res_p;

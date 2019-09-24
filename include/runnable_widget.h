@@ -22,11 +22,13 @@
 #define RUNNABLE_WIDGET_H
 
 #include "jansson.h"
+#include "parameter.h"
+
 
 class RunnableWidget
 {
 public:
-	virtual json_t *GetUserValuesAsJSON (bool full_flag) = 0;
+  virtual json_t *GetUserValuesAsJSON (const bool full_flag, const ParameterLevel level) = 0;
 };
 
 #endif // RUNNABLE_WIDGET_H

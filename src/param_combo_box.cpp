@@ -80,7 +80,7 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 				{
 					v_p = new QVariant (value_p -> st_string_value_s);
 
-					if (current_param_value_p)
+					if ((current_param_value_p) && (current_param_value_p -> st_string_value_s))
 						{
 							if (strcmp (value_p -> st_string_value_s, current_param_value_p -> st_string_value_s) == 0)
 								{

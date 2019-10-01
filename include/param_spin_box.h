@@ -29,6 +29,17 @@
 #include "base_param_widget.h"
 
 
+class ClearableSpinBox : public QSpinBox
+{
+	Q_OBJECT
+
+public:
+	ClearableSpinBox (QWidget *parent_p = nullptr);
+
+protected:
+	void fixup(QString &input) const;
+};
+
 
 class ParamSpinBox : public BaseParamWidget
 {

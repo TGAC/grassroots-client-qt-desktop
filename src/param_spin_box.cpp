@@ -25,6 +25,20 @@ int ParamSpinBox :: PSB_DEFAULT_MIN = INT32_MIN;
 int ParamSpinBox :: PSB_DEFAULT_MAX = INT32_MAX;
 
 
+
+ClearableSpinBox :: ClearableSpinBox (QWidget *parent_p)
+	: QSpinBox (parent_p)
+{}
+
+
+void ClearableSpinBox :: fixup (QString &input) const
+{
+
+}
+
+
+
+
 ParamSpinBox :: ParamSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p, bool signed_flag)
 :	BaseParamWidget (param_p, parent_p),
 	psb_signed_flag (signed_flag)
@@ -56,6 +70,15 @@ ParamSpinBox :: ParamSpinBox (Parameter * const param_p, QTParameterWidget * con
 						break;
 				}
 		}
+
+	if (param_p -> pa_optional_flag)
+		{
+			const char *value_s = param_p -> pa_optional_label_s ? param_p -> pa_optional_label_s : "";
+
+			psb_spin_box_p -> setSpecialValueText (value_s);
+		}
+
+
 
 	if (param_p -> pa_refresh_service_flag)
 		{

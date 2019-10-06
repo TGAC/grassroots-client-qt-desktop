@@ -174,7 +174,7 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/viewable_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/viewer_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_date_widget.cpp \
-    $$DIR_GRASSROOTS_QT_SRC/src/progress_widget_delegate.cpp
+		$$DIR_GRASSROOTS_QT_SRC/src/progress_widget_delegate.cpp
 
 HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \

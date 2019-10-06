@@ -71,12 +71,6 @@ ParamSpinBox :: ParamSpinBox (Parameter * const param_p, QTParameterWidget * con
 				}
 		}
 
-	if (param_p -> pa_optional_flag)
-		{
-			const char *value_s = param_p -> pa_optional_label_s ? param_p -> pa_optional_label_s : "";
-
-			psb_spin_box_p -> setSpecialValueText (value_s);
-		}
 
 
 

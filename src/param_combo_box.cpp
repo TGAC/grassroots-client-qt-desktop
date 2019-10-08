@@ -32,8 +32,8 @@ ParamComboBox *ParamComboBox :: Create (Parameter * const param_p, QTParameterWi
 
 	if (combo_box_p -> bpw_param_p -> pa_options_p)
 		{
-			ParameterOptionNode *option_node_p = (ParameterOptionNode *) (combo_box_p -> bpw_param_p -> pa_options_p -> ll_head_p);
-			bool loop_flag = (option_node_p != 0);
+			ParameterOptionNode *option_node_p =  reinterpret_cast <ParameterOptionNode *> (combo_box_p -> bpw_param_p -> pa_options_p -> ll_head_p);
+			bool loop_flag = (option_node_p != nullptr);
 
 			while (loop_flag && success_flag)
 				{
@@ -42,9 +42,9 @@ ParamComboBox *ParamComboBox :: Create (Parameter * const param_p, QTParameterWi
 
 					if (combo_box_p -> AddOption (& (option_p -> po_value), option_p -> po_description_s, current_value_p))
 						{
-							option_node_p = (ParameterOptionNode *) (option_node_p -> pon_node.ln_next_p);
+							option_node_p = reinterpret_cast <ParameterOptionNode *> (option_node_p -> pon_node.ln_next_p);
 
-							loop_flag = (option_node_p != 0);
+							loop_flag = (option_node_p != nullptr);
 						}
 					else
 						{
@@ -58,7 +58,7 @@ ParamComboBox *ParamComboBox :: Create (Parameter * const param_p, QTParameterWi
 	if (!success_flag)
 		{
 			delete combo_box_p;
-			combo_box_p = 0;
+			combo_box_p = nullptr;
 		}
 
 	return combo_box_p;
@@ -67,7 +67,7 @@ ParamComboBox *ParamComboBox :: Create (Parameter * const param_p, QTParameterWi
 
 bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, const SharedType *current_param_value_p)
 {
-	QVariant *v_p = 0;
+	QVariant *v_p = nullptr;
 	bool alloc_display_flag = false;
 	bool success_flag = false;
 	bool current_value_flag = false;
@@ -78,11 +78,22 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 			case PT_KEYWORD:
 			case PT_LARGE_STRING:
 				{
-					v_p = new QVariant (value_p -> st_string_value_s);
 
-					if ((current_param_value_p) && (current_param_value_p -> st_string_value_s))
+					if (current_param_value_p && value_p)
 						{
-							if (strcmp (value_p -> st_string_value_s, current_param_value_p -> st_string_value_s) == 0)
+							v_p = new QVariant (value_p -> st_string_value_s);
+
+							if (current_param_value_p -> st_string_value_s)
+								{
+									if (value_p -> st_string_value_s)
+										{
+											if (strcmp (value_p -> st_string_value_s, current_param_value_p -> st_string_value_s) == 0)
+												{
+													current_value_flag = true;
+												}
+										}
+								}
+							else if (! (value_p -> st_string_value_s))
 								{
 									current_value_flag = true;
 								}
@@ -108,8 +119,8 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 
 				if (!option_s)
 					{
-						option_s =	ConvertIntegerToString (value_p -> st_ulong_value);
-						alloc_display_flag = (option_s != 0);
+						option_s = ConvertUnsignedIntegerToString (value_p -> st_ulong_value);
+						alloc_display_flag = (option_s != nullptr);
 					}
 				break;
 
@@ -127,7 +138,7 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 			if (!option_s)
 				{
 					option_s =	ConvertIntegerToString (value_p -> st_long_value);
-					alloc_display_flag = (option_s != 0);
+					alloc_display_flag = (option_s != nullptr);
 				}
 			break;
 
@@ -137,7 +148,7 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 
 			if (current_param_value_p)
 				{
-					if (value_p -> st_data_value == current_param_value_p -> st_data_value)
+					if (CompareDoubles (value_p -> st_data_value, current_param_value_p -> st_data_value) == 0)
 						{
 							current_value_flag = true;
 						}
@@ -146,7 +157,7 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 			if (!option_s)
 				{
 					option_s =	ConvertDoubleToString (value_p -> st_data_value);
-					alloc_display_flag = (option_s != 0);
+					alloc_display_flag = (option_s != nullptr);
 				}
 			break;
 
@@ -182,7 +193,7 @@ bool ParamComboBox :: AddOption (const SharedType *value_p, char *option_s, cons
 }
 
 ParamComboBox :: ParamComboBox (Parameter * const param_p, QTParameterWidget * const parent_p)
-: BaseParamWidget (param_p, parent_p), pcb_group_p (0)
+: BaseParamWidget (param_p, parent_p), pcb_group_p (nullptr)
 {
 	pcb_combo_box_p = new QComboBox (parent_p);
 
@@ -414,7 +425,7 @@ bool ParamComboBox :: SetValueFromJSON (const json_t * const value_p)
 					if (json_is_integer (value_p))
 						{
 							QString s;
-							int value = json_integer_value (value_p);
+							long value = json_integer_value (value_p);
 
 							s.setNum (value);
 							pcb_combo_box_p -> setCurrentText (s);

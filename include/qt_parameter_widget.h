@@ -40,7 +40,7 @@
 
 
 // forward class declaration
-class PrefsWidget;
+class ServicePrefsWidget;
 struct QTClientData;
 
 
@@ -50,7 +50,7 @@ class QTParameterWidget : public QWidget
 
 
 public:
-	QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, ServiceMetadata *metadata_p, const PrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const struct QTClientData *client_data_p);
+	QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, ServiceMetadata *metadata_p, const ServicePrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const struct QTClientData *client_data_p);
 
 	virtual ~QTParameterWidget ();
 
@@ -94,7 +94,7 @@ private slots:
 private:
 	ParameterSet *qpw_params_p;
 
-	const PrefsWidget * const qpw_prefs_widget_p;
+	const ServicePrefsWidget * const qpw_parent_prefs_widget_p;
 
 	QHash <Parameter *, BaseParamWidget *> qpw_widgets_map;
 

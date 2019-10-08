@@ -17,6 +17,7 @@
 #include <QDesktopServices>
 
 #include <QHBoxLayout>
+#include <QMessageBox>
 
 #include "qt_parameter_widget.h"
 #include "file_chooser_widget.h"
@@ -42,14 +43,15 @@
 #include "parameter_group.h"
 #include "string_utils.h"
 #include "provider.h"
-
+#include "json_tools.h"
+#include "service.h"
 
 const int QTParameterWidget :: QPW_NUM_COLUMNS = 2;
 
 
-QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, ServiceMetadata *metadata_p, const PrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const QTClientData *client_data_p)
+QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, ServiceMetadata *metadata_p, const ServicePrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const QTClientData *client_data_p)
 :	qpw_params_p (parameters_p),
-	qpw_prefs_widget_p (prefs_widget_p),
+	qpw_parent_prefs_widget_p (prefs_widget_p),
 	qpw_widgets_map (QHash <Parameter *, BaseParamWidget *> ()),
 	qpw_level (initial_level),
 	qpw_client_data_p (client_data_p)
@@ -594,7 +596,37 @@ void QTParameterWidget :: RefreshService ()
 	/* Is the widget live or still adding its widgets? */
 	if (qpw_refresh_active)
 		{
+			ParameterSet *params_p = GetParameterSet ();
 
+			if (params_p)
+				{
+					const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
+					json_t *req_p = GetServiceRefreshRequest (qpw_parent_prefs_widget_p -> GetServiceName (), params_p, sv_p, true, PL_ALL);
+
+					if (req_p)
+						{
+							setCursor (Qt :: BusyCursor);
+							json_t *results_p = MakeRemoteJsonCall (req_p, qpw_client_data_p -> qcd_base_data.cd_connection_p);
+							setCursor (Qt :: ArrowCursor);
+
+							if (results_p)
+								{
+									char *dump_s = json_dumps (results_p, 0);
+
+									if (dump_s)
+										{
+
+											free (dump_s);
+										}
+
+								}
+							else
+								{
+									QMessageBox :: critical (this, "Error refreshing service", "Failed to get updated service values");
+								}
+						}		/* if (req_p) */
+
+				}
 		}
 }
 

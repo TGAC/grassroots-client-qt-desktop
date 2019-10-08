@@ -266,7 +266,7 @@ void MainWindow :: RunService (json_t *service_p)
 {
 	if (service_p)
 		{
-			UserDetails *user_p = NULL;
+			UserDetails *user_p = nullptr;
 
 			setCursor (Qt :: BusyCursor);
 			json_t *services_json_p = CallServices (service_p, user_p, mw_client_data_p -> qcd_base_data.cd_connection_p);
@@ -286,12 +286,12 @@ void MainWindow :: RunKeywordSearch (QString keywords)
 {
 	QByteArray ba = keywords.toLocal8Bit ();
 	const char *keywords_s = ba.constData ();
-	UserDetails *user_p = NULL;
+	UserDetails *user_p = nullptr;
 	json_t *query_p  = GetKeywordServicesRequest (user_p, keywords_s, mw_client_data_p -> qcd_base_data.cd_schema_p);
 
 	if (query_p)
 		{
-			json_t *results_p = NULL;
+			json_t *results_p = nullptr;
 
 			PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, query_p, "\n\nquery:\n");
 

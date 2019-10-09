@@ -600,33 +600,54 @@ void QTParameterWidget :: RefreshService ()
 
 			if (params_p)
 				{
-					const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
-					json_t *req_p = GetServiceRefreshRequest (qpw_parent_prefs_widget_p -> GetServiceName (), params_p, sv_p, true, PL_ALL);
+					json_t *req_p = json_array ();
 
 					if (req_p)
 						{
-							setCursor (Qt :: BusyCursor);
-							json_t *results_p = MakeRemoteJsonCall (req_p, qpw_client_data_p -> qcd_base_data.cd_connection_p);
-							setCursor (Qt :: ArrowCursor);
+							const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
+							json_t *service_req_p = GetServiceRefreshRequest (qpw_parent_prefs_widget_p -> GetServiceName (), params_p, sv_p, true, PL_ALL);
 
-							if (results_p)
+							if (service_req_p)
 								{
-									char *dump_s = json_dumps (results_p, 0);
-
-									if (dump_s)
+									if (json_array_append_new (req_p, service_req_p) == 0)
 										{
+											char *dump_s = json_dumps (req_p, 0);
 
-											free (dump_s);
+											if (dump_s)
+												{
+													printf ("sending:\n%s", dump_s);
+													free (dump_s);
+												}
+
+
+											setCursor (Qt :: BusyCursor);
+											json_t *results_p = MakeRemoteJsonCall (req_p, qpw_client_data_p -> qcd_base_data.cd_connection_p);
+											setCursor (Qt :: ArrowCursor);
+
+											if (results_p)
+												{
+													dump_s = json_dumps (results_p, 0);
+
+													if (dump_s)
+														{
+															printf ("received:\n%s", dump_s);
+															free (dump_s);
+														}
+
+												}
+											else
+												{
+													QMessageBox :: critical (this, "Error refreshing service", "Failed to get updated service values");
+												}
+
 										}
 
 								}
-							else
-								{
-									QMessageBox :: critical (this, "Error refreshing service", "Failed to get updated service values");
-								}
-						}		/* if (req_p) */
+
+						}
 
 				}
+
 		}
 }
 

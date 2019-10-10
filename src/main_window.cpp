@@ -266,10 +266,8 @@ void MainWindow :: RunService (json_t *service_p)
 {
 	if (service_p)
 		{
-			UserDetails *user_p = nullptr;
-
 			setCursor (Qt :: BusyCursor);
-			json_t *services_json_p = CallServices (service_p, user_p, mw_client_data_p -> qcd_base_data.cd_connection_p);
+			json_t *services_json_p = CallServices (service_p, nullptr, mw_client_data_p -> qcd_base_data.cd_connection_p);
 			setCursor (Qt :: ArrowCursor);
 
 			if (services_json_p)

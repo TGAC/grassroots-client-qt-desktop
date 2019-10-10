@@ -621,7 +621,7 @@ void QTParameterWidget :: RefreshService ()
 
 
 											setCursor (Qt :: BusyCursor);
-											json_t *results_p = MakeRemoteJsonCall (req_p, qpw_client_data_p -> qcd_base_data.cd_connection_p);
+											json_t *results_p = CallServices (req_p, nullptr, qpw_client_data_p -> qcd_base_data.cd_connection_p);
 											setCursor (Qt :: ArrowCursor);
 
 											if (results_p)

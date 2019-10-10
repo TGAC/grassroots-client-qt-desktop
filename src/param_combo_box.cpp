@@ -199,7 +199,7 @@ ParamComboBox :: ParamComboBox (Parameter * const param_p, QTParameterWidget * c
 
 	if (param_p -> pa_refresh_service_flag)
 		{
-			QObject ::  connect (pcb_combo_box_p, &QComboBox :: currentTextChanged, parent_p, &QTParameterWidget :: RefreshService);
+			QObject :: connect (pcb_combo_box_p, &QComboBox :: currentTextChanged, parent_p, &QTParameterWidget :: RefreshService);
 		}
 }
 
@@ -213,80 +213,101 @@ ParamComboBox ::	~ParamComboBox ()
 
 bool ParamComboBox :: StoreParameterValue ()
 {
-	QVariant v = pcb_combo_box_p -> currentData ();
 	bool success_flag = false;
+	int index = pcb_combo_box_p -> currentIndex ();
 
-	switch (bpw_param_p -> pa_type)
+	const int num_entries = pcb_combo_box_p -> count ();
+	for (int i = 0; i < num_entries; ++ i)
 		{
-			case PT_LARGE_STRING:
-			case PT_STRING:
-			case PT_FILE_TO_READ:
-			case PT_FILE_TO_WRITE:
-			case PT_DIRECTORY:
-			case PT_KEYWORD:
-				{
-					QString s (v.toString ());
-					QByteArray ba = s.toLocal8Bit ();
-
-					const char *value_s = ba.constData ();
-
-					success_flag = SetParameterValue (bpw_param_p, value_s, true);
-
-					qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s;
-				}
-				break;
-
-			case PT_CHAR:
-				{
-					QChar qc = v.toChar ();
-					char c = qc.toLatin1 ();
-					success_flag = SetParameterValue (bpw_param_p, &c, true);
-
-					qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << c;
-				}
-				break;
-
-			case PT_BOOLEAN:
-				{
-					bool b = v.toBool ();
-					success_flag = SetParameterValue (bpw_param_p, &b, true);
-
-					qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << b;
-				}
-				break;
-
-			case PT_SIGNED_INT:
-			case PT_UNSIGNED_INT:
-				{
-					bool conv_flag = false;
-					int i = v.toInt (&conv_flag);
-
-					if (conv_flag)
-						{
-							success_flag = SetParameterValue (bpw_param_p, &i, true);
-							qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << i;
-						}
-				}
-				break;
-
-			case PT_SIGNED_REAL:
-			case PT_UNSIGNED_REAL:
-				{
-					bool conv_flag = false;
-					double d = v.toDouble (&conv_flag);
-
-					if (conv_flag)
-						{
-							success_flag = SetParameterValue (bpw_param_p, &d, true);
-
-							qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << d;
-						}
-				}
-				break;
-
-			default:
-				break;
+			QString label = pcb_combo_box_p -> itemText (i);
+			QString value = QVariant (pcb_combo_box_p -> itemData (i)).toString();
+			qDebug () <<  "label: " << label << " value: " << value;
 		}
+
+
+	if (index != -1)
+		{
+			QVariant v = pcb_combo_box_p -> itemData (index);
+			QString label_str (pcb_combo_box_p -> currentText ());
+			QByteArray label_ba = label_str.toLocal8Bit ();
+			const char *label_value_s = label_ba.constData ();
+
+			switch (bpw_param_p -> pa_type)
+				{
+					case PT_LARGE_STRING:
+					case PT_STRING:
+					case PT_FILE_TO_READ:
+					case PT_FILE_TO_WRITE:
+					case PT_DIRECTORY:
+					case PT_KEYWORD:
+						{
+							QString s = v.toString ();
+							QByteArray ba = s.toLocal8Bit ();
+							const char *value_s = ba.constData ();
+
+							success_flag = SetParameterValue (bpw_param_p, value_s, true);
+
+							qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s;
+						}
+						break;
+
+					case PT_CHAR:
+						{
+							QChar qc = v.toChar ();
+							char c = qc.toLatin1 ();
+							success_flag = SetParameterValue (bpw_param_p, &c, true);
+
+							qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << c;
+						}
+						break;
+
+					case PT_BOOLEAN:
+						{
+							bool b = v.toBool ();
+							success_flag = SetParameterValue (bpw_param_p, &b, true);
+
+							qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << b;
+						}
+						break;
+
+					case PT_SIGNED_INT:
+					case PT_UNSIGNED_INT:
+						{
+							bool conv_flag = false;
+							int i = v.toInt (&conv_flag);
+
+							if (conv_flag)
+								{
+									success_flag = SetParameterValue (bpw_param_p, &i, true);
+									qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << i;
+								}
+						}
+						break;
+
+					case PT_SIGNED_REAL:
+					case PT_UNSIGNED_REAL:
+						{
+							bool conv_flag = false;
+							double d = v.toDouble (&conv_flag);
+
+							if (conv_flag)
+								{
+									success_flag = SetParameterValue (bpw_param_p, &d, true);
+
+									qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << d;
+								}
+						}
+						break;
+
+					default:
+						break;
+				}
+
+
+		}
+
+	QVariant v = pcb_combo_box_p -> currentData ();
+
 
 
 	return success_flag;

@@ -591,6 +591,74 @@ void QTParameterWidget :: ResetToDefaults ()
 }
 
 
+
+bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p)
+{
+	bool success_flag = false;
+	const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName ();
+	const json_t *params_json_p = json_object_get (param_set_json_p, PARAM_SET_PARAMS_S);
+
+	if (params_json_p)
+		{
+			if (json_is_array (params_json_p))
+				{
+					json_t *param_p;
+					size_t i;
+
+					success_flag = true;
+
+					json_array_foreach (params_json_p, i, param_p)
+						{
+							const char *param_name_s = GetJSONString (param_p, PARAM_NAME_S);
+
+							if (param_name_s)
+								{
+									BaseParamWidget *widget_p = GetWidgetForParameter (param_name_s);
+
+									if (widget_p)
+										{
+											const json_t *param_value_p = json_object_get (param_p, PARAM_CURRENT_VALUE_S);
+
+											if (param_value_p)
+												{
+													if (! (widget_p -> SetValueFromJSON (param_value_p)))
+														{
+															success_flag = false;
+															PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_value_p, "Failed to set %s -> %s from json", service_name_s, param_name_s);
+														}
+												}
+											else
+												{
+													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter value %s -> %s from json", service_name_s, PARAM_CURRENT_VALUE_S);
+												}
+
+										}		/* if (widget_p) */
+									else
+										{
+											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get widget for %s -> %s from json", service_name_s, param_name_s);
+										}
+
+								}		/* if (param_name_s) */
+							else
+								{
+									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter name %s -> %s from json", service_name_s, PARAM_NAME_S);
+								}
+
+						}		/* json_array_foreach (params_json_p, i, param_p) */
+
+				}		/* if (json_is_array (params_json_p)) */
+
+		}
+	else
+		{
+			PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_set_json_p, "Failed to get child %s from json", PARAM_SET_PARAMS_S);
+		}
+
+	return success_flag;
+}
+
+
+
 void QTParameterWidget :: RefreshService ()
 {
 	/* Is the widget live or still adding its widgets? */
@@ -626,6 +694,46 @@ void QTParameterWidget :: RefreshService ()
 
 											if (results_p)
 												{
+													const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName ();
+
+													if (service_name_s)
+														{
+															const json_t *services_json_p = json_object_get (results_p, SERVICES_NAME_S);
+
+															if (services_json_p)
+																{
+																	if (json_is_array (services_json_p))
+																		{
+																			size_t i;
+																			const size_t num_services = json_array_size (services_json_p);
+
+																			for (i = 0; i < num_services; ++ i)
+																				{
+																					const json_t *service_json_p = json_array_get (services_json_p, i);
+																					const char *name_s = GetJSONString (service_json_p, SERVICE_NAME_S);
+
+																					if (name_s)
+																						{
+																							if (strcmp (name_s, service_name_s) == 0)
+																								{
+																									const json_t *op_p = json_object_get (service_json_p, OPERATION_S);
+
+																									if (op_p)
+																										{
+																											const json_t *param_set_json_p = json_object_get (op_p, PARAM_SET_KEY_S);
+
+																											if (param_set_json_p)
+																												{
+																													SetParamValuesFromJSON (param_set_json_p);
+																												}
+																										}
+																								}
+																						}
+																				}
+																		}
+																}
+														}
+
 													dump_s = json_dumps (results_p, 0);
 
 													if (dump_s)

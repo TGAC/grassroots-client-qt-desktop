@@ -81,6 +81,9 @@ public:
 
 	void ParameterWidgetAdded (Parameter *param_p, BaseParamWidget *widget_p);
 
+	bool SetParamValuesFromJSON (const json_t *param_set_json_p);
+
+
 
 public slots:
 	void ResetToDefaults ();

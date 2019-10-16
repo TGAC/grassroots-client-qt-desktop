@@ -160,60 +160,7 @@ bool ServicePrefsWidget :: SetServiceParams (const json_t *service_config_p)
 
 	if (json_p)
 		{
-			const json_t *params_json_p = json_object_get (json_p, PARAM_SET_PARAMS_S);
-
-			if (params_json_p)
-				{
-					if (json_is_array (params_json_p))
-						{
-							json_t *param_p;
-							size_t i;
-
-							json_array_foreach (params_json_p, i, param_p)
-								{
-									const char *param_name_s = GetJSONString (param_p, PARAM_NAME_S);
-
-									if (param_name_s)
-										{
-											BaseParamWidget *widget_p = spw_params_widget_p -> GetWidgetForParameter (param_name_s);
-
-											if (widget_p)
-												{
-													const json_t *param_value_p = json_object_get (param_p, PARAM_CURRENT_VALUE_S);
-
-													if (param_value_p)
-														{
-															if (! (widget_p -> SetValueFromJSON (param_value_p)))
-																{
-																	PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_value_p, "Failed to set %s -> %s from json", spw_service_name_s, param_name_s);
-																}
-														}
-													else
-														{
-															PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter value %s -> %s from json", spw_service_name_s, PARAM_CURRENT_VALUE_S);
-														}
-
-												}		/* if (widget_p) */
-											else
-												{
-													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get widget for %s -> %s from json", spw_service_name_s, param_name_s);
-												}
-
-										}		/* if (param_name_s) */
-									else
-										{
-											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter name %s -> %s from json", spw_service_name_s, PARAM_NAME_S);
-										}
-
-								}		/* json_array_foreach (params_json_p, i, param_p) */
-
-						}		/* if (json_is_array (params_json_p)) */
-
-				}
-			else
-				{
-					PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, json_p, "Failed to get child %s from json", PARAM_SET_PARAMS_S);
-				}
+			success_flag = spw_params_widget_p -> SetParamValuesFromJSON (json_p);
 		}
 	else
 		{

@@ -531,18 +531,30 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidge
 BaseParamWidget *QTParameterWidget :: GetWidgetForParameter (const char * const param_name_s) const
 {
 	BaseParamWidget *widget_p = nullptr;
+	Parameter *param_p = GetParameterFromParameterSetByName (qpw_params_p, param_name_s);
 
-	const QList <Parameter *> keys = qpw_widgets_map.keys ();
-
-	for (int i = keys.size () - 1; i >= 0; -- i)
+	if (param_p)
 		{
-			Parameter *param_p = keys.at (i);
+			widget_p = qpw_widgets_map.value (param_p);
 
-			if (strcmp (param_p -> pa_name_s, param_name_s) == 0)
+			/*
+			QList <Parameter *> keys = qpw_widgets_map.keys ();
+
+			printf ("param_name_s \"%s\"\n", param_name_s);
+
+			for (int i = 0; i < keys.size (); ++ i)
 				{
-					widget_p = qpw_widgets_map.value (param_p);
-					i = -1;		/* force exit from loop */
+					Parameter *param_p = keys.at (i);
+					BaseParamWidget *temp_widget_p = qpw_widgets_map.value (param_p);
+
+					QString s = temp_widget_p -> GetLabel () -> text ();
+					QByteArray ba = s.toLocal8Bit ();
+					const char *label_s = ba.constData ();
+
+					printf ("name \"%s\" label \"%s\"\n", param_p -> pa_name_s, label_s);
 				}
+
+			*/
 		}
 
 	return widget_p;
@@ -579,15 +591,13 @@ QTParameterWidget :: ~QTParameterWidget ()
 
 void QTParameterWidget :: ResetToDefaults ()
 {
-	QList <Parameter *> keys = qpw_widgets_map.keys ();
+	QHash <Parameter *, BaseParamWidget *> :: const_iterator i;
 
-	for (int i = keys.size () - 1; i >= 0; --i)
+	for (i = qpw_widgets_map.constBegin (); i != qpw_widgets_map.constEnd (); ++ i)
 		{
-			Parameter *param_p = keys.at (i);
-			BaseParamWidget *widget_p = qpw_widgets_map.value (param_p);
+			BaseParamWidget *widget_p = i.value ();
 			widget_p -> SetDefaultValue ();
 		}
-
 }
 
 
@@ -664,6 +674,7 @@ void QTParameterWidget :: RefreshService ()
 	/* Is the widget live or still adding its widgets? */
 	if (qpw_refresh_active)
 		{
+			qpw_refresh_active = false;
 			ParameterSet *params_p = GetParameterSet ();
 
 			if (params_p)
@@ -679,15 +690,6 @@ void QTParameterWidget :: RefreshService ()
 								{
 									if (json_array_append_new (req_p, service_req_p) == 0)
 										{
-											char *dump_s = json_dumps (req_p, 0);
-
-											if (dump_s)
-												{
-													printf ("sending:\n%s", dump_s);
-													free (dump_s);
-												}
-
-
 											setCursor (Qt :: BusyCursor);
 											json_t *results_p = CallServices (req_p, nullptr, qpw_client_data_p -> qcd_base_data.cd_connection_p);
 											setCursor (Qt :: ArrowCursor);
@@ -734,11 +736,11 @@ void QTParameterWidget :: RefreshService ()
 																}
 														}
 
-													dump_s = json_dumps (results_p, 0);
+													char *dump_s = json_dumps (results_p, 0);
 
 													if (dump_s)
 														{
-															printf ("received:\n%s", dump_s);
+															fprintf (stderr, "received:\n%s\n", dump_s);
 															free (dump_s);
 														}
 
@@ -756,7 +758,8 @@ void QTParameterWidget :: RefreshService ()
 
 				}
 
-		}
+			qpw_refresh_active = true;
+		}		/* if (qpw_refresh_active) */
 }
 
 

@@ -404,9 +404,16 @@ bool ParamComboBox :: SetValueFromJSON (const json_t * const value_p)
 					if (json_is_string (value_p))
 						{
 							const char *value_s = json_string_value (value_p);
+							QVariant v (value_s);
+							int index = pcb_combo_box_p -> findData (v);
 
-							pcb_combo_box_p -> setCurrentText (value_s);
-							success_flag  = true;
+							if (index != -1)
+								{
+									pcb_combo_box_p -> setCurrentIndex (index);
+
+									qDebug () << "set " << bpw_param_name_s << " to " << pcb_combo_box_p -> itemText (index) << " for " << value_s;
+									success_flag  = true;
+								}
 						}
 				}
 				break;
@@ -421,8 +428,14 @@ bool ParamComboBox :: SetValueFromJSON (const json_t * const value_p)
 							*c = *value_s;
 							* (c + 1) = '\0';
 
-							pcb_combo_box_p -> setCurrentText (c);
-							success_flag  = true;
+							QVariant v (value_s);
+							int index = pcb_combo_box_p -> findData (v);
+
+							if (index != -1)
+								{
+									pcb_combo_box_p -> setCurrentIndex (index);
+									success_flag  = true;
+								}
 						}
 				}
 				break;
@@ -432,10 +445,12 @@ bool ParamComboBox :: SetValueFromJSON (const json_t * const value_p)
 					if (json_is_true (value_p))
 						{
 							pcb_combo_box_p -> setCurrentText ("true");
+							success_flag = true;
 						}
 					else if (json_is_true (value_p))
 						{
 							pcb_combo_box_p -> setCurrentText ("false");
+							success_flag = true;
 						}
 				}
 				break;
@@ -445,13 +460,15 @@ bool ParamComboBox :: SetValueFromJSON (const json_t * const value_p)
 				{
 					if (json_is_integer (value_p))
 						{
-							QString s;
-							long value = json_integer_value (value_p);
+							qlonglong value = json_integer_value (value_p);
+							QVariant v (value);
+							int index = pcb_combo_box_p -> findData (v);
 
-							s.setNum (value);
-							pcb_combo_box_p -> setCurrentText (s);
-
-							success_flag = true;
+							if (index != -1)
+								{
+									pcb_combo_box_p -> setCurrentIndex (index);
+									success_flag  = true;
+								}
 						}
 				}
 				break;
@@ -461,13 +478,15 @@ bool ParamComboBox :: SetValueFromJSON (const json_t * const value_p)
 				{
 					if (json_is_number (value_p))
 						{
-							QString s;
 							double value = json_number_value (value_p);
+							QVariant v (value);
+							int index = pcb_combo_box_p -> findData (v);
 
-							s.setNum (value);
-							pcb_combo_box_p -> setCurrentText (s);
-
-							success_flag = true;
+							if (index != -1)
+								{
+									pcb_combo_box_p -> setCurrentIndex (index);
+									success_flag  = true;
+								}
 						}
 				}
 				break;

@@ -767,6 +767,8 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 {
 	QHash <Parameter *, BaseParamWidget *> :: const_iterator i;
 
+	qpw_params_p -> ps_current_level = level;
+
 	for (i = qpw_widgets_map.constBegin (); i != qpw_widgets_map.constEnd (); ++ i)
 		{
 			BaseParamWidget *widget_p = reinterpret_cast <BaseParamWidget *> (i.value ());

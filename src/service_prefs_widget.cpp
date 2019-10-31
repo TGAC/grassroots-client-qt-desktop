@@ -174,7 +174,6 @@ bool ServicePrefsWidget :: SetServiceParams (const json_t *service_config_p)
 bool ServicePrefsWidget :: SetServiceErrors (const json_t * const errors_p)
 {
 	bool success_flag = false;
-
 	if (json_is_array (errors_p))
 		{
 			json_t *error_p;

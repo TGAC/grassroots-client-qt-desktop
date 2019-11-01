@@ -376,7 +376,7 @@ void JSONViewer :: SetJSONData (json_t *data_p)
 
 void JSONViewer :: AddTopLevelNode (const char *key_s, json_t *data_p)
 {
-	QTreeWidgetItem *top_level_node_p = InsertData (NULL, key_s, data_p);
+	QTreeWidgetItem *top_level_node_p = InsertData (nullptr, key_s, data_p);
 
 }
 

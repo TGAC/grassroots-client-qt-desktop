@@ -30,20 +30,20 @@
 ResultsPage :: ResultsPage (ResultsWidget *parent_p)
 	: QWidget (parent_p)
 {
-	rp_results_list_p = new ResultsList (this, 0, 0);
+	rp_results_list_p = new ResultsList (this, nullptr, nullptr);
 
-	SetUp (parent_p, 0, 0, 0, 0);
+	SetUp (parent_p, nullptr, nullptr, nullptr, nullptr, nullptr);
 }
 
 
-ResultsPage :: ResultsPage (const json_t *results_json_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s, ResultsWidget *parent_p)
+ResultsPage :: ResultsPage (const json_t *results_json_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s,  json_t *metadata_json_p, ResultsWidget *parent_p)
 	: QWidget (parent_p)
 {
 	rp_results_list_p = new ResultsList (this, results_json_p, service_name_s);
 
 	if (rp_results_list_p)
 		{
-			SetUp (parent_p, job_name_s, service_name_s, service_description_s, service_uri_s);
+			SetUp (parent_p, job_name_s, service_name_s, service_description_s, service_uri_s, metadata_json_p);
 		}
 	else
 		{
@@ -52,7 +52,7 @@ ResultsPage :: ResultsPage (const json_t *results_json_p, const char * const job
 }
 
 
-void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s)
+void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s, json_t *metadata_json_p)
 {
 	QVBoxLayout *layout_p = new QVBoxLayout;
 	setLayout (layout_p);
@@ -106,6 +106,18 @@ void ResultsPage :: SetUp (ResultsWidget *parent_p, const char * const job_name_
 
 	rp_message_p = new QLabel;
 	layout_p -> addWidget (rp_message_p);
+
+
+	if (metadata_json_p)
+		{
+			rp_metadata_viewer_p = new JSONViewer (this);
+			rp_metadata_viewer_p -> SetJSONData (metadata_json_p);
+			layout_p -> addWidget (rp_metadata_viewer_p);
+		}
+	else
+		{
+			rp_metadata_viewer_p = nullptr;
+		}
 
 	connect (this, &ResultsPage :: ServiceRequested, parent_p, &ResultsWidget :: SelectService);
 	connect (this, &ResultsPage :: RunServiceRequested, parent_p, &ResultsWidget :: RunService);

@@ -97,6 +97,7 @@ bool ResultsWidget :: AddResultsPageFromJSON (const json_t *json_p, const char *
 {
 	bool success_flag = false;
 	json_t *results_json_p = json_object_get (json_p, SERVICE_RESULTS_S);
+	json_t *metadata_json_p = json_object_get (json_p, JOB_METADATA_S);
 
 	#if RESULTS_WIDGET_DEBUG >= STM_LEVEL_FINER
 	PrintJSONToLog (json_p, "result: ", STM_LEVEL_FINER, __FILE__, __LINE__);
@@ -105,7 +106,7 @@ bool ResultsWidget :: AddResultsPageFromJSON (const json_t *json_p, const char *
 	if (results_json_p)
 		{
 			const char *job_name_s = GetJSONString (json_p, JOB_NAME_S);
-			QWidget *page_p = CreatePageFromJSON (results_json_p, job_name_s, service_name_s, service_description_s, service_uri_s);
+			QWidget *page_p = CreatePageFromJSON (results_json_p, job_name_s, service_name_s, service_description_s, service_uri_s, metadata_json_p);
 
 			if (page_p)
 				{
@@ -205,13 +206,13 @@ void ResultsWidget :: RunService (json_t *service_json_p)
 }
 
 
-ResultsPage *ResultsWidget :: CreatePageFromJSON (const json_t *results_json_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s)
+ResultsPage *ResultsWidget :: CreatePageFromJSON (const json_t *results_json_p, const char * const job_name_s, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s, json_t *metadata_json_p)
 {
-	ResultsPage *page_p = 0;
+	ResultsPage *page_p = nullptr;
 
 	try
 		{
-			page_p = new ResultsPage (results_json_p, job_name_s, service_name_s, service_description_s, service_uri_s, this);
+			page_p = new ResultsPage (results_json_p, job_name_s, service_name_s, service_description_s, service_uri_s, metadata_json_p, this);
 		}
 	catch (std :: exception &ex_r)
 		{

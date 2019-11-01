@@ -28,7 +28,7 @@
 
 #include "jansson.h"
 
-//#include "results_list.h"
+#include "json_viewer.h"
 
 class ResultsList;
 
@@ -39,8 +39,8 @@ class ResultsPage: public QWidget
 	Q_OBJECT
 
 public:
-	ResultsPage (ResultsWidget *parent_p = 0);
-	ResultsPage (const json_t *results_list_json_p, const char *job_name_s, const char * const service_name_s, const char * const description_s, const char * const uri_s, ResultsWidget *parent_p = 0);
+	ResultsPage (ResultsWidget *parent_p = nullptr);
+	ResultsPage (const json_t *results_list_json_p, const char *job_name_s, const char * const service_name_s, const char * const description_s, const char * const uri_s, json_t *metadata_json_p, ResultsWidget *parent_p = nullptr);
   ~ResultsPage ();
 
   ResultsList *GetResultsList () const;
@@ -61,8 +61,9 @@ private:
   ResultsList *rp_results_list_p;
   QLabel *rp_message_p;
   char *rp_job_name_s;
+  JSONViewer *rp_metadata_viewer_p;
 
-	void SetUp (ResultsWidget *parent_p, const char * const job_name_s, const char *service_name_s, const char * const description_s, const char * const uri_s);
+  void SetUp (ResultsWidget *parent_p, const char * const job_name_s, const char *service_name_s, const char * const description_s, const char * const uri_s, json_t *metadata_json_p);
 };
 
 #endif // RESULTS_PAGE_H

@@ -32,8 +32,8 @@
 
 
 ResultsWindow :: ResultsWindow (MainWindow *parent_p, QTClientData *client_data_p)
-	: QWidget (0),
-	 rw_data_p (0),
+    : QWidget (nullptr),
+     rw_data_p (nullptr),
 		rw_client_data_p (client_data_p)
 {
 	QVBoxLayout *layout_p = new QVBoxLayout;
@@ -77,7 +77,7 @@ ResultsWindow :: ResultsWindow (MainWindow *parent_p, QTClientData *client_data_
 	s.append (client_data_p -> qcd_server_url_s);	
 
 	setWindowTitle (s);
-	setWindowIcon (QIcon ("images/viewas_list"));
+	setWindowIcon (QIcon ("images/document_multi"));
 	setLayout (layout_p);
 
 	setAcceptDrops (true);
@@ -251,9 +251,9 @@ void ResultsWindow :: LoadResults (const char * const filename_s)
 
 	if (results_p)
 		{
-			const char *name_s = NULL;
-			const char *description_s = NULL;
-			const char *uri_s = NULL;
+			const char *name_s = nullptr;
+			const char *description_s = nullptr;
+			const char *uri_s = nullptr;
 
 			json_t *metadata_p = json_object_get (results_p, SERVICE_CATEGORY_S);
 

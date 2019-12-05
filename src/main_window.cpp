@@ -70,7 +70,7 @@ MainWindow :: MainWindow (QTClientData *data_p)
 	mw_tabs_p -> addTab (mw_keyword_widget_p, QIcon ("images/list_search"), "Run by search");
 
 	setWindowTitle (data_p -> qcd_dummy_arg_s);
-	setWindowIcon (QIcon ("images/cog"));
+	setWindowIcon (QIcon ("images/app"));
 
 	mw_current_level = PL_SIMPLE;
 
@@ -184,7 +184,7 @@ void MainWindow :: ProcessResults (json_t *results_json_p)
 
 									if (status != OS_ERROR)
 										{
-											json_t *errors_p = NULL;
+											json_t *errors_p = nullptr;
 
 											if ((status == OS_SUCCEEDED) || (status == OS_PARTIALLY_SUCCEEDED))
 												{
@@ -601,7 +601,7 @@ void MainWindow :: SetAdvancedInterfaceLevel ()
 
 void MainWindow :: GetAllServices ()
 {
-	UserDetails *user_p = 0;
+	UserDetails *user_p = nullptr;
 	Client *client_p = mw_client_data_p -> qcd_base_data.cd_client_p;
 	GetAllServicesInClient (client_p, user_p);
 }

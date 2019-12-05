@@ -124,7 +124,6 @@ static QTClientData *AllocateQTClientData (Connection *connection_p)
 					data_p -> qcd_app_p = new QApplication (s_dummy_argc, & (data_p -> qcd_dummy_arg_s));
 
 					data_p -> qcd_window_p = new MainWindow (data_p);
-					data_p -> qcd_window_p -> setWindowIcon (QIcon ("images/cog"));
 
 					data_p -> qcd_server_url_s = nullptr;
 					if (connection_p -> co_type == CT_WEB)

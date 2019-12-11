@@ -855,6 +855,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 						break;
 
 					case PT_TABLE:
+					case PT_JSON_TABLE:
 						widget_p = new ParamTableWidget (param_p, this);
 						break;
 

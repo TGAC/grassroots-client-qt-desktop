@@ -736,14 +736,6 @@ void QTParameterWidget :: RefreshService ()
 																}
 														}
 
-													char *dump_s = json_dumps (results_p, 0);
-
-													if (dump_s)
-														{
-															fprintf (stderr, "received:\n%s\n", dump_s);
-															free (dump_s);
-														}
-
 												}
 											else
 												{

@@ -917,6 +917,14 @@ bool ParamTableWidget :: SetValueFromJSON (const json_t * const value_p)
 												{
 													ptw_table_p -> setColumnCount (num_cols + 1);
 												}
+
+											ptw_table_p -> setItem (i, j, item_p);
+										}
+
+									if (item_p)
+										{
+											printf ("row %d col %d header %s value %s\n", i, j, key_s, value_s);
+											item_p -> setText (value_s);
 										}
 								}
 

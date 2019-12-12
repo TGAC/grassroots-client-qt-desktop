@@ -1,18 +1,18 @@
 /*
-** Copyright 2014-2016 The Earlham Institute
-** 
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-** 
-**     http://www.apache.org/licenses/LICENSE-2.0
-** 
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ ** Copyright 2014-2016 The Earlham Institute
+ **
+ ** Licensed under the Apache License, Version 2.0 (the "License");
+ ** you may not use this file except in compliance with the License.
+ ** You may obtain a copy of the License at
+ **
+ **     http://www.apache.org/licenses/LICENSE-2.0
+ **
+ ** Unless required by applicable law or agreed to in writing, software
+ ** distributed under the License is distributed on an "AS IS" BASIS,
+ ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
 #include "param_table_widget.h"
 
 #include <stdio.h>
@@ -634,9 +634,9 @@ void DroppableTableWidget :: LoadText (const char *filename_s)
 								}
 						}
 					else
-					{
-						loop_flag = false;
-					}
+						{
+							loop_flag = false;
+						}
 				}
 
 			setSortingEnabled (true);
@@ -887,7 +887,45 @@ bool ParamTableWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (json_is_string (value_p))
+	if (json_is_array (value_p))
+		{
+			size_t num_rows = json_array_size (value_p);
+			const int num_cols = ptw_table_p -> columnCount ();
+
+			for (size_t i = 0; i < num_rows; ++ i)
+				{
+					json_t *row_data_p = json_array_get (value_p, i);
+
+					for (int j = 0; j < num_cols; ++ j)
+						{
+							QString s = ptw_table_p -> horizontalHeaderItem (j) -> text ();
+							QByteArray ba = s.toLocal8Bit ();
+							const char *key_s = ba.constData ();
+							json_t *value_p = json_object_get (row_data_p, key_s);
+
+							if (json_is_string (value_p))
+								{
+									const char *value_s = json_string_value (value_p);
+
+									QTableWidgetItem *item_p = ptw_table_p -> item (i, j);
+
+									if (!item_p)
+										{
+											item_p = new QTableWidgetItem (value_s);
+
+											if (j >= num_cols)
+												{
+													ptw_table_p -> setColumnCount (num_cols + 1);
+												}
+										}
+								}
+
+						}
+				}
+
+			success_flag = true;
+		}
+	else if (json_is_string (value_p))
 		{
 			const char *value_s = json_string_value (value_p);
 
@@ -896,7 +934,6 @@ bool ParamTableWidget :: SetValueFromJSON (const json_t * const value_p)
 
 	return success_flag;
 }
-
 
 
 void ParamTableWidget :: ShowErrors (const json_t *errors_p)
@@ -910,27 +947,27 @@ void ParamTableWidget :: ShowErrors (const json_t *errors_p)
 					const int num_columns = ptw_table_p -> columnCount ();
 
 					json_array_foreach (errors_p, i, value_p)
-						{
-							int row;
+					{
+						int row;
 
-							if (GetJSONInteger (value_p, "row", &row))
-								{
-									const char *error_s = GetJSONString (value_p, "error");
-									QBrush b (Qt :: red);
+						if (GetJSONInteger (value_p, "row", &row))
+							{
+								const char *error_s = GetJSONString (value_p, "error");
+								QBrush b (Qt :: red);
 
-									for (int i = num_columns - 1; i >= 0; -- i)
-										{
-											QTableWidgetItem *item_p = ptw_table_p -> item (row, i);
+								for (int i = num_columns - 1; i >= 0; -- i)
+									{
+										QTableWidgetItem *item_p = ptw_table_p -> item (row, i);
 
-											if (item_p)
-												{
-													item_p -> setBackground (b);
-													item_p -> setToolTip (error_s);
-												}
-										}
-								}
+										if (item_p)
+											{
+												item_p -> setBackground (b);
+												item_p -> setToolTip (error_s);
+											}
+									}
+							}
 
-						}		/* json_array_foreach (errors_p, i, value_p) */
+					}		/* json_array_foreach (errors_p, i, value_p) */
 
 				}		/* if (json_is_array (errors_p)) */
 

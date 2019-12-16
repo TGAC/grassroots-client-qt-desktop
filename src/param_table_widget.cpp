@@ -800,7 +800,7 @@ bool ParamTableWidget :: SetColumnHeaders (Parameter *param_p)
 															column_header_p -> setData (Qt::UserRole, v);
 														}
 
-													qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << endl;
+													qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << " with data " << type_s << " = " << column_header_p -> data (Qt :: UserRole) <<  endl;
 
 													ptw_table_p -> setHorizontalHeaderItem (i, column_header_p);
 
@@ -892,6 +892,14 @@ bool ParamTableWidget :: SetValueFromJSON (const json_t * const value_p)
 			size_t num_rows = json_array_size (value_p);
 			const int num_cols = ptw_table_p -> columnCount ();
 
+			/*
+			 * Make sure that the table is of sufficient size
+			 */
+			if (num_rows >= (size_t) (ptw_table_p -> rowCount ()))
+				{
+					ptw_table_p -> setRowCount (num_rows + 1);
+				}
+
 			for (size_t i = 0; i < num_rows; ++ i)
 				{
 					json_t *row_data_p = json_array_get (value_p, i);
@@ -901,35 +909,129 @@ bool ParamTableWidget :: SetValueFromJSON (const json_t * const value_p)
 							QString s = ptw_table_p -> horizontalHeaderItem (j) -> text ();
 							QByteArray ba = s.toLocal8Bit ();
 							const char *key_s = ba.constData ();
-							json_t *value_p = json_object_get (row_data_p, key_s);
+							json_t *json_value_p = json_object_get (row_data_p, key_s);
+							QVariant v =  ptw_table_p -> horizontalHeaderItem (j) -> data (Qt::UserRole);
+							QString column_type = v.toString();
+							QByteArray column_type_ba = column_type.toLocal8Bit ();
+							const char *column_type_s = column_type_ba.constData ();
+							QTableWidgetItem *item_p = ptw_table_p -> item (i, j);
+							ParameterType param_type = PT_NUM_TYPES;
 
-							if (json_is_string (value_p))
+							if (column_type_s)
 								{
-									const char *value_s = json_string_value (value_p);
-
-									QTableWidgetItem *item_p = ptw_table_p -> item (i, j);
-
-									if (!item_p)
+									if (!GetGrassrootsTypeFromString (column_type_s, &param_type))
 										{
-											item_p = new QTableWidgetItem (value_s);
-
-											if (j >= num_cols)
-												{
-													ptw_table_p -> setColumnCount (num_cols + 1);
-												}
-
-											ptw_table_p -> setItem (i, j, item_p);
-										}
-
-									if (item_p)
-										{
-											printf ("row %d col %d header %s value %s\n", i, j, key_s, value_s);
-											item_p -> setText (value_s);
+											PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to get datatype for column \"%s\" fpr column type \"%s\"\n", key_s, column_type_s);
 										}
 								}
 
+							if (!item_p)
+								{
+									item_p = new QTableWidgetItem ();
+
+									if (j >= num_cols)
+										{
+											ptw_table_p -> setColumnCount (num_cols + 1);
+										}
+
+									ptw_table_p -> setItem (i, j, item_p);
+								}
+
+							if (item_p)
+								{
+									QVariant *v_p = NULL;
+
+									switch (param_type)
+										{
+										case PT_BOOLEAN:
+											if (json_is_boolean (json_value_p))
+												{
+													v_p = new QVariant (json_is_true (json_value_p) ? true : false);
+												}
+											break;
+
+										case PT_CHAR:
+											if (json_is_string (json_value_p))
+												{
+													const char *value_s = json_string_value (json_value_p);
+
+													if (value_s && (strlen (value_s) == 1))
+														{
+															v_p = new QVariant (*value_s);
+														}
+												}
+											break;
+
+										case PT_SIGNED_INT:
+										case PT_NEGATIVE_INT:
+										case PT_UNSIGNED_INT:
+											if (json_is_integer (json_value_p))
+												{
+													v_p = new QVariant (json_integer_value (json_value_p));
+												}
+											break;
+
+
+										case PT_SIGNED_REAL:
+										case PT_UNSIGNED_REAL:
+											if (json_is_real (json_value_p))
+												{
+													v_p = new QVariant (json_real_value (json_value_p));
+												}
+											else if (json_is_integer (json_value_p))
+												{
+													v_p = new QVariant (static_cast <double> (json_integer_value (json_value_p)));
+												}
+											break;
+
+
+										case PT_DIRECTORY:
+										case PT_FILE_TO_READ:
+										case PT_FILE_TO_WRITE:
+											{
+											}
+											break;
+
+										case PT_TABLE:
+										case PT_STRING:
+										case PT_LARGE_STRING:
+										case PT_PASSWORD:
+										case PT_KEYWORD:
+										case PT_FASTA:
+											if (json_is_string (json_value_p))
+												{
+													v_p = new QVariant (json_string_value (json_value_p));
+												}
+											break;
+
+										case PT_JSON:
+										case PT_JSON_TABLE:
+											{
+											}
+											break;
+
+										case PT_TIME:
+											break;
+
+										case PT_NUM_TYPES:
+											break;
+										}
+
+									if (v_p)
+										{
+											item_p -> setData (Qt::DisplayRole, *v_p);
+											delete v_p;
+										}
+									else
+										{
+											PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "No value to set\n");
+										}
+
+								}
 						}
 				}
+
+
 
 			success_flag = true;
 		}

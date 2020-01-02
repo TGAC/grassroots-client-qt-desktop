@@ -57,6 +57,7 @@ public:
 
 
 	char *GetValueAsText ();
+	json_t *GetValueAsJSON ();
 	bool SetValueFromText (const char *data_s);
 
 protected:

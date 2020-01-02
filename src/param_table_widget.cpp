@@ -188,7 +188,7 @@ void DroppableTableWidget :: ShowPopupMenu (const QPoint &p)
 
 char *DroppableTableWidget :: GetEntry (const char *start_s, const char *end_s)
 {
-	char *value_s = NULL;
+	char *value_s = nullptr;
 
 	if (!end_s)
 		{
@@ -293,7 +293,7 @@ void DroppableTableWidget :: SetRow (const int row, const char *data_s)
 						}
 					else
 						{
-							value_s = GetEntry (current_token_s, NULL);
+							value_s = GetEntry (current_token_s, nullptr);
 							loop_flag = false;
 						}
 				}
@@ -425,13 +425,8 @@ bool DroppableTableWidget :: IsTableEmpty () const
 //}
 
 
-
-char *DroppableTableWidget :: GetValueAsText ()
+json_t *DroppableTableWidget :: GetValueAsJSON ()
 {
-	char *value_s = NULL;
-
-
-
 	if (!IsTableEmpty ())
 		{
 			json_t *rows_p = json_array ();
@@ -462,7 +457,7 @@ char *DroppableTableWidget :: GetValueAsText ()
 
 													if (item_p)
 														{
-															QTableWidgetItem *column_header_p = 0;
+															QTableWidgetItem *column_header_p = nullptr;
 															QString column_heading;
 															column_heading.clear ();
 
@@ -528,22 +523,41 @@ char *DroppableTableWidget :: GetValueAsText ()
 
 					if (success_flag)
 						{
-							char *data_s = json_dumps (rows_p, JSON_INDENT (2));
-
-							if (data_s)
-								{
-									value_s = EasyCopyToNewString (data_s);
-									free (data_s);
-								}
-
-							qDebug () << value_s  << endl;
+							return rows_p;
 						}
 
-
+					json_decref (rows_p);
 				}		/* if (rows_p) */
 
 
 		}		/* if (!IsTableEmpty ()) */
+
+	return NULL;
+}
+
+
+char *DroppableTableWidget :: GetValueAsText ()
+{
+	char *value_s = NULL;
+	json_t *table_json_p = GetValueAsJSON ();
+
+	if (table_json_p)
+		{
+			char *data_s = json_dumps (table_json_p, JSON_INDENT (2));
+
+			if (data_s)
+				{
+					value_s = EasyCopyToNewString (data_s);
+
+					free (data_s);
+				}
+			else
+				{
+					PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, table_json_p, "Failed to get JSON as string");
+				}
+
+			json_decref (table_json_p);
+		}
 
 	return value_s;
 }
@@ -613,7 +627,7 @@ void DroppableTableWidget :: LoadText (const char *filename_s)
 	if (in_f)
 		{
 			bool loop_flag = true;
-			char *buffer_s = NULL;
+			char *buffer_s = nullptr;
 			int row = 0;
 
 			setSortingEnabled (false);
@@ -707,7 +721,7 @@ ParamTableWidget :: ParamTableWidget (Parameter * const param_p, QTParameterWidg
 ParamTableWidget ::	~ParamTableWidget ()
 {
 	delete ptw_scroller_p;
-	ptw_scroller_p = NULL;
+	ptw_scroller_p = nullptr;
 }
 
 
@@ -736,14 +750,31 @@ QWidget *ParamTableWidget :: GetQWidget ()
 bool ParamTableWidget :: StoreParameterValue ()
 {
 	bool success_flag  = false;
-	char *value_s = ptw_table_p ->  GetValueAsText ();
 
-	if (value_s)
+	if (bpw_param_p -> pa_type == PT_JSON_TABLE)
 		{
-			SetParameterValue (bpw_param_p, value_s, true);
+			json_t *table_json_p = ptw_table_p -> GetValueAsJSON ();
 
-			success_flag = true;
-			FreeCopiedString (value_s);
+			if (table_json_p)
+				{
+					SetParameterValue (bpw_param_p, table_json_p, true);
+
+					json_decref (table_json_p);
+				}
+
+		}
+	else
+		{
+			char *value_s = ptw_table_p ->  GetValueAsText ();
+
+			if (value_s)
+				{
+					SetParameterValue (bpw_param_p, value_s, true);
+
+					success_flag = true;
+					FreeCopiedString (value_s);
+				}
+
 		}
 
 	return success_flag;
@@ -754,7 +785,7 @@ void ParamTableWidget :: ClearTable (bool triggered_flag)
 	ptw_table_p -> clear ();
 	SetColumnHeaders (bpw_param_p);
 
-	SetParameterValue (bpw_param_p, NULL, true);
+	SetParameterValue (bpw_param_p, nullptr, true);
 }
 
 
@@ -861,8 +892,8 @@ bool ParamTableWidget :: SetValueFromText (const char *value_s)
 						}
 					else
 						{
-							current_row_s = NULL;
-							next_row_s = NULL;
+							current_row_s = nullptr;
+							next_row_s = nullptr;
 						}
 
 				}		/* while (next_row_s) */
@@ -939,7 +970,7 @@ bool ParamTableWidget :: SetValueFromJSON (const json_t * const value_p)
 
 							if (item_p)
 								{
-									QVariant *v_p = NULL;
+									QVariant *v_p = nullptr;
 
 									switch (param_type)
 										{

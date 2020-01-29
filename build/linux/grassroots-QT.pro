@@ -174,7 +174,8 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/viewable_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/viewer_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_date_widget.cpp \
-		$$DIR_GRASSROOTS_QT_SRC/src/progress_widget_delegate.cpp
+		$$DIR_GRASSROOTS_QT_SRC/src/progress_widget_delegate.cpp \
+  ../../src/double_spinner.cpp
 
 HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -217,7 +218,8 @@ HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/viewable_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/viewer_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_date_widget.h \
-    $$DIR_GRASSROOTS_QT_SRC/include/progress_widget_delegate.h
+    $$DIR_GRASSROOTS_QT_SRC/include/progress_widget_delegate.h \
+    ../../include/double_spinner.h
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \
  -lboost_chrono \

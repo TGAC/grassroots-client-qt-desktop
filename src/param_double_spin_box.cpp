@@ -20,10 +20,11 @@
 #include "math_utils.h"
 
 
-ParamDoubleSpinBox :: ParamDoubleSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p)
-:		BaseParamWidget (param_p, parent_p)
+ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTParameterWidget * const parent_p)
+:		BaseParamWidget (& (param_p -> dp_base_param), parent_p)
 {
 	pdsb_spinner_p = new QDoubleSpinBox (parent_p);
+	pdsb_param_p = param_p;
 	int default_precision = 4;
 	const char *prec_value_s = GetParameterKeyValue (param_p, PA_DOUBLE_PRECISION_S);
 
@@ -58,7 +59,12 @@ ParamDoubleSpinBox :: ~ParamDoubleSpinBox ()
 
 void ParamDoubleSpinBox :: SetDefaultValue ()
 {
-	pdsb_spinner_p -> setValue (bpw_param_p -> pa_default.st_data_value);
+	double64 *value_p = GetDoubleParameterDefaultValue (pdsb_param_p);
+
+	if (value_p)
+		{
+			pdsb_spinner_p -> setValue (*value_p);
+		}
 }
 
 

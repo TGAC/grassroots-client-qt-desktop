@@ -8,6 +8,8 @@
 
 #include "parameter.h"
 #include "base_param_widget.h"
+#include "time_parameter.h"
+
 
 class ParamDateWidget : public BaseParamWidget
 {
@@ -18,7 +20,7 @@ private slots:
 //	bool UpdateConfig (int state);
 
 public:
-	ParamDateWidget (Parameter * const param_p, QTParameterWidget * const parent_p0);
+	ParamDateWidget (TimeParameter * const param_p, QTParameterWidget * const parent_p0);
 	virtual ~ParamDateWidget ();
 
 	virtual void SetDefaultValue ();
@@ -34,6 +36,7 @@ protected:
 
 
 private:
+	TimeParameter *pdw_param_p;
 	QWidget *pdw_root_widget_p;
 	QCalendarWidget  *pdw_calendar_p;
 	QCheckBox *pdw_checkbox_p;

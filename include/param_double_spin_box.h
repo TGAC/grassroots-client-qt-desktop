@@ -27,7 +27,7 @@
 
 #include "parameter.h"
 #include "base_param_widget.h"
-
+#include "double_parameter.h"
 
 
 
@@ -37,7 +37,7 @@ class ParamDoubleSpinBox : public BaseParamWidget
 	Q_OBJECT
 
 public:
-	ParamDoubleSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p);
+	ParamDoubleSpinBox (DoubleParameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~ParamDoubleSpinBox ();
 
 	virtual void SetDefaultValue ();
@@ -56,6 +56,7 @@ protected:
 
 
 private:
+	DoubleParameter *pdsb_param_p;
 	QDoubleSpinBox *pdsb_spinner_p;
 };
 

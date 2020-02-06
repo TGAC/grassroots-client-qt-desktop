@@ -25,11 +25,12 @@
 #include "time_util.h"
 
 
-ParamDateWidget :: ParamDateWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
-: BaseParamWidget (param_p, parent_p)
+ParamDateWidget :: ParamDateWidget (TimeParameter * const param_p, QTParameterWidget * const parent_p)
+: BaseParamWidget (& (param_p -> tp_base_param), parent_p)
 {
 	pdw_checkbox_p = new QCheckBox (parent_p);
 	pdw_calendar_p = new QCalendarWidget (parent_p);
+	pdw_param_p = param_p;
 
 	QHBoxLayout *layout_p = new QHBoxLayout;
 
@@ -76,7 +77,7 @@ bool ParamDateWidget :: StoreParameterValue ()
 					time_p -> tm_mday = d.day ();
 				}
 
-			success_flag = SetParameterValue (bpw_param_p, time_p, true);
+			success_flag = SetTimeParameterCurrentValue (pdw_param_p, time_p);
 
 			FreeTime (time_p);
 		}
@@ -88,7 +89,7 @@ bool ParamDateWidget :: StoreParameterValue ()
 
 void ParamDateWidget :: SetDefaultValue ()
 {
-	struct tm *time_p = bpw_param_p -> pa_default.st_time_p;
+	struct tm *time_p = GetTimeParameterDefaultValue (pdw_param_p)
 	bool enabled_flag = true;
 
 	if (time_p)

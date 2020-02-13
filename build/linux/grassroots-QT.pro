@@ -178,6 +178,7 @@ SOURCES += \
 		$$DIR_GRASSROOTS_QT_SRC/src/double_spinner.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/signed_int_param_spin_box.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/unsigned_int_param_spin_box.cpp \
+  ../../src/droppable_table_widget.cpp \
   ../../src/droppable_text_box.cpp \
   ../../src/param_char_edit.cpp
 
@@ -226,6 +227,7 @@ HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/double_spinner.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/signed_int_param_spin_box.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/unsigned_int_param_spin_box.h \
+  ../../include/droppable_table_widget.h \
   ../../include/droppable_text_box.h \
   ../../include/param_char_edit.h
 

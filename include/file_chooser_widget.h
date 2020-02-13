@@ -29,6 +29,7 @@
 
 #include "base_param_widget.h"
 #include "qt_parameter_widget.h"
+#include "resource_parameter.h"
 
 
 class FileChooserWidget : public BaseParamWidget
@@ -40,7 +41,7 @@ private slots:
 
 
 public:
-	FileChooserWidget (Parameter * const param_p, QTParameterWidget * const parent_p, QFileDialog :: FileMode mode);
+	FileChooserWidget (ResourceParameter * const param_p, QTParameterWidget * const parent_p, QFileDialog :: FileMode mode);
 
 	~FileChooserWidget ();
 
@@ -60,6 +61,7 @@ private:
 	QComboBox *fcw_chooser_p;
 	QLabel *fcw_protocol_label_p;
 	QString fcw_title;
+	ResourceParameter *fcw_param_p;
 	QFileDialog :: FileMode fcw_file_mode;
 	QFileDialog :: AcceptMode fcw_accept_mode;
 };

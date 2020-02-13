@@ -85,8 +85,8 @@ bool FileChooserWidget :: SetValueFromJSON (const json_t * const value_p)
 
 
 void FileChooserWidget :: SetDefaultValue ()
-{
-	const Resource *resource_p = bpw_param_p -> pa_default.st_resource_value_p;
+	{
+	const Resource *resource_p = GetResourceParameterDefaultValue (fcw_param_p);
 
 	if (resource_p)
 		{
@@ -118,8 +118,8 @@ bool FileChooserWidget :: StoreParameterValue ()
 
 
 
-FileChooserWidget :: FileChooserWidget (Parameter * const param_p, QTParameterWidget * const parent_p, QFileDialog :: FileMode mode)
-	: BaseParamWidget (param_p, parent_p),
+FileChooserWidget :: FileChooserWidget (ResourceParameter * const param_p, QTParameterWidget * const parent_p, QFileDialog :: FileMode mode)
+	: BaseParamWidget (& (param_p -> rp_base_param), parent_p),
 		fcw_file_mode (mode)
 {
 	fcw_chooser_p = new QComboBox;

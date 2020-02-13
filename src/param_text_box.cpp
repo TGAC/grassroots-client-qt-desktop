@@ -26,112 +26,10 @@
 #include "byte_buffer.h"
 
 
-DroppableTextBox :: DroppableTextBox (QTParameterWidget *parent_p)
-: QPlainTextEdit (parent_p)
+ParamTextBox :: ParamTextBox (StringParameter * const param_p, QTParameterWidget * const parent_p)
+:		BaseParamWidget (& (param_p -> sp_base_param), parent_p)
 {
-	setAcceptDrops (true);
-
-	/* Set tab width to 2 spaces */
-	QFontMetrics metrics (font ());
-	int space_width = metrics.width (' ');
-	setTabStopWidth (2 * space_width);
-}
-
-
-DroppableTextBox ::	~DroppableTextBox ()
-{}
-
-
-void DroppableTextBox :: dropEvent (QDropEvent *event_p)
-{
-	QList <QUrl> urls = event_p -> mimeData () -> urls ();
-
-	if (! (urls.isEmpty ()))
-		{
-			QString filename = urls.first ().toLocalFile ();
-
-			if (! ((filename.isEmpty ()) || (filename.isNull ())))
-				{
-					QByteArray ba = filename.toLocal8Bit ();
-					const char * const filename_s = ba.constData ();
-
-					qDebug () << "dropped " << filename;
-
-					LoadText (filename_s);
-				}		/* if (! (filename.isEmpty ())) */
-
-		}		/* if (! (urls.isEmpty ())) */
-
-}
-
-void DroppableTextBox :: dragEnterEvent (QDragEnterEvent *event_p)
-{
-	event_p -> acceptProposedAction ();
-}
-
-
-void DroppableTextBox :: LoadText (const char *filename_s)
-{
-	ByteBuffer *buffer_p = AllocateByteBuffer (1024);
-
-	if (buffer_p)
-		{
-			FILE *in_f = fopen (filename_s, "r");
-
-			if (in_f)
-				{
-					bool loop_flag = true;
-					bool success_flag = true;
-					char *buffer_s = NULL;
-
-					while (loop_flag)
-						{
-							if (GetLineFromFile (in_f, &buffer_s))
-								{
-									if (!AppendStringsToByteBuffer (buffer_p, buffer_s, "\n", NULL))
-										{
-											success_flag = false;
-										}
-
-									FreeLineBuffer (buffer_s);
-
-								}
-							else
-							{
-								loop_flag = false;
-							}
-						}
-
-					if (success_flag)
-						{
-							const char *data_s = GetByteBufferData (buffer_p);
-
-							if (!SetFromText (data_s))
-								{
-									PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set text to %s", data_s);
-								}
-						}
-
-					fclose (in_f);
-				}
-
-			FreeByteBuffer (buffer_p);
-		}
-}
-
-
-bool DroppableTextBox :: SetFromText (const char * const data_s)
-{
-	clear ();
-	insertPlainText (data_s);
-
-	return true;
-}
-
-
-ParamTextBox :: ParamTextBox (Parameter * const param_p, QTParameterWidget * const parent_p)
-:		BaseParamWidget (param_p, parent_p)
-{
+	ptb_param_p = param_p;
 	CreateDroppableTextBox (parent_p);
 }
 
@@ -168,7 +66,7 @@ void ParamTextBox :: RemoveConnection ()
 
 void ParamTextBox :: SetDefaultValue ()
 {
-	const char *value_s = bpw_param_p -> pa_default.st_string_value_s;
+	const char *value_s = GetStringParameterDefaultValue (ptb_param_p);
 
 	ptb_text_box_p -> setPlainText (value_s);
 }
@@ -188,7 +86,7 @@ bool ParamTextBox :: StoreParameterValue ()
 	QByteArray ba = s.toLocal8Bit ();
 	const char *value_s = ba.constData ();
 
-	bool success_flag = SetParameterValue (bpw_param_p, value_s, true);
+	bool success_flag = SetStringParameterCurrentValue (ptb_param_p, value_s);
 
 	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s << " " << success_flag;
 

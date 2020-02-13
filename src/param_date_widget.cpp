@@ -89,7 +89,7 @@ bool ParamDateWidget :: StoreParameterValue ()
 
 void ParamDateWidget :: SetDefaultValue ()
 {
-	struct tm *time_p = GetTimeParameterDefaultValue (pdw_param_p)
+	const struct tm *time_p = GetTimeParameterDefaultValue (pdw_param_p);
 	bool enabled_flag = true;
 
 	if (time_p)

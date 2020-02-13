@@ -53,7 +53,7 @@ public:
 protected:
 	virtual QWidget *GetQWidget ();
 
-	bool AddOption (const SharedType *value_p, char *option_s, const SharedType * current_param_value_p);
+//	bool AddOption (const SharedType *value_p, char *option_s, const SharedType * current_param_value_p);
 
 
 private:

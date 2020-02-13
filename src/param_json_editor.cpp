@@ -66,16 +66,17 @@ bool DroppableJSONBox :: SetFromJSON (const json_t * const value_p)
 }
 
 
-ParamJSONEditor :: ParamJSONEditor (Parameter * const param_p, QTParameterWidget * const parent_p)
-:	ParamTextBox (param_p, parent_p)
+ParamJSONEditor :: ParamJSONEditor (JSONParameter * const param_p, QTParameterWidget * const parent_p)
+:	BaseParamWidget (& (param_p -> jp_base_param), parent_p)
 {
+	pje_param_p = param_p;
 }
 
 
 
 bool ParamJSONEditor :: CreateDroppableTextBox (QTParameterWidget *parent_p)
 {
-	ptb_text_box_p = new DroppableJSONBox (parent_p);
+	pje_text_box_p = new DroppableJSONBox (parent_p);
 
 	return true;
 }
@@ -88,16 +89,23 @@ ParamJSONEditor :: ~ParamJSONEditor ()
 }
 
 
+QWidget *ParamJSONEditor :: GetQWidget ()
+{
+	return pje_text_box_p;
+}
+
 
 void ParamJSONEditor :: SetDefaultValue ()
 {
-	if (!IsJSONEmpty (bpw_param_p -> pa_default.st_json_p))
+	const json_t *value_p = GetJSONParameterDefaultValue (pje_param_p );
+
+	if (!IsJSONEmpty (value_p))
 		{
-			char *value_s = json_dumps (bpw_param_p -> pa_default.st_json_p, JSON_INDENT (2) | JSON_PRESERVE_ORDER);
+			char *value_s = json_dumps (value_p, JSON_INDENT (2) | JSON_PRESERVE_ORDER);
 
 			if (value_s)
 				{
-					ptb_text_box_p -> setPlainText (value_s);
+					pje_text_box_p -> setPlainText (value_s);
 					free (value_s);
 				}
 		}
@@ -108,7 +116,7 @@ void ParamJSONEditor :: SetDefaultValue ()
 bool ParamJSONEditor :: StoreParameterValue ()
 {
 	bool success_flag = false;
-	QString s = ptb_text_box_p -> toPlainText ();
+	QString s = pje_text_box_p -> toPlainText ();
 	QByteArray ba = s.toLocal8Bit ();
 	const char *value_s = ba.constData ();
 
@@ -119,21 +127,17 @@ bool ParamJSONEditor :: StoreParameterValue ()
 
 			if (data_p)
 				{
-					success_flag = SetParameterValue (bpw_param_p, data_p, true);
-
-					if (!success_flag)
-						{
-							json_decref (data_p);
-						}
+					success_flag = SetJSONParameterCurrentValue (pje_param_p, data_p);
+					json_decref (data_p);
 				}
 			else
 				{
-					SetParameterValue (bpw_param_p, NULL, true);
+					success_flag = SetJSONParameterCurrentValue (pje_param_p, nullptr);
 				}
 		}
 	else
 		{
-			success_flag = SetParameterValue (bpw_param_p, NULL, true);
+			success_flag = SetJSONParameterCurrentValue (pje_param_p, nullptr);
 		}
 
 	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s << " " << success_flag;
@@ -150,12 +154,12 @@ bool ParamJSONEditor :: StoreParameterValue ()
 
 bool ParamJSONEditor :: SetValueFromText (const char *value_s)
 {
-	return ptb_text_box_p -> SetFromText (value_s);
+	return pje_text_box_p -> SetFromText (value_s);
 }
 
 
 
 bool ParamJSONEditor :: SetValueFromJSON (const json_t * const value_p)
 {
-	return (static_cast <DroppableJSONBox *> (ptb_text_box_p)) -> SetFromJSON (value_p);
+	return (static_cast <DroppableJSONBox *> (pje_text_box_p)) -> SetFromJSON (value_p);
 }

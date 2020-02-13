@@ -18,37 +18,26 @@
  * @file
  * @brief
  */
-#ifndef PARAMETER_SPIN_BOX_H
-#define PARAMETER_SPIN_BOX_H
+#ifndef SINT_PARAMETER_SPIN_BOX_H
+#define SINT_PARAMETER_SPIN_BOX_H
 
 
 #include <QWidget>
 #include <QSpinBox>
 
-#include "parameter.h"
-#include "base_param_widget.h"
+#include "signed_int_parameter.h"
+#include "base_param_spin_box.h"
 
 
-class ClearableSpinBox : public QSpinBox
-{
-	Q_OBJECT
 
-public:
-	ClearableSpinBox (QWidget *parent_p = nullptr);
-
-protected:
-	void fixup(QString &input) const;
-};
-
-
-class ParamSpinBox : public BaseParamWidget
+class SignedIntParamSpinBox : public BaseParamSpinBox
 {
 	Q_OBJECT
 
 
 public:
-	ParamSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p, bool signed_flag);
-	virtual ~ParamSpinBox ();
+	SignedIntParamSpinBox (SignedIntParameter * const param_p, QTParameterWidget * const parent_p);
+	virtual ~SignedIntParamSpinBox ();
 
 
 	virtual bool SetValueFromText (const char *value_s);
@@ -60,17 +49,14 @@ public:
 	virtual bool StoreParameterValue ();
 
 protected:
-	virtual QWidget *GetQWidget ();
+	static int32 SIPSB_DEFAULT_MIN;
 
-
-	static int PSB_DEFAULT_MIN;
-
-	static int PSB_DEFAULT_MAX;
+	static int32 SIPSB_DEFAULT_MAX;
 
 private:
 	QSpinBox *psb_spin_box_p;
-	bool psb_signed_flag;
+	SignedIntParameter *sips_param_p;
 };
 
 
-#endif		/* #ifndef PARAMETER_SPIN_BOX_H */
+#endif		/* #ifndef SINT_PARAMETER_SPIN_BOX_H */

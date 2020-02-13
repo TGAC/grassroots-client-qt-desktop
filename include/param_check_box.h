@@ -25,8 +25,9 @@
 #include <QWidget>
 #include <QCheckBox>
 
-#include "parameter.h"
 #include "base_param_widget.h"
+
+#include "boolean_parameter.h"
 
 class ParamCheckBox : public BaseParamWidget
 {
@@ -37,7 +38,7 @@ private slots:
 //	bool UpdateConfig (int state);
 
 public:
-	ParamCheckBox (Parameter * const param_p, QTParameterWidget * const parent_p0);
+	ParamCheckBox (BooleanParameter * const param_p, QTParameterWidget * const parent_p0);
 	virtual ~ParamCheckBox ();
 
 	virtual void SetDefaultValue ();
@@ -54,7 +55,7 @@ protected:
 
 private:
 	QCheckBox *pcb_check_box_p;
-
+	BooleanParameter *pcb_param_p;
 };
 
 

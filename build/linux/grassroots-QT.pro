@@ -150,7 +150,6 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/param_group_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_json_editor.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_line_edit.cpp \
-    $$DIR_GRASSROOTS_QT_SRC/src/param_spin_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_table_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_text_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/parameter_widget_container.cpp \
@@ -175,7 +174,12 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/viewer_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_date_widget.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/progress_widget_delegate.cpp \
-  ../../src/double_spinner.cpp
+		$$DIR_GRASSROOTS_QT_SRC/src/base_param_spin_box.cpp \
+		$$DIR_GRASSROOTS_QT_SRC/src/double_spinner.cpp \
+		$$DIR_GRASSROOTS_QT_SRC/src/signed_int_param_spin_box.cpp \
+		$$DIR_GRASSROOTS_QT_SRC/src/unsigned_int_param_spin_box.cpp \
+  ../../src/droppable_text_box.cpp \
+  ../../src/param_char_edit.cpp
 
 HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -193,7 +197,6 @@ HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/param_group_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_json_editor.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_line_edit.h \
-    $$DIR_GRASSROOTS_QT_SRC/include/param_spin_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_table_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_text_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/parameter_widget_container.h \
@@ -219,7 +222,13 @@ HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/viewer_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_date_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/progress_widget_delegate.h \
-    ../../include/double_spinner.h
+		$$DIR_GRASSROOTS_QT_SRC/include/base_param_spin_box.h \
+		$$DIR_GRASSROOTS_QT_SRC/include/double_spinner.h \
+		$$DIR_GRASSROOTS_QT_SRC/include/signed_int_param_spin_box.h \
+		$$DIR_GRASSROOTS_QT_SRC/include/unsigned_int_param_spin_box.h \
+  ../../include/droppable_text_box.h \
+  ../../include/param_char_edit.h
+
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \
  -lboost_chrono \

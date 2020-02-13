@@ -26,7 +26,9 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTPar
 	pdsb_spinner_p = new QDoubleSpinBox (parent_p);
 	pdsb_param_p = param_p;
 	int default_precision = 4;
-	const char *prec_value_s = GetParameterKeyValue (param_p, PA_DOUBLE_PRECISION_S);
+	const char *prec_value_s = GetParameterKeyValue (& (param_p -> dp_base_param), PA_DOUBLE_PRECISION_S);
+	double min_bound = (param_p -> dp_min_value_p) ? * (param_p -> dp_min_value_p) : 0.0;
+	double max_bound = (param_p -> dp_max_value_p) ? * (param_p -> dp_max_value_p) : 1000000.0;
 
 	if (prec_value_s)
 		{
@@ -35,18 +37,11 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTPar
 
 	pdsb_spinner_p -> setDecimals (default_precision);
 
-	if (param_p -> pa_bounds_p)
-		{
-			pdsb_spinner_p -> setMinimum (param_p -> pa_bounds_p -> pb_lower.st_data_value);
-			pdsb_spinner_p -> setMaximum (param_p -> pa_bounds_p -> pb_upper.st_data_value);
-		}
-	else
-		{
-			pdsb_spinner_p -> setMaximum (1000000.0);
-		}
+	pdsb_spinner_p -> setMinimum (min_bound);
+	pdsb_spinner_p -> setMaximum (max_bound);
 
 
-	if (param_p -> pa_refresh_service_flag)
+	if (param_p -> dp_base_param.pa_refresh_service_flag)
 		{
 			QObject ::  connect (pdsb_spinner_p, static_cast <void (QDoubleSpinBox :: *) (double)> (&QDoubleSpinBox :: valueChanged), parent_p, &QTParameterWidget :: RefreshService);
 		}
@@ -59,7 +54,7 @@ ParamDoubleSpinBox :: ~ParamDoubleSpinBox ()
 
 void ParamDoubleSpinBox :: SetDefaultValue ()
 {
-	double64 *value_p = GetDoubleParameterDefaultValue (pdsb_param_p);
+	const double64 *value_p = GetDoubleParameterDefaultValue (pdsb_param_p);
 
 	if (value_p)
 		{
@@ -71,7 +66,7 @@ void ParamDoubleSpinBox :: SetDefaultValue ()
 bool ParamDoubleSpinBox :: StoreParameterValue ()
 {
 	const double value = pdsb_spinner_p -> value ();
-	bool b = SetParameterValue (bpw_param_p, &value, true);
+	bool b = SetDoubleParameterCurrentValue (pdsb_param_p, &value);
 
 	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
 

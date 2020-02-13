@@ -21,12 +21,11 @@
 #include "string_utils.h"
 
 
-ParamLineEdit :: ParamLineEdit (Parameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo)
-:		BaseParamWidget (param_p, parent_p)
+ParamLineEdit :: ParamLineEdit (StringParameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo)
+:		BaseParamWidget (& (param_p -> sp_base_param), parent_p)
 {
 	ple_text_box_p = new QLineEdit (parent_p);
 	ple_text_box_p -> setEchoMode (echo);
-
 
 	if (bpw_param_p -> pa_refresh_service_flag)
 		{
@@ -49,23 +48,9 @@ void ParamLineEdit :: RemoveConnection ()
 
 void ParamLineEdit :: SetDefaultValue ()
 {
+	const char *value_s = GetStringParameterDefaultValue (ple_param_p);
 
-	if (bpw_param_p -> pa_type == PT_CHAR)
-		{
-			char value_s [2];
-
-			*value_s = bpw_param_p -> pa_default.st_char_value;
-			* (value_s + 1) = '\0';
-
-			ple_text_box_p -> setText (value_s);
-
-		}
-	else
-		{
-			const char *value_s = bpw_param_p -> pa_default.st_string_value_s;
-
-			ple_text_box_p -> setText (value_s);
-		}
+	ple_text_box_p -> setText (value_s);
 }
 
 
@@ -124,7 +109,7 @@ bool ParamLineEdit :: StoreParameterValue ()
 
 bool ParamLineEdit :: UpdateConfigValue (const char * const value_s)
 {
-	bool success_flag = SetParameterValue (bpw_param_p, value_s, true);
+	bool success_flag = SetStringParameterCurrentValue (ple_param_p, value_s);
 
 	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s;
 

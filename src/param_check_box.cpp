@@ -23,12 +23,12 @@
 #include "string_utils.h"
 
 
-ParamCheckBox :: ParamCheckBox (Parameter * const param_p, QTParameterWidget * const parent_p)
-: BaseParamWidget (param_p, parent_p)
+ParamCheckBox :: ParamCheckBox (BooleanParameter * const param_p, QTParameterWidget * const parent_p)
+: BaseParamWidget (& (param_p -> bp_base_param), parent_p)
 {
 	pcb_check_box_p = new QCheckBox (parent_p);
 
-	if (param_p -> pa_refresh_service_flag)
+	if (param_p -> bp_base_param.pa_refresh_service_flag)
 		{
 			QObject ::  connect (pcb_check_box_p, &QCheckBox :: stateChanged, parent_p, &QTParameterWidget :: RefreshService);
 		}
@@ -44,14 +44,21 @@ ParamCheckBox ::	~ParamCheckBox ()
 
 bool ParamCheckBox :: StoreParameterValue ()
 {
-	bpw_param_p -> pa_current_value.st_boolean_value = pcb_check_box_p -> isChecked ();
-	return true;
+	bool b = pcb_check_box_p -> isChecked ();
+
+	return SetBooleanParameterCurrentValue (pcb_param_p, &b);
 }
 
 
 void ParamCheckBox :: SetDefaultValue ()
 {
-	bool b = bpw_param_p -> pa_default.st_boolean_value;
+	const bool *b_p = GetBooleanParameterDefaultValue (pcb_param_p);
+	bool b = false;
+
+	if (b_p)
+		{
+			b = *b_p;
+		}
 
 	pcb_check_box_p -> setChecked (b);
 }

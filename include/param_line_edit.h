@@ -25,7 +25,7 @@
 #include <QWidget>
 #include <QLineEdit>
 
-#include "parameter.h"
+#include "string_parameter.h"
 
 #include "base_param_widget.h"
 
@@ -40,7 +40,7 @@ private slots:
 	bool UpdateConfigValue (const char * const value_s);
 
 public:
-	ParamLineEdit (Parameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo = QLineEdit :: Normal);
+	ParamLineEdit (StringParameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo = QLineEdit :: Normal);
   virtual ~ParamLineEdit ();
 
   virtual void RemoveConnection ();
@@ -58,10 +58,9 @@ public:
 
 protected:
   QLineEdit *ple_text_box_p;
+	StringParameter *ple_param_p;
 
   virtual QWidget *GetQWidget ();
-
-
 };
 
 

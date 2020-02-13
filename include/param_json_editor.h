@@ -14,26 +14,27 @@
 #ifndef PARAM_JSON_EDITOR_H
 #define PARAM_JSON_EDITOR_H
 
-#include "param_text_box.h"
+#include "base_param_widget.h"
+#include "json_parameter.h"
+
+#include "droppable_text_box.h"
 
 class DroppableJSONBox : public DroppableTextBox
 {
 public:
 	DroppableJSONBox (QTParameterWidget *parent_p);
 	virtual bool SetFromJSON (const json_t * const value_p);
-
-protected:
 	virtual bool SetFromText (const char * const data_s);
 
 };
 
 
-class ParamJSONEditor : public ParamTextBox
+class ParamJSONEditor : public BaseParamWidget
 {
 	Q_OBJECT
 
 public:
-	ParamJSONEditor (Parameter * const param_p, QTParameterWidget * const parent_p);
+	ParamJSONEditor (JSONParameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~ParamJSONEditor ();
 
 	virtual void SetDefaultValue ();
@@ -47,6 +48,11 @@ public:
 	virtual bool StoreParameterValue ();
 
 protected:
+	JSONParameter *pje_param_p;
+	DroppableJSONBox *pje_text_box_p;
+
+	virtual QWidget *GetQWidget ();
+
 	virtual bool CreateDroppableTextBox (QTParameterWidget *parent_p);
 
 };

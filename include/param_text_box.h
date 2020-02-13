@@ -1,12 +1,12 @@
 /*
 ** Copyright 2014-2016 The Earlham Institute
-** 
+**
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
 ** You may obtain a copy of the License at
-** 
+**
 **     http://www.apache.org/licenses/LICENSE-2.0
-** 
+**
 ** Unless required by applicable law or agreed to in writing, software
 ** distributed under the License is distributed on an "AS IS" BASIS,
 ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,32 +22,12 @@
 #define PARAM_TEXT_BOX_H
 
 #include <QWidget>
-#include <QPlainTextEdit>
-#include <QDragEnterEvent>
-#include <QDropEvent>
 
-#include "parameter.h"
+
+#include "string_parameter.h"
 
 #include "base_param_widget.h"
-
-
-class DroppableTextBox : public QPlainTextEdit
-{
-public:
-	DroppableTextBox (QTParameterWidget *parent_p);
-	~DroppableTextBox ();
-
-	void LoadText (const char *filename_s);
-
-	virtual bool SetFromText (const char * const data_s);
-
-
-protected:
-	virtual void dragEnterEvent (QDragEnterEvent *event_p);
-
-	virtual void dropEvent (QDropEvent *event_p);
-
-};
+#include "droppable_text_box.h"
 
 
 class ParamTextBox : public BaseParamWidget
@@ -56,7 +36,7 @@ class ParamTextBox : public BaseParamWidget
 
 
 public:
-	ParamTextBox (Parameter * const param_p, QTParameterWidget * const parent_p);
+	ParamTextBox (StringParameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~ParamTextBox ();
 
 	virtual void RemoveConnection ();
@@ -71,6 +51,7 @@ public:
 
 protected:
 	DroppableTextBox *ptb_text_box_p;
+	StringParameter *ptb_param_p;
 
 	virtual QWidget *GetQWidget ();
 

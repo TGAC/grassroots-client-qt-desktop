@@ -26,8 +26,10 @@
 #include "param_check_box.h"
 #include "param_date_widget.h"
 #include "param_double_spin_box.h"
-#include "param_spin_box.h"
+#include "signed_int_param_spin_box.h"
+#include "unsigned_int_param_spin_box.h"
 #include "param_combo_box.h"
+#include "param_char_edit.h"
 #include "param_line_edit.h"
 #include "param_text_box.h"
 #include "prefs_widget.h"
@@ -794,9 +796,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 				}
 			else if (IsCharParameter (param_p))
 				{
-					ParamLineEdit *editor_p = new ParamLineEdit (param_p, this, QLineEdit :: Normal);
-					editor_p -> SetMaxLength (1);
-					widget_p = editor_p;
+					widget_p = new ParamCharEdit (reinterpret_cast <CharParameter *> (param_p), this, QLineEdit :: Normal);
 				}
 			else if (IsDoubleParameter (param_p))
 				{
@@ -804,7 +804,11 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 				}
 			else if (IsSignedIntParameter (param_p))
 				{
-					widget_p = new ParamSpinBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
+					widget_p = new SignedIntParamSpinBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
+				}
+			else if (IsUnsignedIntParameter (param_p))
+				{
+					widget_p = new UnsignedIntParamSpinBox (reinterpret_cast <UnsignedIntParameter *> (param_p), this);
 				}
 			else if (IsTimeParameter (param_p))
 				{
@@ -821,7 +825,6 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 					else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
 						{
 							widget_p = new ParamTextBox (string_param_p, this);
-
 						}
 					else if (param_p -> pa_type == PT_TABLE)
 						{
@@ -830,18 +833,13 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 				}
 			else if (IsJSONParameter (param_p))
 				{
-					StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
+					JSONParameter *json_param_p = reinterpret_cast <JSONParameter *> (param_p);
 
-					if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
+					if (param_p -> pa_type == PT_JSON)
 						{
-							widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
+							widget_p = new ParamJSONEditor (json_param_p, this);
 						}
-					else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
-						{
-							widget_p = new ParamTextBox (string_param_p, this);
-
-						}
-					else if (param_p -> pa_type == PT_TABLE)
+					else if (param_p -> pa_type == PT_JSON_TABLE)
 						{
 							widget_p = new ParamTableWidget (param_p, this);
 						}

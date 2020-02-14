@@ -145,7 +145,6 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/main_window.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/matched_service_list_widget_item.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_check_box.cpp \
-    $$DIR_GRASSROOTS_QT_SRC/src/param_combo_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_double_spin_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_group_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_json_editor.cpp \
@@ -178,9 +177,15 @@ SOURCES += \
 		$$DIR_GRASSROOTS_QT_SRC/src/double_spinner.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/signed_int_param_spin_box.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/unsigned_int_param_spin_box.cpp \
+	../../src/base_combo_box.cpp \
+  ../../src/base_table_widget.cpp \
+	../../src/double_combo_box.cpp \
   ../../src/droppable_table_widget.cpp \
   ../../src/droppable_text_box.cpp \
-  ../../src/param_char_edit.cpp
+  ../../src/param_char_edit.cpp \
+	../../src/signed_int_combo_box.cpp \
+  ../../src/string_combo_box.cpp \
+	../../src/unsigned_int_combo_box.cpp
 
 HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -193,7 +198,6 @@ HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/main_window.h \
     $$DIR_GRASSROOTS_QT_SRC/include/matched_service_list_widget_item.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_check_box.h \
-    $$DIR_GRASSROOTS_QT_SRC/include/param_combo_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_double_spin_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_group_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_json_editor.h \
@@ -227,9 +231,16 @@ HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/double_spinner.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/signed_int_param_spin_box.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/unsigned_int_param_spin_box.h \
+	../../include/base_combo_box.h \
+  ../../include/base_table_widget.h \
+	../../include/double_combo_box.h \
   ../../include/droppable_table_widget.h \
   ../../include/droppable_text_box.h \
-  ../../include/param_char_edit.h
+  ../../include/json_table_widget.h \
+  ../../include/param_char_edit.h \
+	../../include/signed_int_combo_box.h \
+  ../../include/string_combo_box.h \
+	../../include/unsigned_int_combo_box.h
 
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \
@@ -248,11 +259,11 @@ LIBS += -L$$DIR_GRASSROOTS_LIBS \
  -l$$GRASSROOTS_SERVICE_LIB_NAME \
  -l$$GRASSROOTS_MONGODB_LIB_NAME \
  -l$$GRASSROOTS_CLIENTS_LIB_NAME \
- -l$$GRASSROOTS_PARAMS_LIB_NAME \
  -l$$GRASSROOTS_UTIL_LIB_NAME \
  -l$$GRASSROOTS_SERVER_LIB_NAME \
  -l$$GRASSROOTS_NETWORK_LIB_NAME \
  -l$$GRASSROOTS_HANDLER_LIB_NAME \
+ -l$$GRASSROOTS_PARAMS_LIB_NAME \
  -L$$DIR_GRASSROOTS_UUID_LIB -l$$GRASSROOTS_UUID_LIB_NAME \
  -L$$DIR_GRASSROOTS_JANSSON_LIB  -l$$GRASSROOTS_JANSSON_LIB_NAME \
  -L$$DIR_GRASSROOTS_HTMLCXX_LIB -l$$GRASSROOTS_HTMLCXX_LIB_NAME \

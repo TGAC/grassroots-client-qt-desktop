@@ -1,7 +1,18 @@
+#include <QAction>
+#include <QMenu>
+#include <QMimeData>
+#include <QDebug>
+
 #include "droppable_table_widget.h"
+#include "string_utils.h"
+#include "streams.h"
+#include "json_util.h"
+#include "parameter.h"
+#include "base_table_widget.h"
 
 
-DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, ParamTableWidget *param_table_widget_p, char row_delimiter, char column_delimter, const bool first_row_as_headers_flag)
+
+DroppableTableWidget :: DroppableTableWidget (QWidget *parent_p, BaseTableWidget *param_table_widget_p, char row_delimiter, char column_delimter, const bool first_row_as_headers_flag)
 : QTableWidget (parent_p), dtw_param_table_widget_p (param_table_widget_p), dtw_first_row_as_headers_flag (first_row_as_headers_flag)
 {
 	setAcceptDrops (true);
@@ -146,7 +157,7 @@ void DroppableTableWidget :: ShowPopupMenu (const QPoint &p)
 	QMenu *menu_p = new QMenu (this);
 	QAction *action_p = new QAction (tr ("Clear Table"), this);
 
-	connect (action_p, &QAction :: triggered, dtw_param_table_widget_p, &ParamTableWidget :: ClearTable);
+	connect (action_p, &QAction :: triggered, dtw_param_table_widget_p, &BaseTableWidget :: ClearTable);
 	menu_p -> addAction (action_p);
 
 	menu_p->exec (mapToGlobal (p));

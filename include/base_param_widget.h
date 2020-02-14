@@ -52,6 +52,8 @@ public:
 
 	bool MeetsLevel (const ParameterLevel ui_level) const;
 
+	const char *GetParameterName () const;
+
 	virtual void RemoveConnection ();
 
 	void SetVisible (const bool visible_flag);
@@ -61,8 +63,6 @@ public:
 	virtual bool SetValueFromText (const char *value_s) = 0;
 
 	virtual bool SetValueFromJSON (const json_t * const value_p) = 0;
-
-	const char *GetParameterName () const;
 
 	virtual bool StoreParameterValue () = 0;
 

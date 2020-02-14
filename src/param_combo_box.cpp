@@ -16,7 +16,7 @@
 #include <QDebug>
 #include <QVBoxLayout>
 
-#include "param_combo_box.h"
+#include "base_combo_box.h"
 #include "progress_window.h"
 
 #include "prefs_widget.h"

@@ -18,29 +18,24 @@
  * @file
  * @brief
  */
-#ifndef PARAM_TABLE_WIDGET_H
-#define PARAM_TABLE_WIDGET_H
+#ifndef SIGNED_INT_PARAM_COMBO_BOX_H
+#define SIGNED_INT_PARAM_COMBO_BOX_H
 
 #include <QWidget>
-#include <QDragEnterEvent>
-#include <QDropEvent>
-#include <QPoint>
-#include <QScrollArea>
 
-#include "string_parameter.h"
-
-#include "base_table_widget.h"
+#include "signed_int_parameter.h"
+#include "base_combo_box.h"
 
 
-class ParamTableWidget : public BaseTableWidget
+
+class SignedIntComboBox : public BaseComboBox
 {
 	Q_OBJECT
 
-public:
-	static const char * const PTW_COLUMN_HEADERS_S;
 
-	ParamTableWidget (StringParameter * const param_p, QTParameterWidget * const parent_p);
-	virtual ~ParamTableWidget ();
+public:
+	SignedIntComboBox (SignedIntParameter * const param_p, QTParameterWidget * const parent_p);
+	virtual ~SignedIntComboBox ();
 
 	virtual void SetDefaultValue ();
 
@@ -50,13 +45,14 @@ public:
 
 	virtual bool StoreParameterValue ();
 
-public slots:
-	void ClearTable (bool triggered_flag = false);
 
-protected:
-	StringParameter *ptw_param_p;
+	bool AddOption (const int32 value, const char *description_s);
+
+private:
+	SignedIntParameter *sicb_param_p;
+
+	bool SetValue (const int32 value);
 };
 
 
-#endif // PARAM_TABLE_WIDGET_H
-
+#endif // SIGNED_INT_PARAM_COMBO_BOX_H

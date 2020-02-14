@@ -18,29 +18,27 @@
  * @file
  * @brief
  */
-#ifndef PARAM_TABLE_WIDGET_H
-#define PARAM_TABLE_WIDGET_H
+#ifndef STRING_COMBO_BOX_H
+#define STRING_COMBO_BOX_H
+
 
 #include <QWidget>
-#include <QDragEnterEvent>
-#include <QDropEvent>
-#include <QPoint>
-#include <QScrollArea>
 
 #include "string_parameter.h"
+#include "base_combo_box.h"
 
-#include "base_table_widget.h"
 
 
-class ParamTableWidget : public BaseTableWidget
+class StringComboBox : public BaseComboBox
 {
 	Q_OBJECT
 
-public:
-	static const char * const PTW_COLUMN_HEADERS_S;
 
-	ParamTableWidget (StringParameter * const param_p, QTParameterWidget * const parent_p);
-	virtual ~ParamTableWidget ();
+public:
+	StringComboBox (StringParameter * const param_p, QTParameterWidget * const parent_p);
+	virtual ~StringComboBox ();
+
+	bool AddOption (const char *value_s, const char *description_s);
 
 	virtual void SetDefaultValue ();
 
@@ -50,13 +48,10 @@ public:
 
 	virtual bool StoreParameterValue ();
 
-public slots:
-	void ClearTable (bool triggered_flag = false);
 
-protected:
-	StringParameter *ptw_param_p;
+private:
+	StringParameter *scb_param_p;
 };
 
 
-#endif // PARAM_TABLE_WIDGET_H
-
+#endif		/* #ifndef PARAMETER_COMBO_BOX_H */

@@ -31,34 +31,21 @@
 
 
 
-class ParamComboBox : public BaseParamWidget
+class BaseComboBox : public BaseParamWidget
 {
 	Q_OBJECT
 
-
 public:
-	static ParamComboBox *Create (Parameter * const param_p, QTParameterWidget * const parent_p);
-	ParamComboBox (Parameter * const param_p, QTParameterWidget * const parent_p);
-	virtual ~ParamComboBox ();
-
-
-	virtual void SetDefaultValue ();
-
-	virtual bool SetValueFromText (const char *value_s);
-
-	virtual bool SetValueFromJSON (const json_t * const value_p);
-
-	virtual bool StoreParameterValue ();
+  BaseComboBox (Parameter * const param_p, QTParameterWidget * const parent_p);
+  virtual ~BaseComboBox ();
 
 protected:
+	QComboBox *bcb_combo_box_p;
+
 	virtual QWidget *GetQWidget ();
 
-//	bool AddOption (const SharedType *value_p, char *option_s, const SharedType * current_param_value_p);
-
-
 private:
-	QComboBox *pcb_combo_box_p;
-	QGroupBox *pcb_group_p;
+  QGroupBox *bcb_group_p;
 };
 
 

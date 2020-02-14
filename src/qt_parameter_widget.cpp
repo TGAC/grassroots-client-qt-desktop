@@ -28,7 +28,7 @@
 #include "param_double_spin_box.h"
 #include "signed_int_param_spin_box.h"
 #include "unsigned_int_param_spin_box.h"
-#include "param_combo_box.h"
+#include "base_combo_box.h"
 #include "param_char_edit.h"
 #include "param_line_edit.h"
 #include "param_text_box.h"
@@ -36,6 +36,14 @@
 #include "param_table_widget.h"
 #include "param_json_editor.h"
 #include "repeatable_param_group_box.h"
+#include "json_table_widget.h"
+
+
+#include "double_combo_box.h"
+#include "signed_int_combo_box.h"
+#include "string_combo_box.h"
+#include "unsigned_int_combo_box.h"
+
 
 #include "qt_client_data.h"
 
@@ -784,108 +792,83 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 {
 	BaseParamWidget *widget_p = nullptr;
 
-	if (param_p -> pa_options_p)
+	if (IsBooleanParameter (param_p))
 		{
-			widget_p = ParamComboBox :: Create (param_p, this);
+			widget_p = new ParamCheckBox (reinterpret_cast <BooleanParameter *> (param_p), this);
 		}
-	else
+	else if (IsCharParameter (param_p))
 		{
-			if (IsBooleanParameter (param_p))
+			widget_p = new ParamCharEdit (reinterpret_cast <CharParameter *> (param_p), this, QLineEdit :: Normal);
+		}
+	else if (IsDoubleParameter (param_p))
+		{
+			if (param_p -> pa_options_p)
 				{
-					widget_p = new ParamCheckBox (reinterpret_cast <BooleanParameter *> (param_p), this);
+					widget_p = new DoubleComboBox (reinterpret_cast <DoubleParameter *> (param_p), this);
 				}
-			else if (IsCharParameter (param_p))
-				{
-					widget_p = new ParamCharEdit (reinterpret_cast <CharParameter *> (param_p), this, QLineEdit :: Normal);
-				}
-			else if (IsDoubleParameter (param_p))
+			else
 				{
 					widget_p = new ParamDoubleSpinBox (reinterpret_cast <DoubleParameter *> (param_p), this);
 				}
-			else if (IsSignedIntParameter (param_p))
+		}
+	else if (IsSignedIntParameter (param_p))
+		{
+			if (param_p -> pa_options_p)
+				{
+					widget_p = new SignedIntComboBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
+				}
+			else
 				{
 					widget_p = new SignedIntParamSpinBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
 				}
-			else if (IsUnsignedIntParameter (param_p))
+		}
+	else if (IsUnsignedIntParameter (param_p))
+		{
+			if (param_p -> pa_options_p)
+				{
+					widget_p = new UnsignedIntComboBox (reinterpret_cast <UnsignedIntParameter *> (param_p), this);
+				}
+			else
 				{
 					widget_p = new UnsignedIntParamSpinBox (reinterpret_cast <UnsignedIntParameter *> (param_p), this);
 				}
-			else if (IsTimeParameter (param_p))
-				{
-					widget_p = new ParamDateWidget (reinterpret_cast <TimeParameter *> (param_p), this);
-				}
-			else if (IsStringParameter (param_p))
-				{
-					StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
+		}
+	else if (IsTimeParameter (param_p))
+		{
+			widget_p = new ParamDateWidget (reinterpret_cast <TimeParameter *> (param_p), this);
+		}
+	else if (IsStringParameter (param_p))
+		{
+			StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
 
-					if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
-						{
-							widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
-						}
-					else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
-						{
-							widget_p = new ParamTextBox (string_param_p, this);
-						}
-					else if (param_p -> pa_type == PT_TABLE)
-						{
-							widget_p = new ParamTableWidget (param_p, this);
-						}
-				}
-			else if (IsJSONParameter (param_p))
+			if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
 				{
-					JSONParameter *json_param_p = reinterpret_cast <JSONParameter *> (param_p);
-
-					if (param_p -> pa_type == PT_JSON)
-						{
-							widget_p = new ParamJSONEditor (json_param_p, this);
-						}
-					else if (param_p -> pa_type == PT_JSON_TABLE)
-						{
-							widget_p = new ParamTableWidget (param_p, this);
-						}
+					widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
+				}
+			else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
+				{
+					widget_p = new ParamTextBox (string_param_p, this);
+				}
+			else if (param_p -> pa_type == PT_TABLE)
+				{
+					widget_p = new ParamTableWidget (string_param_p, this);
 				}
 		}
+	else if (IsJSONParameter (param_p))
+		{
+			JSONParameter *json_param_p = reinterpret_cast <JSONParameter *> (param_p);
 
-	/*
-			switch (param_p -> pa_type)
+			if (param_p -> pa_type == PT_JSON)
 				{
-
-					case PT_FILE_TO_READ:
-						widget_p = new FileChooserWidget (param_p, this, QFileDialog :: ExistingFile);
-						break;
-
-					case PT_FILE_TO_WRITE:
-						widget_p = new FileChooserWidget (param_p, this, QFileDialog :: AnyFile);
-						break;
-
-					case PT_PASSWORD:
-						widget_p = new ParamTextBox (param_p, this);
-						break;
-
-
-					case PT_DIRECTORY:
-						widget_p = new FileChooserWidget (param_p, this, QFileDialog :: Directory);
-						break;
-
-					case PT_JSON:
-						widget_p = new ParamJSONEditor (param_p, this);
-						break;
-
-					case PT_JSON_TABLE:
-						widget_p = new ParamTableWidget (param_p, this);
-						break;
-
-
-					default:
-							break;
-
+					widget_p = new ParamJSONEditor (json_param_p, this);
 				}
-	 */
-
+			else if (param_p -> pa_type == PT_JSON_TABLE)
+				{
+					widget_p = new JSONTableWidget (param_p, this);
+				}
+		}
 	if (widget_p)
 		{
-			//QWidget *w_p = widget_p -> GetUIQWidget ();
-
 			widget_p -> SetDefaultValue ();
 
 			qpw_widgets_map.insert (param_p, widget_p);

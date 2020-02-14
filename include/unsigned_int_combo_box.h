@@ -18,29 +18,26 @@
  * @file
  * @brief
  */
-#ifndef PARAM_TABLE_WIDGET_H
-#define PARAM_TABLE_WIDGET_H
+#ifndef UNSIGNED_INT_PARAM_COMBO_BOX_H
+#define UNSIGNED_INT_PARAM_COMBO_BOX_H
 
 #include <QWidget>
-#include <QDragEnterEvent>
-#include <QDropEvent>
-#include <QPoint>
-#include <QScrollArea>
 
-#include "string_parameter.h"
-
-#include "base_table_widget.h"
+#include "unsigned_int_parameter.h"
+#include "base_combo_box.h"
 
 
-class ParamTableWidget : public BaseTableWidget
+
+class UnsignedIntComboBox : public BaseComboBox
 {
 	Q_OBJECT
 
-public:
-	static const char * const PTW_COLUMN_HEADERS_S;
 
-	ParamTableWidget (StringParameter * const param_p, QTParameterWidget * const parent_p);
-	virtual ~ParamTableWidget ();
+public:
+	UnsignedIntComboBox (UnsignedIntParameter * const param_p, QTParameterWidget * const parent_p);
+	virtual ~UnsignedIntComboBox ();
+
+	bool AddOption (const uint32 value, const char *description_s);
 
 	virtual void SetDefaultValue ();
 
@@ -50,13 +47,13 @@ public:
 
 	virtual bool StoreParameterValue ();
 
-public slots:
-	void ClearTable (bool triggered_flag = false);
 
-protected:
-	StringParameter *ptw_param_p;
+private:
+	UnsignedIntParameter *uicb_param_p;
+
+	bool SetValue (const uint32 value);
+
 };
 
 
-#endif // PARAM_TABLE_WIDGET_H
-
+#endif // UNSIGNED_INT_PARAM_COMBO_BOX_H

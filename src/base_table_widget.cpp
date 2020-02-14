@@ -233,6 +233,20 @@ bool BaseTableWidget :: SetValueFromText (const char *value_s)
 }
 
 
+
+void BaseTableWidget :: ClearTable (bool triggered_flag)
+{
+	Clear ();
+}
+
+
+void BaseTableWidget :: Clear ()
+{
+	ptw_table_p -> clear ();
+	SetColumnHeaders (bpw_param_p);
+}
+
+
 bool BaseTableWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;

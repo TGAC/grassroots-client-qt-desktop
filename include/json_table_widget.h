@@ -11,7 +11,7 @@ class JSONTableWidget : public BaseTableWidget
 	Q_OBJECT
 
 public:
-	JSONTableWidget (Parameter * const param_p, QTParameterWidget * const parent_p);
+	JSONTableWidget (JSONParameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~JSONTableWidget ();
 
 	virtual void SetDefaultValue ();
@@ -22,10 +22,7 @@ public:
 
 	virtual bool StoreParameterValue ();
 
-
-
-public slots:
-	void ClearTable (bool triggered_flag = false);
+	virtual void Clear ();
 
 protected:
 	JSONParameter *jtw_param_p;

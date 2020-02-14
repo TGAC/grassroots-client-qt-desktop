@@ -25,10 +25,9 @@ public:
 
 	virtual bool SetValueFromJSON (const json_t * const value_p);
 
-
-	virtual bool StoreParameterValue ();
-
 	virtual void ShowErrors (const json_t *errors_p);
+
+	virtual void Clear ();
 
 	bool SetColumnHeaders (Parameter *param_p);
 

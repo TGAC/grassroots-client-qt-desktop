@@ -33,7 +33,7 @@
 #include "param_line_edit.h"
 #include "param_text_box.h"
 #include "prefs_widget.h"
-#include "param_table_widget.h"
+#include "string_table_widget.h"
 #include "param_json_editor.h"
 #include "repeatable_param_group_box.h"
 #include "json_table_widget.h"
@@ -851,7 +851,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 				}
 			else if (param_p -> pa_type == PT_TABLE)
 				{
-					widget_p = new ParamTableWidget (string_param_p, this);
+					widget_p = new StringTableWidget (string_param_p, this);
 				}
 		}
 	else if (IsJSONParameter (param_p))
@@ -864,7 +864,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 				}
 			else if (param_p -> pa_type == PT_JSON_TABLE)
 				{
-					widget_p = new JSONTableWidget (param_p, this);
+					widget_p = new JSONTableWidget (json_param_p, this);
 				}
 		}
 	if (widget_p)

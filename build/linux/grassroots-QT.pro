@@ -149,7 +149,7 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/param_group_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_json_editor.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_line_edit.cpp \
-    $$DIR_GRASSROOTS_QT_SRC/src/param_table_widget.cpp \
+		$$DIR_GRASSROOTS_QT_SRC/src/string_table_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_text_box.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/parameter_widget_container.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/prefs_widget.cpp \
@@ -182,6 +182,7 @@ SOURCES += \
 	../../src/double_combo_box.cpp \
   ../../src/droppable_table_widget.cpp \
   ../../src/droppable_text_box.cpp \
+	../../src/json_table_widget.cpp \
   ../../src/param_char_edit.cpp \
 	../../src/signed_int_combo_box.cpp \
   ../../src/string_combo_box.cpp \
@@ -202,7 +203,7 @@ HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/param_group_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_json_editor.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_line_edit.h \
-    $$DIR_GRASSROOTS_QT_SRC/include/param_table_widget.h \
+		$$DIR_GRASSROOTS_QT_SRC/include/string_table_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_text_box.h \
     $$DIR_GRASSROOTS_QT_SRC/include/parameter_widget_container.h \
     $$DIR_GRASSROOTS_QT_SRC/include/prefs_widget.h \

@@ -32,15 +32,15 @@
 #include "base_table_widget.h"
 
 
-class ParamTableWidget : public BaseTableWidget
+class StringTableWidget : public BaseTableWidget
 {
 	Q_OBJECT
 
 public:
 	static const char * const PTW_COLUMN_HEADERS_S;
 
-	ParamTableWidget (StringParameter * const param_p, QTParameterWidget * const parent_p);
-	virtual ~ParamTableWidget ();
+	StringTableWidget (StringParameter * const param_p, QTParameterWidget * const parent_p);
+	virtual ~StringTableWidget ();
 
 	virtual void SetDefaultValue ();
 
@@ -50,11 +50,10 @@ public:
 
 	virtual bool StoreParameterValue ();
 
-public slots:
-	void ClearTable (bool triggered_flag = false);
+	virtual void Clear ();
 
 protected:
-	StringParameter *ptw_param_p;
+	StringParameter *stw_param_p;
 };
 
 

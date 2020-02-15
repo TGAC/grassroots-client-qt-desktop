@@ -19,12 +19,6 @@ public:
 
 	virtual void RemoveConnection ();
 
-	virtual void SetDefaultValue ();
-
-	virtual bool SetValueFromText (const char *value_s);
-
-	virtual bool SetValueFromJSON (const json_t * const value_p);
-
 	virtual void ShowErrors (const json_t *errors_p);
 
 	virtual void Clear ();

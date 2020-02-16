@@ -29,9 +29,11 @@ uint32 UnsignedIntParamSpinBox :: UIPSB_DEFAULT_MAX = UINT_MAX;
 UnsignedIntParamSpinBox :: UnsignedIntParamSpinBox (UnsignedIntParameter * const param_p, QTParameterWidget * const parent_p)
 :	BaseParamSpinBox (& (param_p -> uip_base_param), parent_p)
 {
+	uips_param_p = param_p;
+
 	if (param_p -> uip_min_value_p)
 		{
-			bpsb_spin_box_p -> setMinimum (* (param_p -> uip_min_value_p));
+			bpsb_spin_box_p -> setMinimum (static_cast <int> (* (param_p -> uip_min_value_p)));
 		}
 	else
 		{

@@ -24,6 +24,8 @@
 ParamLineEdit :: ParamLineEdit (StringParameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo)
 :		BaseParamWidget (& (param_p -> sp_base_param), parent_p)
 {
+	ple_param_p = param_p;
+
 	ple_text_box_p = new QLineEdit (parent_p);
 	ple_text_box_p -> setEchoMode (echo);
 

@@ -122,6 +122,7 @@ FileChooserWidget :: FileChooserWidget (ResourceParameter * const param_p, QTPar
 	: BaseParamWidget (& (param_p -> rp_base_param), parent_p),
 		fcw_file_mode (mode)
 {
+	fcw_param_p = param_p;
 	fcw_chooser_p = new QComboBox;
 	fcw_chooser_p -> setEditable (true);
 	fcw_chooser_p -> setSizePolicy (QSizePolicy :: Expanding, QSizePolicy :: Preferred);

@@ -867,6 +867,29 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 					widget_p = new JSONTableWidget (json_param_p, this);
 				}
 		}
+	else if (IsResourceParameter (param_p))
+		{
+			ResourceParameter *resource_param_p = reinterpret_cast <ResourceParameter *> (param_p);
+			QFileDialog :: FileMode mode = QFileDialog :: FileMode :: AnyFile;
+
+			if (param_p -> pa_type == PT_FILE_TO_READ)
+				{
+					mode = QFileDialog :: FileMode :: ExistingFile;
+				}
+			else if (param_p -> pa_type == PT_FILE_TO_WRITE)
+				{
+					mode = QFileDialog :: FileMode :: AnyFile;
+				}
+			if (param_p -> pa_type == PT_DIRECTORY)
+				{
+					mode = QFileDialog :: FileMode :: DirectoryOnly;
+				}
+
+
+			widget_p = new FileChooserWidget (resource_param_p, this, mode);
+		}
+
+
 	if (widget_p)
 		{
 			widget_p -> SetDefaultValue ();

@@ -26,6 +26,8 @@
 ParamCheckBox :: ParamCheckBox (BooleanParameter * const param_p, QTParameterWidget * const parent_p)
 : BaseParamWidget (& (param_p -> bp_base_param), parent_p)
 {
+	pcb_param_p = param_p;
+
 	pcb_check_box_p = new QCheckBox (parent_p);
 
 	if (param_p -> bp_base_param.pa_refresh_service_flag)

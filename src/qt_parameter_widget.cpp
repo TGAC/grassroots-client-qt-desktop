@@ -843,7 +843,14 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 
 			if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
 				{
-					widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
+					if (param_p -> pa_options_p)
+						{
+							widget_p = new StringComboBox (string_param_p, this);
+						}
+					else
+						{
+							widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
+						}
 				}
 			else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
 				{

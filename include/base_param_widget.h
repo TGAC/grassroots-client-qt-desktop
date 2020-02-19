@@ -74,7 +74,13 @@ protected:
 	QLabel *bpw_label_p;
 	char *bpw_param_name_s;
 
+	void SetErrorFlag (const bool error_flag);
+	bool GetErrorFlag () const;
+
 	virtual QWidget *GetQWidget () = 0;
+
+private:
+	bool bpw_error_flag;
 
 };
 

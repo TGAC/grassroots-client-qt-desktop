@@ -185,6 +185,7 @@ SOURCES += \
 	../../src/json_table_widget.cpp \
   ../../src/param_char_edit.cpp \
 	../../src/signed_int_combo_box.cpp \
+	../../src/signed_int_spinner.cpp \
   ../../src/string_combo_box.cpp \
 	../../src/unsigned_int_combo_box.cpp
 
@@ -240,6 +241,7 @@ HEADERS  += \
   ../../include/json_table_widget.h \
   ../../include/param_char_edit.h \
 	../../include/signed_int_combo_box.h \
+	../../include/signed_int_spinner.h \
   ../../include/string_combo_box.h \
 	../../include/unsigned_int_combo_box.h
 

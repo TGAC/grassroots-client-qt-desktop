@@ -126,11 +126,26 @@ bool ParamCharEdit :: SetValueFromJSON (const json_t * const value_p)
 
 bool ParamCharEdit :: StoreParameterValue ()
 {
+	bool success_flag = false;
 	QString s = pce_text_box_p -> text ();
 	QByteArray ba = s.toLocal8Bit ();
-	const char *value_s = ba.constData ();
+	const char *value_s = ba.constData ();	
 
-	return UpdateConfigValue (value_s);
+	if ((!(bpw_param_p -> pa_required_flag)) || (!IsStringEmpty (value_s)))
+		{
+			if (GetErrorFlag ())
+				{
+					SetErrorFlag (false);
+				}
+
+			success_flag = UpdateConfigValue (value_s);
+		}
+	else
+		{
+			SetErrorFlag (true);
+		}
+
+	return success_flag;
 }
 
 

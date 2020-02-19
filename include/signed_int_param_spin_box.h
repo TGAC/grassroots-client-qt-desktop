@@ -26,11 +26,11 @@
 #include <QSpinBox>
 
 #include "signed_int_parameter.h"
-#include "base_param_spin_box.h"
+#include "base_param_widget.h"
+#include "signed_int_spinner.h"
 
 
-
-class SignedIntParamSpinBox : public BaseParamSpinBox
+class SignedIntParamSpinBox : public BaseParamWidget
 {
 	Q_OBJECT
 
@@ -53,9 +53,11 @@ protected:
 
 	static int32 SIPSB_DEFAULT_MAX;
 
+	virtual QWidget *GetQWidget ();
+
 private:
-	QSpinBox *psb_spin_box_p;
-	SignedIntParameter *sips_param_p;
+	SignedIntSpinner *sipsb_spin_box_p;
+	SignedIntParameter *sipsb_param_p;
 };
 
 

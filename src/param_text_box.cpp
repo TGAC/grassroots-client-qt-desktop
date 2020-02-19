@@ -82,13 +82,24 @@ QWidget *ParamTextBox :: GetQWidget ()
 
 bool ParamTextBox :: StoreParameterValue ()
 {
+	bool success_flag = false;
 	QString s = ptb_text_box_p -> toPlainText ();
 	QByteArray ba = s.toLocal8Bit ();
 	const char *value_s = ba.constData ();
 
-	bool success_flag = SetStringParameterCurrentValue (ptb_param_p, value_s);
+	if ((!(bpw_param_p -> pa_required_flag)) || (!IsStringEmpty (value_s)))
+		{
+			if (GetErrorFlag ())
+				{
+					SetErrorFlag (false);
+				}
 
-	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s << " " << success_flag;
+			success_flag = SetStringParameterCurrentValue (ptb_param_p, value_s);
+		}
+	else
+		{
+			SetErrorFlag (true);
+		}
 
 	return success_flag;
 }

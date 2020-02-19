@@ -19,12 +19,13 @@ public:
 
 	virtual ~DoubleSpinner ();
 
-	QValidator::State validate (QString &input_r, int &pos_r) const;
+	QValidator::State validate (QString &input_r, int &pos_r) const override;
 
+	bool IsValueSet () const;
 
 protected:
 	Parameter *ds_param_p;
-	bool ds_value_set_flag;
+	mutable bool ds_value_set_flag;
 
 	virtual double valueFromText (const QString &text_r) const override;
 

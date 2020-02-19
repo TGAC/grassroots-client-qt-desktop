@@ -29,24 +29,27 @@ int32 SignedIntParamSpinBox :: SIPSB_DEFAULT_MAX = INT_MAX;
 
 
 SignedIntParamSpinBox :: SignedIntParamSpinBox (SignedIntParameter * const param_p, QTParameterWidget * const parent_p)
-:	BaseParamSpinBox (& (param_p -> sip_base_param), parent_p)
+:	BaseParamWidget (& (param_p -> sip_base_param), parent_p)
 {
+	sipsb_spin_box_p = new SignedIntSpinner (& (param_p -> sip_base_param), parent_p);
+	sipsb_param_p = param_p;
+
 	if (param_p -> sip_min_value_p)
 		{
-			bpsb_spin_box_p -> setMinimum (* (param_p -> sip_min_value_p));
+			sipsb_spin_box_p -> setMinimum (* (param_p -> sip_min_value_p));
 		}
 	else
 		{
-			bpsb_spin_box_p -> setMinimum (SignedIntParamSpinBox :: SIPSB_DEFAULT_MIN);
+			sipsb_spin_box_p -> setMinimum (SignedIntParamSpinBox :: SIPSB_DEFAULT_MIN);
 		}
 
 	if (param_p -> sip_max_value_p)
 		{
-			bpsb_spin_box_p -> setMaximum (* (param_p -> sip_max_value_p));
+			sipsb_spin_box_p -> setMaximum (* (param_p -> sip_max_value_p));
 		}
 	else
 		{
-			bpsb_spin_box_p -> setMaximum (SignedIntParamSpinBox :: SIPSB_DEFAULT_MAX);
+			sipsb_spin_box_p -> setMaximum (SignedIntParamSpinBox :: SIPSB_DEFAULT_MAX);
 		}
 }
 
@@ -57,19 +60,19 @@ SignedIntParamSpinBox :: ~SignedIntParamSpinBox ()
 
 void SignedIntParamSpinBox :: SetDefaultValue ()
 {
-	const int32 *def_value_p = GetSignedIntParameterDefaultValue (sips_param_p);
+	const int32 *def_value_p = GetSignedIntParameterDefaultValue (sipsb_param_p);
 
 	if (def_value_p)
 		{
-			bpsb_spin_box_p -> setValue (*def_value_p);
+			sipsb_spin_box_p -> setValue (*def_value_p);
 		}
 }
 
 
 bool SignedIntParamSpinBox :: StoreParameterValue ()
 {
-	const int value = bpsb_spin_box_p -> value ();
-	bool b = SetSignedIntParameterCurrentValue (sips_param_p, &value);
+	const int value = sipsb_spin_box_p -> value ();
+	bool b = SetSignedIntParameterCurrentValue (sipsb_param_p, &value);
 
 	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
 
@@ -84,7 +87,7 @@ bool SignedIntParamSpinBox :: SetValueFromText (const char *value_s)
 
 	if (GetValidInteger (&value_s, &value))
 		{
-			bpsb_spin_box_p -> setValue (value);
+			sipsb_spin_box_p -> setValue (value);
 			success_flag = true;
 		}
 
@@ -100,10 +103,15 @@ bool SignedIntParamSpinBox :: SetValueFromJSON (const json_t * const value_p)
 		{
 			const int d = json_integer_value (value_p);
 
-			bpsb_spin_box_p -> setValue (d);
+			sipsb_spin_box_p -> setValue (d);
 			success_flag = true;
 		}
 
 	return success_flag;
 }
 
+
+QWidget *SignedIntParamSpinBox :: GetQWidget ()
+{
+	return sipsb_spin_box_p;
+}

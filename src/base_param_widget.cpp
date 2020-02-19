@@ -16,16 +16,30 @@
 #include "base_param_widget.h"
 #include "qt_parameter_widget.h"
 
+#include "QtGui"
 
 #include "string_utils.h"
 
 
 BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 	: bpw_param_p (param_p),
-		bpw_parent_p (parent_p)
+		bpw_parent_p (parent_p),
+		bpw_error_flag (false)
 {
 	bpw_param_name_s = EasyCopyToNewString (param_p -> pa_name_s);
-	bpw_label_p = new QLabel (GetUIName (param_p));
+	const char *label_s = GetUIName (param_p);
+
+
+	if (param_p -> pa_required_flag)
+		{
+			QString s (label_s);
+			s.append (" *");
+			bpw_label_p = new QLabel (s);
+		}
+	else
+		{
+			bpw_label_p = new QLabel (label_s);
+		}
 
 	if (param_p -> pa_description_s)
 		{
@@ -107,6 +121,33 @@ void BaseParamWidget :: SetVisible (const bool visible_flag)
 		}
 
 	bpw_label_p -> setVisible (visible_flag);
+}
+
+
+void BaseParamWidget :: SetErrorFlag (const bool error_flag)
+{
+	if (bpw_error_flag != error_flag)
+		{
+			const char *style_s = nullptr;
+
+			if (error_flag)
+				{
+					style_s = "QLabel {color: rgb(170,0,0);}";
+				}
+			else
+				{
+					style_s = "QLabel {color: rgb(0,0,0);}";
+				}
+
+			bpw_label_p -> setStyleSheet (style_s);
+
+			bpw_error_flag = error_flag;
+		}
+}
+
+bool BaseParamWidget :: GetErrorFlag () const
+{
+	return bpw_error_flag;
 }
 
 

@@ -23,13 +23,11 @@
 
 
 #include <QWidget>
-#include <QDoubleSpinBox>
 
+#include "double_spinner.h"
 #include "parameter.h"
 #include "base_param_widget.h"
 #include "double_parameter.h"
-
-
 
 
 class ParamDoubleSpinBox : public BaseParamWidget
@@ -57,7 +55,7 @@ protected:
 
 private:
 	DoubleParameter *pdsb_param_p;
-	QDoubleSpinBox *pdsb_spinner_p;
+	DoubleSpinner *pdsb_spinner_p;
 };
 
 

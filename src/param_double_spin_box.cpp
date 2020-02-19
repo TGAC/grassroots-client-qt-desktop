@@ -23,7 +23,7 @@
 ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTParameterWidget * const parent_p)
 :		BaseParamWidget (& (param_p -> dp_base_param), parent_p)
 {
-	pdsb_spinner_p = new QDoubleSpinBox (parent_p);
+	pdsb_spinner_p = new DoubleSpinner (& (param_p -> dp_base_param), parent_p);
 	pdsb_param_p = param_p;
 	int default_precision = 4;
 	const char *prec_value_s = GetParameterKeyValue (& (param_p -> dp_base_param), PA_DOUBLE_PRECISION_S);
@@ -65,12 +65,27 @@ void ParamDoubleSpinBox :: SetDefaultValue ()
 
 bool ParamDoubleSpinBox :: StoreParameterValue ()
 {
-	const double value = pdsb_spinner_p -> value ();
-	bool b = SetDoubleParameterCurrentValue (pdsb_param_p, &value);
+	bool success_flag = false;
 
-	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+	if (pdsb_spinner_p -> IsValueSet ())
+		{
+			const double value = pdsb_spinner_p -> value ();
 
-	return b;
+			success_flag = SetDoubleParameterCurrentValue (pdsb_param_p, &value);
+			qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+
+			if (GetErrorFlag ())
+				{
+					SetErrorFlag (false);
+				}
+		}
+	else if (bpw_param_p -> pa_required_flag)
+		{
+			SetErrorFlag (true);
+		}
+
+
+	return success_flag;
 }
 
 

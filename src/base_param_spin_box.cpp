@@ -35,6 +35,12 @@ void ClearableSpinBox :: fixup (QString &input) const
 }
 
 
+QValidator::State ClearableSpinBox :: validate (QString &input, int &pos) const
+{
+
+}
+
+
 BaseParamSpinBox :: BaseParamSpinBox (Parameter * const param_p, QTParameterWidget * const parent_p)
 :	BaseParamWidget (param_p, parent_p)
 {

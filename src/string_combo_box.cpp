@@ -5,6 +5,26 @@ StringComboBox :: StringComboBox (StringParameter * const param_p, QTParameterWi
 	: BaseComboBox (& (param_p -> sp_base_param), parent_p)
 {
 	scb_param_p = param_p;
+
+	if (param_p -> sp_base_param.pa_options_p)
+		{
+			StringParameterOptionNode *node_p = (StringParameterOptionNode *) (param_p -> sp_base_param.pa_options_p -> ll_head_p);
+			bool success_flag = true;
+
+			while (node_p && success_flag)
+				{
+					StringParameterOption *option_p = node_p -> spon_option_p;
+
+					success_flag = AddOption (option_p -> spo_value_s, option_p -> spo_description_s);
+
+					if (success_flag)
+						{
+							node_p = (StringParameterOptionNode *) (node_p -> spon_node.ln_next_p);
+						}
+				}
+		}
+
+	SetDefaultValue ();
 }
 
 StringComboBox :: ~StringComboBox ()

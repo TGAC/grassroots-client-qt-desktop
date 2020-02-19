@@ -8,6 +8,8 @@ SignedIntComboBox :: SignedIntComboBox (SignedIntParameter * const param_p, QTPa
 	: BaseComboBox (& (param_p -> sip_base_param), parent_p)
 {
 	sicb_param_p = param_p;
+
+	SetDefaultValue ();
 }
 
 SignedIntComboBox :: ~SignedIntComboBox ()

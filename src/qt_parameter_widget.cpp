@@ -23,6 +23,7 @@
 #include "file_chooser_widget.h"
 
 
+#include "param_char_edit.h"
 #include "param_check_box.h"
 #include "param_date_widget.h"
 #include "param_double_spin_box.h"

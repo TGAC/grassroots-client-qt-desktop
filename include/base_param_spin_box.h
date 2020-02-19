@@ -19,6 +19,8 @@ public:
 
 protected:
 	void fixup(QString &input) const;
+	QValidator::State validate (QString &input, int &pos) const;
+
 };
 
 

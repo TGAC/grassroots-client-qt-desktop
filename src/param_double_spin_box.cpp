@@ -27,6 +27,7 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTPar
 	pdsb_param_p = param_p;
 	int default_precision = 4;
 	const char *prec_value_s = GetParameterKeyValue (& (param_p -> dp_base_param), PA_DOUBLE_PRECISION_S);
+	const double step = 0.10f;
 	double min_bound = (param_p -> dp_min_value_p) ? * (param_p -> dp_min_value_p) : 0.0;
 	double max_bound = (param_p -> dp_max_value_p) ? * (param_p -> dp_max_value_p) : 1000000.0;
 
@@ -39,7 +40,7 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTPar
 
 	pdsb_spinner_p -> setMinimum (min_bound);
 	pdsb_spinner_p -> setMaximum (max_bound);
-
+	pdsb_spinner_p -> setSingleStep (step);
 
 	if (param_p -> dp_base_param.pa_refresh_service_flag)
 		{
@@ -79,11 +80,17 @@ bool ParamDoubleSpinBox :: StoreParameterValue ()
 					SetErrorFlag (false);
 				}
 		}
-	else if (bpw_param_p -> pa_required_flag)
+	else
 		{
-			SetErrorFlag (true);
+			if (bpw_param_p -> pa_required_flag)
+				{
+					SetErrorFlag (true);
+				}
+			else
+				{
+					success_flag = SetDoubleParameterCurrentValue (pdsb_param_p, NULL);
+				}
 		}
-
 
 	return success_flag;
 }

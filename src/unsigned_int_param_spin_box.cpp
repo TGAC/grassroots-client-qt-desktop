@@ -27,26 +27,26 @@ uint32 UnsignedIntParamSpinBox :: UIPSB_DEFAULT_MAX = UINT_MAX;
 
 
 UnsignedIntParamSpinBox :: UnsignedIntParamSpinBox (UnsignedIntParameter * const param_p, QTParameterWidget * const parent_p)
-:	BaseParamSpinBox (& (param_p -> uip_base_param), parent_p)
+:	BaseParamWidget (& (param_p -> uip_base_param), parent_p)
 {
 	uips_param_p = param_p;
 
 	if (param_p -> uip_min_value_p)
 		{
-			bpsb_spin_box_p -> setMinimum (static_cast <int> (* (param_p -> uip_min_value_p)));
+			uipsb_spin_box_p -> setMinimum (static_cast <int> (* (param_p -> uip_min_value_p)));
 		}
 	else
 		{
-			bpsb_spin_box_p -> setMinimum (0);
+			uipsb_spin_box_p -> setMinimum (0);
 		}
 
 	if (param_p -> uip_max_value_p)
 		{
-			bpsb_spin_box_p -> setMaximum (* (param_p -> uip_max_value_p));
+			uipsb_spin_box_p -> setMaximum (* (param_p -> uip_max_value_p));
 		}
 	else
 		{
-			bpsb_spin_box_p -> setMaximum (UnsignedIntParamSpinBox :: UIPSB_DEFAULT_MAX);
+			uipsb_spin_box_p -> setMaximum (UnsignedIntParamSpinBox :: UIPSB_DEFAULT_MAX);
 		}
 }
 
@@ -61,14 +61,14 @@ void UnsignedIntParamSpinBox :: SetDefaultValue ()
 
 	if (def_value_p)
 		{
-			bpsb_spin_box_p -> setValue (*def_value_p);
+			uipsb_spin_box_p -> setValue (*def_value_p);
 		}
 }
 
 
 bool UnsignedIntParamSpinBox :: StoreParameterValue ()
 {
-	const uint32 value = bpsb_spin_box_p -> value ();
+	const uint32 value = uipsb_spin_box_p -> value ();
 	bool b = SetUnsignedIntParameterCurrentValue (uips_param_p, &value);
 
 	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
@@ -84,7 +84,7 @@ bool UnsignedIntParamSpinBox :: SetValueFromText (const char *value_s)
 
 	if (GetValidInteger (&value_s, &value))
 		{
-			bpsb_spin_box_p -> setValue (value);
+			uipsb_spin_box_p -> setValue (value);
 			success_flag = true;
 		}
 
@@ -100,7 +100,7 @@ bool UnsignedIntParamSpinBox :: SetValueFromJSON (const json_t * const value_p)
 		{
 			const int d = json_integer_value (value_p);
 
-			bpsb_spin_box_p -> setValue (d);
+			uipsb_spin_box_p -> setValue (d);
 			success_flag = true;
 		}
 

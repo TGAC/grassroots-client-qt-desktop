@@ -26,11 +26,11 @@
 #include <QSpinBox>
 
 #include "unsigned_int_parameter.h"
-#include "base_param_spin_box.h"
+#include "base_param_widget.h"
+#include "unsigned_int_spinner.h"
 
 
-
-class UnsignedIntParamSpinBox : public BaseParamSpinBox
+class UnsignedIntParamSpinBox : public BaseParamWidget
 {
 	Q_OBJECT
 
@@ -52,6 +52,7 @@ protected:
 	static uint32 UIPSB_DEFAULT_MAX;
 
 private:	
+	UnsignedIntSpinner *uipsb_spin_box_p;
 	UnsignedIntParameter *uips_param_p;
 };
 

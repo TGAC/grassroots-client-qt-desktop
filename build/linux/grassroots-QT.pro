@@ -173,7 +173,6 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/viewer_widget.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_date_widget.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/progress_widget_delegate.cpp \
-		$$DIR_GRASSROOTS_QT_SRC/src/base_param_spin_box.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/double_spinner.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/signed_int_param_spin_box.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/unsigned_int_param_spin_box.cpp \
@@ -187,7 +186,8 @@ SOURCES += \
 	../../src/signed_int_combo_box.cpp \
 	../../src/signed_int_spinner.cpp \
   ../../src/string_combo_box.cpp \
-	../../src/unsigned_int_combo_box.cpp
+	../../src/unsigned_int_combo_box.cpp \
+	../../src/unsigned_int_validator.cpp
 
 HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \
@@ -229,7 +229,6 @@ HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/viewer_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/param_date_widget.h \
     $$DIR_GRASSROOTS_QT_SRC/include/progress_widget_delegate.h \
-		$$DIR_GRASSROOTS_QT_SRC/include/base_param_spin_box.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/double_spinner.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/signed_int_param_spin_box.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/unsigned_int_param_spin_box.h \
@@ -243,7 +242,9 @@ HEADERS  += \
 	../../include/signed_int_combo_box.h \
 	../../include/signed_int_spinner.h \
   ../../include/string_combo_box.h \
-	../../include/unsigned_int_combo_box.h
+	../../include/unsigned_int_combo_box.h \
+	../../include/unsigned_int_spinner.h \
+	../../include/unsigned_int_validator.h
 
 
 BOOST_DEPS =  -L$$DIR_IRODS_BOOST_LIBS \

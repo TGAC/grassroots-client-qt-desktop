@@ -78,10 +78,20 @@ void SignedIntParamSpinBox :: SetDefaultValue ()
 
 bool SignedIntParamSpinBox :: StoreParameterValue ()
 {
-	const int value = sipsb_spin_box_p -> value ();
-	bool b = SetSignedIntParameterCurrentValue (sipsb_param_p, &value);
+	bool b = false;
 
-	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+	if (sipsb_spin_box_p -> IsValueSet ())
+		{
+			const int value = sipsb_spin_box_p -> value ();
+			b = SetSignedIntParameterCurrentValue (sipsb_param_p, &value);
+
+			qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+		}
+	else
+		{
+			qDebug () << "Setting " << bpw_param_p -> pa_name_s << "to NULL value";
+			b = true;
+		}
 
 	return b;
 }

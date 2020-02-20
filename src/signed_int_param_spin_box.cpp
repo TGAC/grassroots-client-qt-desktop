@@ -66,6 +66,13 @@ void SignedIntParamSpinBox :: SetDefaultValue ()
 		{
 			sipsb_spin_box_p -> setValue (*def_value_p);
 		}
+	else
+		{
+			if (! (bpw_param_p -> pa_required_flag))
+				{
+					sipsb_spin_box_p -> ClearValue ();
+				}
+		}
 }
 
 

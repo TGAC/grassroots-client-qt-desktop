@@ -23,9 +23,11 @@ public:
 
 	bool IsValueSet () const;
 
+	bool ClearValue ();
+
 protected:
 	Parameter *sis_param_p;
-	mutable bool sis_value_set_flag;
+	mutable bool sis_null_flag;
 
 	virtual int valueFromText (const QString &text_r) const override;
 

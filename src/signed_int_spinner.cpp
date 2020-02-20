@@ -11,11 +11,28 @@ SignedIntSpinner :: SignedIntSpinner (Parameter *param_p, QWidget *parent_p)
 {
 	sis_param_p = param_p;
 	sis_value_set_flag = false;
+	sis_null_flag = false;
 }
 
 
 SignedIntSpinner :: ~SignedIntSpinner ()
 {
+}
+
+
+bool SignedIntSpinner :: ClearValue (	)
+{
+	bool success_flag = false;
+
+	if (! (sis_param_p -> pa_required_flag))
+		{
+			QString nullstr;
+
+			valueFromText (nullstr);
+			sis_null_flag = true;
+		}
+
+	return success_flag;
 }
 
 
@@ -25,7 +42,14 @@ int SignedIntSpinner :: valueFromText (const QString &text_r) const
 
 	if (! ((text_r.isNull ()) || (text_r.isEmpty ())))
 		{
-			i = text_r.toInt (&sis_value_set_flag);
+			bool b;
+
+			i = text_r.toInt (&b);
+			sis_null_flag = !b;
+		}
+	else if (! (sis_param_p -> pa_required_flag))
+		{
+			sis_null_flag = true;
 		}
 
 	return i;
@@ -34,13 +58,13 @@ int SignedIntSpinner :: valueFromText (const QString &text_r) const
 
 QString SignedIntSpinner :: textFromValue (int value) const
 {
-	if (sis_value_set_flag)
+	if (sis_null_flag)
 		{
-			return QString :: number (value);
+			return QString ();
 		}
 	else
 		{
-			return QString ("");
+			return QString :: number (value);
 		}
 }
 
@@ -48,7 +72,7 @@ QString SignedIntSpinner :: textFromValue (int value) const
 
 bool SignedIntSpinner :: IsValueSet () const
 {
-	return sis_value_set_flag;
+	return !sis_null_flag;
 }
 
 
@@ -65,6 +89,7 @@ QValidator :: State SignedIntSpinner :: validate (QString &input_r, int &pos_r) 
 			if ((input_r.isNull ()) || (input_r.isEmpty ()))
 				{
 					state = QValidator :: Acceptable;
+					sis_null_flag = true;
 				}
 			else
 				{

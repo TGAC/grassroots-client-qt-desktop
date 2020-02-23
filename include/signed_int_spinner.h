@@ -9,7 +9,7 @@
 #include "base_int_spinner.h"
 
 
-class SignedIntSpinner : public BaseIntSpinner
+class SignedIntSpinner : public QSpinBox
 {
 	Q_OBJECT
 
@@ -23,6 +23,8 @@ public:
 	QValidator::State validate (QString &input_r, int &pos_r) const override;
 
 	bool IsValueSet () const;
+
+	bool ClearValue ();
 
 
 protected:

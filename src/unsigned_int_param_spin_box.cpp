@@ -22,7 +22,6 @@
 #include "limits.h"
 
 
-uint32 UnsignedIntParamSpinBox :: UIPSB_DEFAULT_MAX = UINT_MAX;
 
 
 
@@ -30,23 +29,16 @@ UnsignedIntParamSpinBox :: UnsignedIntParamSpinBox (UnsignedIntParameter * const
 :	BaseParamWidget (& (param_p -> uip_base_param), parent_p)
 {
 	uips_param_p = param_p;
+	uipsb_spin_box_p = new UnsignedIntSpinner (param_p -> uip_base_param.pa_required_flag, parent_p);
 
 	if (param_p -> uip_min_value_p)
 		{
 			uipsb_spin_box_p -> setMinimum (static_cast <int> (* (param_p -> uip_min_value_p)));
 		}
-	else
-		{
-			uipsb_spin_box_p -> setMinimum (0);
-		}
 
 	if (param_p -> uip_max_value_p)
 		{
 			uipsb_spin_box_p -> setMaximum (* (param_p -> uip_max_value_p));
-		}
-	else
-		{
-			uipsb_spin_box_p -> setMaximum (UnsignedIntParamSpinBox :: UIPSB_DEFAULT_MAX);
 		}
 }
 
@@ -61,17 +53,28 @@ void UnsignedIntParamSpinBox :: SetDefaultValue ()
 
 	if (def_value_p)
 		{
-			uipsb_spin_box_p -> setValue (*def_value_p);
+			uipsb_spin_box_p -> SetValue (*def_value_p);
 		}
 }
 
 
 bool UnsignedIntParamSpinBox :: StoreParameterValue ()
 {
-	const uint32 value = uipsb_spin_box_p -> value ();
-	bool b = SetUnsignedIntParameterCurrentValue (uips_param_p, &value);
+	bool b = false;
 
-	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+	if (uipsb_spin_box_p -> IsValueSet ())
+		{
+			const uint32 value = uipsb_spin_box_p -> GetValue ();
+			b = SetUnsignedIntParameterCurrentValue (uips_param_p, &value);
+
+			qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+		}
+	else
+		{
+			qDebug () << "Setting " << bpw_param_p -> pa_name_s << "to NULL value";
+			b = true;
+		}
+
 
 	return b;
 }
@@ -84,8 +87,11 @@ bool UnsignedIntParamSpinBox :: SetValueFromText (const char *value_s)
 
 	if (GetValidInteger (&value_s, &value))
 		{
-			uipsb_spin_box_p -> setValue (value);
-			success_flag = true;
+			if (value >= 0)
+				{
+					uipsb_spin_box_p -> setValue (value);
+					success_flag = true;
+				}
 		}
 
 	return success_flag;
@@ -100,10 +106,19 @@ bool UnsignedIntParamSpinBox :: SetValueFromJSON (const json_t * const value_p)
 		{
 			const int d = json_integer_value (value_p);
 
-			uipsb_spin_box_p -> setValue (d);
-			success_flag = true;
+			if (d >= 0)
+				{
+					uipsb_spin_box_p -> setValue (d);
+					success_flag = true;
+				}
 		}
 
 	return success_flag;
+}
+
+
+QWidget *UnsignedIntParamSpinBox :: GetQWidget ()
+{
+	return uipsb_spin_box_p;
 }
 

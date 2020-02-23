@@ -51,6 +51,8 @@ public:
 protected:
 	static uint32 UIPSB_DEFAULT_MAX;
 
+	virtual QWidget *GetQWidget ();
+
 private:	
 	UnsignedIntSpinner *uipsb_spin_box_p;
 	UnsignedIntParameter *uips_param_p;

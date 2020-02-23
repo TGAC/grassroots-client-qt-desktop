@@ -7,7 +7,7 @@ int SignedIntSpinner :: SIS_UNSET_VALUE = INT32_MIN;
 
 
 SignedIntSpinner :: SignedIntSpinner (Parameter *param_p, QWidget *parent_p)
-	: BaseIntSpinner (parent_p)
+	: QSpinBox(parent_p)
 {
 	sis_param_p = param_p;
 	sis_null_flag = false;

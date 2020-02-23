@@ -187,7 +187,8 @@ SOURCES += \
 	../../src/signed_int_spinner.cpp \
   ../../src/string_combo_box.cpp \
 	../../src/unsigned_int_combo_box.cpp \
-	../../src/unsigned_int_validator.cpp
+	../../src/unsigned_int_validator.cpp \
+	../../src/unsigned_int_spinner.cpp
 
 HEADERS  += \
     $$DIR_GRASSROOTS_QT_SRC/include/base_param_widget.h \

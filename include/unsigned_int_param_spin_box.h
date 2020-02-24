@@ -41,8 +41,6 @@ public:
 
 
 	virtual bool SetValueFromText (const char *value_s);
-
-
 	virtual bool SetValueFromJSON (const json_t * const value_p);
 
 	virtual void SetDefaultValue ();

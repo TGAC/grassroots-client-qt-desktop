@@ -22,13 +22,18 @@ public:
 
 	bool ClearValue ();
 
-	void SetValue (uint32 i);
+	void setValue (uint32 u);
+
+	void setMinimum (uint32 min);
+
+	void setMaximum (uint32 max);
+
+	int minimum () const;
+
+	int maximum () const;
 
 	uint32 GetValue () const;
 
-	void SetMinimum (uint32 min);
-
-	void SetMaximum (uint32 max);
 
 protected:
 	bool uis_required_flag;

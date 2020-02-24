@@ -53,7 +53,14 @@ void UnsignedIntParamSpinBox :: SetDefaultValue ()
 
 	if (def_value_p)
 		{
-			uipsb_spin_box_p -> SetValue (*def_value_p);
+			uipsb_spin_box_p -> setValue (*def_value_p);
+		}
+	else
+		{
+			if (! (bpw_param_p -> pa_required_flag))
+				{
+					uipsb_spin_box_p -> ClearValue ();
+				}
 		}
 }
 

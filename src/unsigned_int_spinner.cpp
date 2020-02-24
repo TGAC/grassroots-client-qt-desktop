@@ -25,19 +25,18 @@ UnsignedIntSpinner :: ~UnsignedIntSpinner ()
 }
 
 
-void UnsignedIntSpinner :: SetMinimum (uint32 min)
+void UnsignedIntSpinner :: setMinimum (uint32 min)
 {
 	int i = MapUIntToInt (min);
-	setMinimum (i);
+	QSpinBox :: setMinimum (i);
 }
 
 
-void UnsignedIntSpinner :: SetMaximum (uint32 max)
+void UnsignedIntSpinner :: setMaximum (uint32 max)
 {
 	int i = MapUIntToInt (max);
-	setMaximum (i);
+	QSpinBox :: setMaximum (i);
 }
-
 
 
 bool UnsignedIntSpinner :: ClearValue (	)
@@ -55,13 +54,13 @@ bool UnsignedIntSpinner :: ClearValue (	)
 	return success_flag;
 }
 
-
+/*
 void UnsignedIntSpinner :: SetValue (uint32 u)
 {
 	int i = MapUIntToInt (u);
 	setValue (i);
 }
-
+*/
 
 int UnsignedIntSpinner :: valueFromText (const QString &text_r) const
 {
@@ -99,7 +98,7 @@ QString UnsignedIntSpinner :: textFromValue (int value) const
 			uint32 u = MapIntToUInt (value);
 			QString s;
 
-			s.setNum (value);
+			s.setNum (u);
 			return s;
 		}
 }
@@ -153,6 +152,14 @@ int32 UnsignedIntSpinner :: MapUIntToInt (uint32 u) const
 }
 
 
+void UnsignedIntSpinner :: setValue (uint32 value)
+{
+	int i = MapUIntToInt (value);
+
+	QSpinBox :: setValue (i);
+}
+
+
 uint32 UnsignedIntSpinner :: GetValue () const
 {
 	int i = value ();
@@ -160,3 +167,4 @@ uint32 UnsignedIntSpinner :: GetValue () const
 
 	return u;
 }
+

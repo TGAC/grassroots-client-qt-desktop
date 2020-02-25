@@ -686,7 +686,7 @@ void QTParameterWidget :: RefreshService ()
 	if (qpw_refresh_active)
 		{
 			qpw_refresh_active = false;
-			ParameterSet *params_p = GetParameterSet ();
+			ParameterSet *params_p = GetParameterSet (true);
 
 			if (params_p)
 				{
@@ -918,7 +918,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 }
 
 
-ParameterSet *QTParameterWidget :: GetParameterSet () const
+ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
 {
 	/* make sure that all of the parameter values are up to date */
 	QList <BaseParamWidget *> widgets = qpw_widgets_map.values ();
@@ -927,7 +927,7 @@ ParameterSet *QTParameterWidget :: GetParameterSet () const
 		{
 			BaseParamWidget *widget_p = widgets.at (i);
 
-			if (! (widget_p -> StoreParameterValue ()))
+			if (! (widget_p -> StoreParameterValue (refresh_flag)))
 				{
 					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set parameter value for %s", widget_p -> GetParameterName ());
 					return nullptr;

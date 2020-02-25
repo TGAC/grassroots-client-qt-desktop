@@ -107,7 +107,7 @@ void FileChooserWidget :: SetDefaultValue ()
 
 
 
-bool FileChooserWidget :: StoreParameterValue ()
+bool FileChooserWidget :: StoreParameterValue (bool refresh_flag)
 {
 	QString value = fcw_chooser_p -> currentText ();
 	QByteArray ba = value.toLocal8Bit ();

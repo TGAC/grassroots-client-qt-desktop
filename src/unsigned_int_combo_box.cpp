@@ -71,7 +71,7 @@ bool UnsignedIntComboBox :: SetValueFromJSON (const json_t * const value_p)
 }
 
 
-bool UnsignedIntComboBox :: StoreParameterValue ()
+bool UnsignedIntComboBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 	int index = bcb_combo_box_p -> currentIndex ();

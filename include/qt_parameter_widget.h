@@ -62,7 +62,7 @@ public:
 	json_t *GetParameterValuesAsJSON () const;
 
 
-	ParameterSet *GetParameterSet () const;
+	ParameterSet *GetParameterSet (bool refresh_flag) const;
 
 	BaseParamWidget *GetWidgetForParameter (const char * const param_name_s) const;
 

@@ -113,7 +113,7 @@ void ParamJSONEditor :: SetDefaultValue ()
 
 
 
-bool ParamJSONEditor :: StoreParameterValue ()
+bool ParamJSONEditor :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 	QString s = pje_text_box_p -> toPlainText ();

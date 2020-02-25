@@ -60,7 +60,7 @@ ParamDateWidget ::	~ParamDateWidget ()
 
 
 
-bool ParamDateWidget :: StoreParameterValue ()
+bool ParamDateWidget :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 	QDate d = pdw_calendar_p -> selectedDate ();

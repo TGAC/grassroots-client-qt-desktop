@@ -52,7 +52,9 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-		if (json_is_array (value_p))
+	ClearTable ();
+
+	if (json_is_array (value_p))
 			{
 				size_t num_rows = json_array_size (value_p);
 				const int num_cols = ptw_table_p -> columnCount ();
@@ -80,7 +82,9 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 								QByteArray column_type_ba = column_type.toLocal8Bit ();
 								const char *column_type_s = column_type_ba.constData ();
 								QTableWidgetItem *item_p = ptw_table_p -> item (i, j);
-								ParameterType param_type = PT_NUM_TYPES;
+
+								/* default to strings */
+								ParameterType param_type = PT_STRING;
 
 								if (column_type_s)
 									{
@@ -176,6 +180,13 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 												break;
 
 											case PT_TIME:
+												if (json_is_string (json_value_p))
+													{
+														const char *value_s = json_string_value (json_value_p);
+//														struct tm *time_p = GetTimeFromString (value_s);
+
+														v_p = new QVariant (value_s);
+													}
 												break;
 
 											case PT_NUM_TYPES:
@@ -209,7 +220,7 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 }
 
 
-bool JSONTableWidget :: StoreParameterValue ()
+bool JSONTableWidget :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 	json_t *table_json_p = ptw_table_p -> GetValueAsJSON (&success_flag);

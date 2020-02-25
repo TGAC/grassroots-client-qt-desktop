@@ -32,7 +32,7 @@ public:
 
 	virtual bool SetValueFromJSON (const json_t * const value_p);
 
-	virtual bool StoreParameterValue ();
+	virtual bool StoreParameterValue (bool refresh_flag);
 
 protected:
 	QLineEdit *pce_text_box_p;

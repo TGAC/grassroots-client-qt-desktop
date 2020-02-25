@@ -44,7 +44,7 @@ ParamCheckBox ::	~ParamCheckBox ()
 
 
 
-bool ParamCheckBox :: StoreParameterValue ()
+bool ParamCheckBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool b = pcb_check_box_p -> isChecked ();
 

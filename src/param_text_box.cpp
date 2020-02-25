@@ -80,14 +80,14 @@ QWidget *ParamTextBox :: GetQWidget ()
 
 
 
-bool ParamTextBox :: StoreParameterValue ()
+bool ParamTextBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 	QString s = ptb_text_box_p -> toPlainText ();
 	QByteArray ba = s.toLocal8Bit ();
 	const char *value_s = ba.constData ();
 
-	if ((!(bpw_param_p -> pa_required_flag)) || (!IsStringEmpty (value_s)))
+	if ((!(bpw_param_p -> pa_required_flag)) || refresh_flag || (!IsStringEmpty (value_s)))
 		{
 			if (GetErrorFlag ())
 				{

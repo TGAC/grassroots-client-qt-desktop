@@ -64,7 +64,7 @@ public:
 
 	virtual bool SetValueFromJSON (const json_t * const value_p) = 0;
 
-	virtual bool StoreParameterValue () = 0;
+	virtual bool StoreParameterValue (bool refresh_flag) = 0;
 
 	virtual void ShowErrors (const json_t *errors_p);
 

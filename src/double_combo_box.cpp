@@ -63,7 +63,7 @@ bool DoubleComboBox :: SetValueFromJSON (const json_t * const value_p)
 }
 
 
-bool DoubleComboBox :: StoreParameterValue ()
+bool DoubleComboBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 	int index = bcb_combo_box_p -> currentIndex ();

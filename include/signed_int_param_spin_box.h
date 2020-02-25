@@ -46,7 +46,7 @@ public:
 	virtual bool SetValueFromJSON (const json_t * const value_p);
 
 	virtual void SetDefaultValue ();
-	virtual bool StoreParameterValue ();
+	virtual bool StoreParameterValue (bool refresh_flag);
 
 protected:
 	static int32 SIPSB_DEFAULT_MIN;

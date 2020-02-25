@@ -126,7 +126,7 @@ json_t *ServicePrefsWidget :: GetServiceParamsAsJSON (bool full_flag, const Para
 
 	if (GetRunFlag ())
 		{
-			ParameterSet *params_p = spw_params_widget_p -> GetParameterSet ();
+			ParameterSet *params_p = spw_params_widget_p -> GetParameterSet (false);
 
 			if (params_p)
 				{

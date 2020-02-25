@@ -54,7 +54,7 @@ public:
 
   void SetMaxLength (int l);
 
-	virtual bool StoreParameterValue ();
+	virtual bool StoreParameterValue (bool refresh_flag);
 
 protected:
   QLineEdit *ple_text_box_p;

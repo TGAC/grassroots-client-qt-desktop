@@ -64,7 +64,7 @@ void ParamDoubleSpinBox :: SetDefaultValue ()
 }
 
 
-bool ParamDoubleSpinBox :: StoreParameterValue ()
+bool ParamDoubleSpinBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 
@@ -82,7 +82,7 @@ bool ParamDoubleSpinBox :: StoreParameterValue ()
 		}
 	else
 		{
-			if (bpw_param_p -> pa_required_flag)
+			if ((bpw_param_p -> pa_required_flag) && (!refresh_flag))
 				{
 					SetErrorFlag (true);
 				}

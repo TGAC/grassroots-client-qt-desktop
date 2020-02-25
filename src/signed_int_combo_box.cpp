@@ -65,7 +65,7 @@ bool SignedIntComboBox :: SetValueFromJSON (const json_t * const value_p)
 }
 
 
-bool SignedIntComboBox :: StoreParameterValue ()
+bool SignedIntComboBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
 	int index = bcb_combo_box_p -> currentIndex ();

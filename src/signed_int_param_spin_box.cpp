@@ -76,7 +76,7 @@ void SignedIntParamSpinBox :: SetDefaultValue ()
 }
 
 
-bool SignedIntParamSpinBox :: StoreParameterValue ()
+bool SignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool b = false;
 

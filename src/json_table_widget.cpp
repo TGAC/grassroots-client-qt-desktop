@@ -212,9 +212,9 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 bool JSONTableWidget :: StoreParameterValue ()
 {
 	bool success_flag = false;
-	json_t *table_json_p = ptw_table_p -> GetValueAsJSON ();
+	json_t *table_json_p = ptw_table_p -> GetValueAsJSON (&success_flag);
 
-	if (table_json_p)
+	if (success_flag && table_json_p)
 		{
 			success_flag = SetJSONParameterCurrentValue (jtw_param_p, table_json_p);
 

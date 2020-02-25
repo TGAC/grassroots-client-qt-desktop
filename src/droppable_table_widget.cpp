@@ -337,7 +337,7 @@ bool DroppableTableWidget :: IsTableEmpty () const
 
 
 
-json_t *DroppableTableWidget :: GetValueAsJSON ()
+json_t *DroppableTableWidget :: GetValueAsJSON (bool *success_flag_p)
 {
 	if (!IsTableEmpty ())
 		{
@@ -433,6 +433,11 @@ json_t *DroppableTableWidget :: GetValueAsJSON ()
 
 						}		/* for (int i = 0; i < num_rows; ++ i) */
 
+					if (success_flag_p)
+						{
+							*success_flag_p = success_flag;
+						}
+
 					if (success_flag)
 						{
 							return rows_p;
@@ -443,15 +448,23 @@ json_t *DroppableTableWidget :: GetValueAsJSON ()
 
 
 		}		/* if (!IsTableEmpty ()) */
+	else
+		{
+			/* nothing to do */
+			if (success_flag_p)
+				{
+					*success_flag_p = true;
+				}
+		}
 
 	return NULL;
 }
 
 
-char *DroppableTableWidget :: GetValueAsText ()
+char *DroppableTableWidget :: GetValueAsText (bool *success_flag_p)
 {
 	char *value_s = NULL;
-	json_t *table_json_p = GetValueAsJSON ();
+	json_t *table_json_p = GetValueAsJSON (success_flag_p);
 
 	if (table_json_p)
 		{

@@ -34,8 +34,8 @@ public:
 	char GetRowDelimiter () const;
 
 
-	char *GetValueAsText ();
-	json_t *GetValueAsJSON ();
+	char *GetValueAsText (bool *success_flag_p);
+	json_t *GetValueAsJSON (bool *success_flag_p);
 	bool SetValueFromText (const char *data_s);
 
 protected:

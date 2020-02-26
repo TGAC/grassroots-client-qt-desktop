@@ -225,22 +225,19 @@ json_t *PrefsWidget :: GetUserValuesAsJSON (const bool full_flag, const Paramete
 			while (success_flag && (i < num_services))
 				{
 					ServicePrefsWidget *spw_p = pw_service_widgets.at (i);
-					json_t *service_json_p = spw_p -> GetServiceParamsAsJSON (full_flag, level);
 
-					if (service_json_p)
+					if (spw_p -> GetRunFlag ())
 						{
-							dump_s = json_dumps (service_json_p, 0);
-							if (dump_s)
+							json_t *service_json_p = spw_p -> GetServiceParamsAsJSON (full_flag, level);
+
+							if (service_json_p)
 								{
-									free (dump_s);
+									success_flag = (json_array_append_new (root_p, service_json_p) == 0);
 								}
-
-							success_flag = (json_array_append_new (root_p, service_json_p) == 0);
-
-							dump_s = json_dumps (root_p, 0);
-							if (dump_s)
+							else
 								{
-									free (dump_s);
+									PrintErrors (STM_LEVEL_INFO, __FILE__, __LINE__, "Failed to get params JSON for %s", spw_p ->  GetServiceName());
+									success_flag = false;
 								}
 						}
 
@@ -248,6 +245,12 @@ json_t *PrefsWidget :: GetUserValuesAsJSON (const bool full_flag, const Paramete
 						{
 							++ i;
 						}
+				}
+
+			if (!success_flag)
+				{
+					json_decref (root_p);
+					return nullptr;
 				}
 
 		}		/* if (root_p) */

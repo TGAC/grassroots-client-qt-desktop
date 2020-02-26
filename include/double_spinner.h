@@ -23,9 +23,12 @@ public:
 
 	bool IsValueSet () const;
 
+	bool ClearValue ();
+
 protected:
 	Parameter *ds_param_p;
-	mutable bool ds_value_set_flag;
+	mutable bool ds_null_flag;
+
 
 	virtual double valueFromText (const QString &text_r) const override;
 

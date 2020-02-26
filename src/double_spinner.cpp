@@ -10,12 +10,28 @@ DoubleSpinner :: DoubleSpinner (Parameter *param_p, QWidget *parent_p)
 	: QDoubleSpinBox (parent_p)
 {
 	ds_param_p = param_p;
-	ds_value_set_flag = false;
+	ds_null_flag = false;
 }
 
 
 DoubleSpinner :: ~DoubleSpinner ()
 {
+}
+
+
+bool DoubleSpinner :: ClearValue (	)
+{
+	bool success_flag = false;
+
+	if (! (ds_param_p -> pa_required_flag))
+		{
+			QString nullstr;
+
+			valueFromText (nullstr);
+			ds_null_flag = true;
+		}
+
+	return success_flag;
 }
 
 
@@ -25,7 +41,14 @@ double DoubleSpinner :: valueFromText (const QString &text_r) const
 
 	if (! ((text_r.isNull ()) || (text_r.isEmpty ())))
 		{
-			d = text_r.toDouble (&ds_value_set_flag);
+			bool b;
+
+			d = text_r.toDouble (&b);
+			ds_null_flag = !b;
+		}
+	else if (! (ds_param_p -> pa_required_flag))
+		{
+			ds_null_flag = true;
 		}
 
 	return d;
@@ -34,13 +57,13 @@ double DoubleSpinner :: valueFromText (const QString &text_r) const
 
 QString DoubleSpinner :: textFromValue (double value) const
 {
-	if (ds_value_set_flag)
+	if (ds_null_flag)
 		{
-			return QString :: number (value);
+			return QString ();
 		}
 	else
 		{
-			return QString ("");
+			return QString :: number (value);
 		}
 }
 
@@ -48,13 +71,12 @@ QString DoubleSpinner :: textFromValue (double value) const
 
 bool DoubleSpinner :: IsValueSet () const
 {
-	return ds_value_set_flag;
+	return !ds_null_flag;
 }
 
 
 QValidator :: State DoubleSpinner :: validate (QString &input_r, int &pos_r) const
 {
-	bool validated_flag = false;
 	QValidator :: State state = QValidator :: Invalid;
 
 	if (ds_param_p -> pa_required_flag)
@@ -66,6 +88,7 @@ QValidator :: State DoubleSpinner :: validate (QString &input_r, int &pos_r) con
 			if ((input_r.isNull ()) || (input_r.isEmpty ()))
 				{
 					state = QValidator :: Acceptable;
+					ds_null_flag = true;
 				}
 			else
 				{

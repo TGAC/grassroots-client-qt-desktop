@@ -9,6 +9,27 @@ UnsignedIntComboBox :: UnsignedIntComboBox (UnsignedIntParameter * const param_p
 	: BaseComboBox (& (param_p -> uip_base_param), parent_p)
 {
 	uicb_param_p = param_p;
+
+	if (param_p -> uip_base_param.pa_options_p)
+		{
+			UnsignedIntParameterOptionNode *node_p = reinterpret_cast <UnsignedIntParameterOptionNode *> (param_p -> uip_base_param.pa_options_p -> ll_head_p);
+			bool success_flag = true;
+
+			while (node_p && success_flag)
+				{
+					UnsignedIntParameterOption *option_p = node_p -> uipon_option_p;
+
+					success_flag = AddOption (option_p -> uipo_value, option_p -> uipo_description_s);
+
+					if (success_flag)
+						{
+							node_p = reinterpret_cast <UnsignedIntParameterOptionNode *> (node_p -> uipon_node.ln_next_p);
+						}
+				}
+		}
+
+
+
 }
 
 UnsignedIntComboBox :: ~UnsignedIntComboBox ()

@@ -8,7 +8,7 @@ StringComboBox :: StringComboBox (StringParameter * const param_p, QTParameterWi
 
 	if (param_p -> sp_base_param.pa_options_p)
 		{
-			StringParameterOptionNode *node_p = (StringParameterOptionNode *) (param_p -> sp_base_param.pa_options_p -> ll_head_p);
+			StringParameterOptionNode *node_p = reinterpret_cast <StringParameterOptionNode *> (param_p -> sp_base_param.pa_options_p -> ll_head_p);
 			bool success_flag = true;
 
 			while (node_p && success_flag)
@@ -19,7 +19,7 @@ StringComboBox :: StringComboBox (StringParameter * const param_p, QTParameterWi
 
 					if (success_flag)
 						{
-							node_p = (StringParameterOptionNode *) (node_p -> spon_node.ln_next_p);
+							node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
 						}
 				}
 		}

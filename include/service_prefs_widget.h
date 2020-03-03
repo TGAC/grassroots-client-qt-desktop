@@ -54,7 +54,7 @@ public:
 
 	void CheckInterfaceLevel (ParameterLevel level);
 
-	bool SetServiceErrors (const json_t * const errors_p);
+	bool SetServiceErrors (json_t * const errors_p);
 
 
 signals:

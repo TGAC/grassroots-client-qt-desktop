@@ -174,7 +174,7 @@ ServicePrefsWidget *PrefsWidget :: GetServicePrefsWidget (const char * const ser
 }
 
 
-bool PrefsWidget :: SetServiceErrors (const char *service_name_s, const json_t * const errors_p)
+bool PrefsWidget :: SetServiceErrors (const char *service_name_s, json_t * const errors_p)
 {
 	bool success_flag = false;
 	ServicePrefsWidget *service_widget_p = GetServicePrefsWidget (service_name_s);

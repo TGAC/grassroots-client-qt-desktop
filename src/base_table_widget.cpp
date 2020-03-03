@@ -211,7 +211,7 @@ void BaseTableWidget :: ShowErrors (const json_t *errors_p)
 
 						if (GetJSONInteger (value_p, "row", &row))
 							{
-								const char *error_s = GetJSONString (value_p, "error");
+								const char *error_s = GetJSONString (value_p, JOB_ERROR_S);
 								QBrush b (Qt :: red);
 
 								for (int i = num_columns - 1; i >= 0; -- i)

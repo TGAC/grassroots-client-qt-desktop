@@ -171,34 +171,23 @@ bool ServicePrefsWidget :: SetServiceParams (const json_t *service_config_p)
 }
 
 
-bool ServicePrefsWidget :: SetServiceErrors (const json_t * const errors_p)
+bool ServicePrefsWidget :: SetServiceErrors (json_t * const errors_p)
 {
 	bool success_flag = false;
-	if (json_is_array (errors_p))
+
+	if (json_is_object (errors_p))
 		{
 			json_t *error_p;
-			size_t i;
+			const char *param_name_s;
 
-			json_array_foreach (errors_p, i, error_p)
+			json_object_foreach (errors_p, param_name_s, error_p)
 				{
-					const char *param_name_s = GetJSONString (error_p, PARAM_NAME_S);
+					BaseParamWidget *widget_p = spw_params_widget_p -> GetWidgetForParameter (param_name_s);
 
-					if (param_name_s)
+					if (widget_p)
 						{
-							BaseParamWidget *widget_p = spw_params_widget_p -> GetWidgetForParameter (param_name_s);
-
-							if (widget_p)
-								{
-									json_t *param_errors_p = json_object_get (error_p, PARAM_ERRORS_S);
-
-									if (param_errors_p)
-										{
-											widget_p -> ShowErrors (param_errors_p);
-										}
-
-								}
-						}		/* if (param_name_s) */
-
+							widget_p -> ShowErrors (error_p);
+						}
 
 				}		/* json_array_foreach (json_p, i, param_p) */
 

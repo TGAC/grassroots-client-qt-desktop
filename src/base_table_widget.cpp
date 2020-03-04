@@ -28,6 +28,7 @@
 #include "string_utils.h"
 #include "byte_buffer.h"
 
+#include "json_parameter.h"
 
 const char * const BaseTableWidget :: PTW_COLUMN_HEADERS_S = "COLUMN_HEADERS";
 
@@ -209,20 +210,47 @@ void BaseTableWidget :: ShowErrors (const json_t *errors_p)
 					{
 						int row;
 
-						if (GetJSONInteger (value_p, "row", &row))
+						if (GetJSONInteger (value_p, TABLE_PARAM_ROW_S, &row))
 							{
-								const char *error_s = GetJSONString (value_p, JOB_ERROR_S);
-								QBrush b (Qt :: red);
+								const char *column_s = GetJSONString (value_p, TABLE_PARAM_COLUMN_S);
 
-								for (int i = num_columns - 1; i >= 0; -- i)
+								if (column_s)
 									{
-										QTableWidgetItem *item_p = ptw_table_p -> item (row, i);
-
-										if (item_p)
+										for (int j = num_columns - 1; j >= 0; -- j)
 											{
-												item_p -> setBackground (b);
-												item_p -> setToolTip (error_s);
+												QTableWidgetItem *item_p = ptw_table_p -> horizontalHeaderItem (j);
+												QString title = item_p -> text ();
+												QByteArray title_ba = title.toLocal8Bit ();
+												const char *title_s = title_ba.constData ();
+
+												if (strcmp (title_s, column_s) == 0)
+													{
+														item_p = ptw_table_p -> item (row, j);
+
+														if (!item_p)
+															{
+																item_p = new QTableWidgetItem ();
+																ptw_table_p -> setItem (row, j, item_p);
+															}
+
+														if (item_p)
+															{
+																QBrush b (Qt :: red);
+																const char *error_s = GetJSONString (value_p, JOB_ERROR_S);
+
+																item_p -> setBackground (b);
+
+																if (error_s)
+																	{
+																		item_p -> setToolTip (error_s);
+																	}
+															}
+
+														/* force exit from loop */
+														j = -1;
+													}
 											}
+
 									}
 							}
 

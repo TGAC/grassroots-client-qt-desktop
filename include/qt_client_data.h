@@ -46,6 +46,7 @@ typedef struct QTClientData
 	char *qcd_dummy_arg_s;
 	char *qcd_server_url_s;
 	bool qcd_init_flag;
+	bool qcd_verbose_flag;
 } QTClientData;
 
 

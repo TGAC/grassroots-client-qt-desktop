@@ -29,13 +29,15 @@
 #include "jansson.h"
 #include "typedefs.h"
 
+struct QTClientData;
+
 class ResultsWidget : public QTabWidget
 {
 	Q_OBJECT
 
 public:
-  ResultsWidget (QWidget *parent_p = 0);
-  ~ResultsWidget ();
+	ResultsWidget  (QWidget *parent_p, const QTClientData *client_data_p);
+	~ResultsWidget ();
 
   uint32 AddAllResultsPagesFromJSON (const json_t *json_p, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s);
   bool AddResultsPageFromJSON (const json_t *json_p, const char * const service_name_s, const char * const service_description_s, const char * const service_uri_s);
@@ -58,7 +60,7 @@ private:
 	ResultsPage *CreatePageFromJSON (const json_t *json_p, const char * const job_name_s, const char * const service_name_s, const char * const description_s, const char * const uri_s, json_t *metadata_json_p);
 
 	static const char *RW_SERVICES_TAB_TITLE_S;
-
+	const QTClientData *rw_client_data_p;
 };
 
 #endif // RESULTS_WIDGET_H

@@ -32,6 +32,10 @@ void DoubleComboBox :: SetDefaultValue ()
 		{
 			SetValue (*def_p);
 		}
+	else
+		{
+		}
+
 }
 
 

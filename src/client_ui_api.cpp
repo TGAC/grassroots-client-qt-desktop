@@ -146,6 +146,8 @@ static QTClientData *AllocateQTClientData (Connection *connection_p)
 					data_p -> qcd_viewer_widgets_p = new QLinkedList <ViewerWidget *>;
 
 					data_p -> qcd_init_flag = false;
+
+					data_p -> qcd_verbose_flag = false;
 				}
 			else
 				{
@@ -244,13 +246,13 @@ static int AddServiceToQTClient (ClientData *client_data_p, const char * const s
 
 static json_t *DisplayResultsInQTClient (ClientData *client_data_p, json_t *response_p)
 {
+	QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_data_p);
 	json_t *res_p = nullptr;
 
-	#if CLIENT_UI_API_DEBUG >= DL_FINE
-	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, response_p, "response:\n");
-	#endif
-
-	QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_data_p);
+	if (qt_data_p -> qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, response_p, "response:\n");
+		}
 
 	if (! (qt_data_p -> qcd_init_flag))
 		{

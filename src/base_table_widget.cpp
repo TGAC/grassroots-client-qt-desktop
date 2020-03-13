@@ -29,6 +29,9 @@
 #include "byte_buffer.h"
 
 #include "json_parameter.h"
+#include "qt_parameter_widget.h"
+#include "qt_client_data.h"
+
 
 const char * const BaseTableWidget :: PTW_COLUMN_HEADERS_S = "COLUMN_HEADERS";
 
@@ -137,9 +140,15 @@ bool BaseTableWidget :: SetColumnHeaders (Parameter *param_p)
 
 									if (name_s)
 										{
+											const bool verbose_flag = bpw_parent_p -> GetClientData () -> qcd_verbose_flag;
+
+
 											QTableWidgetItem *column_header_p = new QTableWidgetItem (name_s);
 
-											qDebug () << "name_s: " << name_s << endl;
+											if (verbose_flag)
+												{
+													qDebug () << "name_s: " << name_s << endl;
+												}
 
 											if (column_header_p)
 												{
@@ -151,7 +160,10 @@ bool BaseTableWidget :: SetColumnHeaders (Parameter *param_p)
 															column_header_p -> setData (Qt::UserRole, v);
 														}
 
-													qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << " with data " << type_s << " = " << column_header_p -> data (Qt :: UserRole) <<  endl;
+													if (verbose_flag)
+														{
+															qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << " with data " << type_s << " = " << column_header_p -> data (Qt :: UserRole) <<  endl;
+														}
 
 													ptw_table_p -> setHorizontalHeaderItem (i, column_header_p);
 

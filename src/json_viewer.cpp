@@ -112,6 +112,7 @@ void JSONViewer :: PrepareMenu (const QPoint &pos_r)
 
 							menu.exec (jv_tree_p -> mapToGlobal (pos_r));
 
+
 							#if JSON_VIEWER_DEBUG >= STM_LEVEL_FINE
 							PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, json_p, "service run json:\n");
 							#endif

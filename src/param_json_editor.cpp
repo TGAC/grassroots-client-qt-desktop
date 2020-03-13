@@ -22,6 +22,7 @@
 
 #include "json_util.h"
 #include "string_utils.h"
+#include "qt_client_data.h"
 
 
 DroppableJSONBox :: DroppableJSONBox (QTParameterWidget *parent_p)
@@ -70,6 +71,7 @@ ParamJSONEditor :: ParamJSONEditor (JSONParameter * const param_p, QTParameterWi
 :	BaseParamWidget (& (param_p -> jp_base_param), parent_p)
 {
 	pje_param_p = param_p;
+	pje_text_box_p = new DroppableJSONBox (parent_p);
 }
 
 
@@ -140,7 +142,10 @@ bool ParamJSONEditor :: StoreParameterValue (bool refresh_flag)
 			success_flag = SetJSONParameterCurrentValue (pje_param_p, nullptr);
 		}
 
-	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s << " " << success_flag;
+	if (bpw_parent_p -> GetClientData () -> qcd_verbose_flag)
+		{
+			qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s << " " << success_flag;
+		}
 
 	if (!success_flag)
 		{

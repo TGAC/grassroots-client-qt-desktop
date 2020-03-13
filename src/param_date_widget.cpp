@@ -63,25 +63,32 @@ ParamDateWidget ::	~ParamDateWidget ()
 bool ParamDateWidget :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
-	QDate d = pdw_calendar_p -> selectedDate ();
-	struct tm *time_p = AllocateTime ();
 
-	if (time_p)
+	if (pdw_checkbox_p -> isChecked ())
 		{
-			memset (time_p, 0, sizeof (struct tm));
+			QDate d = pdw_calendar_p -> selectedDate ();
+			struct tm *time_p = AllocateTime ();
 
-			if (pdw_checkbox_p -> isChecked ())
+			if (time_p)
 				{
-					time_p -> tm_year = d.year () - 1900;
-					time_p -> tm_mon = d.month () - 1;
-					time_p -> tm_mday = d.day ();
+					memset (time_p, 0, sizeof (struct tm));
+
+					if (pdw_checkbox_p -> isChecked ())
+						{
+							time_p -> tm_year = d.year () - 1900;
+							time_p -> tm_mon = d.month () - 1;
+							time_p -> tm_mday = d.day ();
+						}
+
+					success_flag = SetTimeParameterCurrentValue (pdw_param_p, time_p);
+
+					FreeTime (time_p);
 				}
-
-			success_flag = SetTimeParameterCurrentValue (pdw_param_p, time_p);
-
-			FreeTime (time_p);
 		}
-
+	else
+		{
+			success_flag = SetTimeParameterCurrentValue (pdw_param_p, nullptr);
+		}
 
 	return success_flag;
 }
@@ -101,8 +108,12 @@ void ParamDateWidget :: SetDefaultValue ()
 					pdw_calendar_p -> setSelectedDate (d);
 				}
 		}
+	else
+		{
+			enabled_flag = false;
+		}
 
-	pdw_checkbox_p -> setEnabled (enabled_flag);
+	pdw_checkbox_p -> setChecked (enabled_flag);
 }
 
 
@@ -121,10 +132,18 @@ bool ParamDateWidget :: SetValueFromText (const char *value_s)
 					QDate d (1900 + (time_val.tm_year), 1 + (time_val.tm_mon), time_val.tm_mday);
 
 					pdw_calendar_p -> setSelectedDate (d);
+
+
+					pdw_checkbox_p -> setChecked (true);
+
 					success_flag = true;
 				}
 		}
-
+	else
+		{
+			pdw_checkbox_p -> setChecked (false);
+			success_flag = true;
+		}
 
 	return success_flag;
 }

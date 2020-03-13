@@ -50,7 +50,8 @@ BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget
 
 BaseParamWidget *BaseParamWidget :: Clone (ParameterGroup *group_p) const
 {
-	Parameter *dest_param_p = CloneParameter (bpw_param_p);
+	ServiceData *data_p = nullptr;
+	Parameter *dest_param_p = CloneParameter (bpw_param_p, nullptr);
 
 	if (dest_param_p)
 		{

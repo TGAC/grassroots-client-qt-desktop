@@ -443,6 +443,11 @@ void QTParameterWidget :: OpenLink (const QString &link_r)
 		}
 }
 
+const QTClientData *QTParameterWidget :: GetClientData () const
+{
+	return qpw_client_data_p;
+}
+
 
 
 void QTParameterWidget :: AddRow (QWidget *first_p, QWidget *second_p, const int row_span)

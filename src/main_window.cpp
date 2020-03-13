@@ -108,7 +108,10 @@ void MainWindow :: SelectService (const char *service_name_s, const json_t *para
 
 void MainWindow :: ProcessResults (json_t *results_json_p)
 {
-	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, results_json_p, "\n\nDATA:\n");
+	if (mw_client_data_p -> qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, results_json_p, "\n\nDATA:\n");
+		}
 
 	json_t *services_json_p = json_object_get (results_json_p, SERVICE_RESULTS_S);
 
@@ -291,7 +294,11 @@ void MainWindow :: RunKeywordSearch (QString keywords)
 		{
 			json_t *results_p = nullptr;
 
-			PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, query_p, "\n\nquery:\n");
+
+			if (mw_client_data_p -> qcd_verbose_flag)
+				{
+					PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, query_p, "\n\nquery:\n");
+				}
 
 			setCursor (Qt :: BusyCursor);
 			results_p = MakeRemoteJsonCall (query_p, mw_client_data_p -> qcd_base_data.cd_connection_p);

@@ -21,13 +21,15 @@
 #include "results_list.h"
 #include "json_util.h"
 #include "streams.h"
+#include "qt_client_data.h"
 
 
 const char *ResultsWidget :: RW_SERVICES_TAB_TITLE_S = "Applications";
 
 
-ResultsWidget :: ResultsWidget (QWidget *parent_p)
- : QTabWidget (parent_p)
+ResultsWidget :: ResultsWidget  (QWidget *parent_p, const QTClientData *client_data_p)
+ : QTabWidget (parent_p),
+	 rw_client_data_p (client_data_p)
 {
 }
 

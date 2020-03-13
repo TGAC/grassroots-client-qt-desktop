@@ -84,6 +84,7 @@ public:
 	bool SetParamValuesFromJSON (const json_t *param_set_json_p);
 
 
+	const struct QTClientData *GetClientData () const;
 
 public slots:
 	void ResetToDefaults ();

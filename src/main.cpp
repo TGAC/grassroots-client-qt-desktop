@@ -37,6 +37,7 @@
 #include "string_utils.h"
 #include "streams.h"
 #include "client_ui_api.h"
+#include "qt_client_data.h"
 
 
 #ifdef _DEBUG
@@ -62,6 +63,7 @@ int main (int argc, char *argv [])
 					"\t--keyword-search <keyword>, perform a keyword search against all keyword-aware services.\n"
 					"\t--list-interested <resource>, get all services that are able to run against a given resource.\n"
 					"\t--get-service-data <service_name>, get the JSON for Lucene indexing.\n"
+					"\t--verbose, display more information whilst running the client\n"
 					"\t\tThe resource is in the form <protocol>://<name> e.g. file:///home/test.fa, https://my.data/object, irods://data.fa\n"
 					);
 			return 0;
@@ -77,6 +79,7 @@ int main (int argc, char *argv [])
 			bool web_server_flag = true;
 			CURLcode c;
 			Connection *connection_p = NULL;
+			bool verbose_flag = false;
 
 			while (i < argc)
 				{
@@ -177,6 +180,10 @@ int main (int argc, char *argv [])
 									printf ("named service argument missing");
 								}
 						}
+					else if (strcmp (argv [i], "--verbose") == 0)
+						{
+							verbose_flag = true;
+						}
 					else
 						{
 							printf ("Unknown argument: \"%s\"", argv [i]);
@@ -205,10 +212,13 @@ int main (int argc, char *argv [])
 
 					if (client_p)
 						{
+							QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
 							SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
 							UserDetails *user_p = NULL;
 
 							SetClientSchema (client_p, sv_p);
+
+							qt_data_p -> qcd_verbose_flag = verbose_flag;
 
 							switch (op)
 								{

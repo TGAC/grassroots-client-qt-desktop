@@ -141,7 +141,7 @@ SOURCES += \
     $$DIR_GRASSROOTS_QT_SRC/src/json_list_widget_item.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/json_viewer.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/keyword_widget.cpp \
-    $$DIR_GRASSROOTS_QT_SRC/src/main.c \
+		$$DIR_GRASSROOTS_QT_SRC/src/main.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/main_window.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/matched_service_list_widget_item.cpp \
     $$DIR_GRASSROOTS_QT_SRC/src/param_check_box.cpp \

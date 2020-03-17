@@ -706,12 +706,22 @@ void QTParameterWidget :: RefreshService ()
 								{
 									if (json_array_append_new (req_p, service_req_p) == 0)
 										{
+											if (qpw_client_data_p->qcd_verbose_flag)
+												{
+													PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, req_p, "Sending: ");
+												}
+
 											setCursor (Qt :: BusyCursor);
 											json_t *results_p = CallServices (req_p, nullptr, qpw_client_data_p -> qcd_base_data.cd_connection_p);
 											setCursor (Qt :: ArrowCursor);
 
 											if (results_p)
 												{
+													if (qpw_client_data_p->qcd_verbose_flag)
+														{
+															PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, results_p, "Received: ");
+														}
+
 													const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName ();
 
 													if (service_name_s)

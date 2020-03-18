@@ -34,6 +34,7 @@
 #include "qt_parameter_widget.h"
 #include "services_list.h"
 #include "services_tabs.h"
+#include "qt_client_data.h"
 
 #include "json_tools.h"
 #include "string_utils.h"
@@ -83,6 +84,11 @@ bool PrefsWidget :: SelectService (const char *service_name_s, const json_t * co
 
 void PrefsWidget :: CreateAndAddServicePage (const json_t * const service_json_p, ParameterLevel level)
 {
+	if (pw_data_p -> qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, service_json_p, "Creating service page from: ");
+		}
+
 	const char *service_name_s = GetServiceNameFromJSON (service_json_p);
 
 	if (service_name_s)

@@ -21,6 +21,9 @@
 #include "string_utils.h"
 
 
+const char * const BaseParamWidget ::  BPW_REQUIRED_S = "This field is required";
+
+
 BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 	: bpw_param_p (param_p),
 		bpw_parent_p (parent_p),
@@ -32,13 +35,17 @@ BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget
 
 	if (param_p -> pa_required_flag)
 		{
-			QString s (label_s);
-			s.append (" *");
-			bpw_label_p = new QLabel (s);
+			char *title_s = ConcatenateStrings (label_s, " *");
+
+			if (title_s)
+				{
+					bpw_label_p = new LabelsWidget (title_s,  parent_p);
+					FreeCopiedString (title_s);
+				}
 		}
 	else
 		{
-			bpw_label_p = new QLabel (label_s);
+			bpw_label_p = new LabelsWidget (label_s, parent_p);
 		}
 
 	if (param_p -> pa_description_s)
@@ -100,7 +107,7 @@ void BaseParamWidget :: RemoveConnection ()
 
 
 
-QLabel *BaseParamWidget :: GetLabel () const
+QWidget *BaseParamWidget :: GetLabel () const
 {
 	return bpw_label_p;
 }
@@ -143,6 +150,11 @@ void BaseParamWidget :: SetErrorFlag (const bool error_flag)
 			bpw_label_p -> setStyleSheet (style_s);
 
 			bpw_error_flag = error_flag;
+
+			if (!error_flag)
+				{
+					bpw_label_p -> ClearError ();
+				}
 		}
 }
 
@@ -203,7 +215,41 @@ QWidget *BaseParamWidget :: GetUIQWidget ()
 
 
 
-void BaseParamWidget :: ShowErrors (const json_t *errors_p)
+void BaseParamWidget :: SetErrorMessage (const char *message_s)
 {
+	if (message_s)
+		{
+			bpw_label_p -> SetError (message_s);
+			bpw_error_flag = true;
+		}
+	else
+		{
+			bpw_label_p -> ClearError ();
+			bpw_error_flag = false;
+		}
+}
 
+
+void BaseParamWidget :: SetErrors (const json_t *errors_p)
+{
+	QString s;
+	const json_t *entry_p;
+	size_t i;
+
+	s.append ("<ul>");
+	json_array_foreach (errors_p, i, entry_p)
+		{
+			if (json_is_string (entry_p))
+				{
+					const char *value_s = json_string_value (entry_p);
+
+					s.append ("<li>");
+					s.append (value_s);
+					s.append ("</li>");
+				}
+		}
+
+	s.append ("</ul>");
+
+	bpw_label_p -> SetError (s);
 }

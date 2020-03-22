@@ -182,13 +182,26 @@ bool ServicePrefsWidget :: SetServiceErrors (json_t * const errors_p)
 
 			json_object_foreach (errors_p, param_name_s, error_p)
 				{
-					BaseParamWidget *widget_p = spw_params_widget_p -> GetWidgetForParameter (param_name_s);
-
-					if (widget_p)
+					if (strcmp (param_name_s, JOB_ERROR_S) == 0)
 						{
-							widget_p -> ShowErrors (error_p);
+							/*
+							 * General runtime errors
+							 */
 						}
+					else
+						{
+							BaseParamWidget *widget_p = spw_params_widget_p -> GetWidgetForParameter (param_name_s);
 
+							if (widget_p)
+								{
+									json_t *errors_array_p = json_object_get (error_p, JOB_ERRORS_S);
+
+									if (errors_array_p)
+										{
+											widget_p -> SetErrors (errors_array_p);
+										}
+								}
+						}
 				}		/* json_array_foreach (json_p, i, param_p) */
 
 

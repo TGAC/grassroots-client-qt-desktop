@@ -135,14 +135,14 @@ bool ParamCharEdit :: StoreParameterValue (bool refresh_flag)
 		{
 			if (GetErrorFlag ())
 				{
-					SetErrorFlag (false);
+					SetErrorMessage (nullptr);
 				}
 
 			success_flag = UpdateConfigValue (value_s);
 		}
 	else
 		{
-			SetErrorFlag (true);
+			SetErrorMessage (BaseParamWidget ::  BPW_REQUIRED_S);
 		}
 
 	return success_flag;

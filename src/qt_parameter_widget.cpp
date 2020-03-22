@@ -543,6 +543,19 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidge
 
 
 
+void QTParameterWidget :: ClearErrors ()
+{
+	QHash <Parameter *, BaseParamWidget *> :: const_iterator i = qpw_widgets_map.constBegin ();
+
+	while (i != qpw_widgets_map.constEnd ())
+		{
+			BaseParamWidget *widget_p = i.value ();
+
+			widget_p -> SetErrorMessage (nullptr);
+			++ i;
+		}
+}
+
 
 BaseParamWidget *QTParameterWidget :: GetWidgetForParameter (const char * const param_name_s) const
 {

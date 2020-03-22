@@ -91,14 +91,14 @@ bool ParamTextBox :: StoreParameterValue (bool refresh_flag)
 		{
 			if (GetErrorFlag ())
 				{
-					SetErrorFlag (false);
+					SetErrorMessage (false);
 				}
 
 			success_flag = SetStringParameterCurrentValue (ptb_param_p, value_s);
 		}
 	else
 		{
-			SetErrorFlag (true);
+			SetErrorMessage (BaseParamWidget ::  BPW_REQUIRED_S);
 		}
 
 	return success_flag;

@@ -19,7 +19,7 @@ public:
 
 	virtual void RemoveConnection ();
 
-	virtual void ShowErrors (const json_t *errors_p);
+	virtual void SetErrors (const json_t *errors_p);
 
 	virtual void Clear ();
 

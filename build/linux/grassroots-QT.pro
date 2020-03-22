@@ -182,6 +182,7 @@ SOURCES += \
   ../../src/droppable_table_widget.cpp \
   ../../src/droppable_text_box.cpp \
 	../../src/json_table_widget.cpp \
+	../../src/labels_widget.cpp \
   ../../src/param_char_edit.cpp \
 	../../src/signed_int_combo_box.cpp \
 	../../src/signed_int_spinner.cpp \
@@ -239,6 +240,7 @@ HEADERS  += \
   ../../include/droppable_table_widget.h \
   ../../include/droppable_text_box.h \
   ../../include/json_table_widget.h \
+	../../include/labels_widget.h \
   ../../include/param_char_edit.h \
 	../../include/signed_int_combo_box.h \
 	../../include/signed_int_spinner.h \

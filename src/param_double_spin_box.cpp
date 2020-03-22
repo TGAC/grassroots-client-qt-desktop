@@ -77,14 +77,14 @@ bool ParamDoubleSpinBox :: StoreParameterValue (bool refresh_flag)
 
 			if (GetErrorFlag ())
 				{
-					SetErrorFlag (false);
+					SetErrorMessage (nullptr);
 				}
 		}
 	else
 		{
 			if ((bpw_param_p -> pa_required_flag) && (!refresh_flag))
 				{
-					SetErrorFlag (true);
+					SetErrorMessage (BaseParamWidget ::  BPW_REQUIRED_S);
 				}
 			else
 				{

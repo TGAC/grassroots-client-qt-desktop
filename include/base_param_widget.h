@@ -22,7 +22,9 @@
 #define BASE_PARAM_WIDGET_H
 
 #include <QWidget>
-#include <QLabel>
+
+
+#include "labels_widget.h"
 
 #include "parameter.h"
 #include "jansson.h"
@@ -45,8 +47,7 @@ public:
 
 	QWidget *GetUIQWidget ();
 
-
-	QLabel *GetLabel () const;
+	QWidget *GetLabel () const;
 
 	void CheckLevelDisplay (const ParameterLevel ui_level, const QWidget * const parent_widget_p);
 
@@ -66,18 +67,23 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag) = 0;
 
-	virtual void ShowErrors (const json_t *errors_p);
+	virtual void SetErrors (const json_t *errors_p);
 
-protected:
-	Parameter * const bpw_param_p;
-	QTParameterWidget * const bpw_parent_p;
-	QLabel *bpw_label_p;
-	char *bpw_param_name_s;
+	virtual void SetErrorMessage (const char *message_s);
 
 	void SetErrorFlag (const bool error_flag);
 	bool GetErrorFlag () const;
 
+protected:
+	Parameter * const bpw_param_p;
+	QTParameterWidget * const bpw_parent_p;
+	LabelsWidget *bpw_label_p;
+	char *bpw_param_name_s;
+
+	static const char * const BPW_REQUIRED_S;
+
 	virtual QWidget *GetQWidget () = 0;
+
 
 private:
 	bool bpw_error_flag;

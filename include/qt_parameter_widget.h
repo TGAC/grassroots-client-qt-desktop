@@ -66,6 +66,7 @@ public:
 
 	BaseParamWidget *GetWidgetForParameter (const char * const param_name_s) const;
 
+	void ClearErrors ();
 
 	/**
 	 * @brief CreateWidgetForParameter

@@ -93,6 +93,11 @@ bool ParamLineEdit :: SetValueFromJSON (const json_t * const value_p)
 			ple_text_box_p -> setText (value_s);
 			success_flag = true;
 		}
+	else if (json_is_null (value_p))
+		{
+			ple_text_box_p -> setText (nullptr);
+			success_flag = true;
+		}
 
 	return success_flag;
 }

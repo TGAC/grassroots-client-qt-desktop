@@ -28,7 +28,7 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTPar
 	int default_precision = 4;
 	const char *prec_value_s = GetParameterKeyValue (& (param_p -> dp_base_param), PA_DOUBLE_PRECISION_S);
 	const double step = 0.10f;
-	double min_bound = (param_p -> dp_min_value_p) ? * (param_p -> dp_min_value_p) : 0.0;
+	double min_bound = (param_p -> dp_min_value_p) ? * (param_p -> dp_min_value_p) : -1000000.0;
 	double max_bound = (param_p -> dp_max_value_p) ? * (param_p -> dp_max_value_p) : 1000000.0;
 
 	if (prec_value_s)

@@ -930,6 +930,16 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 		{
 			widget_p -> SetDefaultValue ();
 
+			if (param_p -> pa_read_only_flag)
+				{
+					QWidget *qt_widget_p = widget_p -> GetUIQWidget ();
+
+					if (qt_widget_p)
+						{
+							qt_widget_p -> setEnabled (false);
+						}
+				}
+
 			qpw_widgets_map.insert (param_p, widget_p);
 
 		}		/* if (widget_p) */

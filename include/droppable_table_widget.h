@@ -38,6 +38,7 @@ public:
 	json_t *GetValueAsJSON (bool *success_flag_p);
 	bool SetValueFromText (const char *data_s);
 
+
 protected:
 	virtual void dragEnterEvent (QDragEnterEvent *event_p);
 
@@ -48,6 +49,8 @@ protected:
 	char *GetEntry (const char *start_s, const char *end_s);
 
 	bool IsTableEmpty () const;
+
+	void AddColumn (bool triggered_flag);
 
 	virtual bool dropMimeData (int row, int column, const QMimeData * data, Qt::DropAction action);
 

@@ -25,6 +25,8 @@ public:
 
 	bool SetColumnHeaders (Parameter *param_p);
 
+
+
 public slots:
 	void ClearTable (bool triggered_flag = false);
 

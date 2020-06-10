@@ -25,6 +25,12 @@ public:
 
 	bool SetColumnHeaders (Parameter *param_p);
 
+	bool AddColumnHeader (const char * const header_s);
+
+	bool SetColumnHeader (int col, const char * const header_s, const char *type_s);
+
+	bool AreColumnsAddable () const;
+
 public slots:
 	void ClearTable (bool triggered_flag = false);
 
@@ -33,6 +39,8 @@ protected:
 	DroppableTableWidget *ptw_table_p;
 	char ptw_column_delimiter;
 	char ptw_row_delimiter;
+	QStringList ptw_additional_column_headers;
+	bool ptw_addable_columns_flag;
 
 	virtual QWidget *GetQWidget ();
 };

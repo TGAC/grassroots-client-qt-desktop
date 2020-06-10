@@ -80,12 +80,34 @@ BaseTableWidget :: BaseTableWidget (Parameter * const param_p, QTParameterWidget
 	ptw_scroller_p = new QScrollArea (parent_p);
 	ptw_scroller_p -> setWidgetResizable (true);
 	ptw_scroller_p -> setWidget (ptw_table_p);
-
+	ptw_scroller_p -> setSizeAdjustPolicy (QAbstractScrollArea :: AdjustToContents);
 
 
 	if (!SetColumnHeaders (param_p))
 		{
 		}
+
+	/*
+	 * Additional columns
+	 */
+	ptw_addable_columns_flag = false;
+
+	value_s = GetParameterKeyValue (param_p, PA_TABLE_ADD_COLUMNS_FLAG_S);
+	if (value_s)
+		{
+			if (strcmp (value_s, "true") == 0)
+				{
+					ptw_addable_columns_flag = true;
+				}
+		}
+
+	if (!value_s)
+		{
+			value_s = "NULL";
+		}
+
+	printf (">>>>>>> %s: %s\n", PA_TABLE_ADD_COLUMNS_FLAG_S, value_s);
+
 
 	if (param_p -> pa_refresh_service_flag)
 		{
@@ -109,6 +131,71 @@ void BaseTableWidget :: RemoveConnection ()
 QWidget *BaseTableWidget :: GetQWidget ()
 {
 	return ptw_scroller_p;
+}
+
+
+bool BaseTableWidget :: AreColumnsAddable () const
+{
+	return ptw_addable_columns_flag;
+}
+
+
+bool BaseTableWidget :: AddColumnHeader (const char * const header_s)
+{
+	bool success_flag = false;
+
+	int i = (ptw_table_p -> columnCount ()) + 1;
+
+	ptw_table_p -> setColumnCount (i);
+
+	if (SetColumnHeader (i, header_s, nullptr))
+		{
+			ptw_additional_column_headers << QString (header_s);
+			success_flag = true;
+		}
+	else
+		{
+			ptw_table_p -> setColumnCount (i - 1);
+		}
+
+	return success_flag;
+}
+
+
+bool BaseTableWidget :: SetColumnHeader (int col, const char *name_s, const char *type_s)
+{
+	bool success_flag = false;
+	const bool verbose_flag = bpw_parent_p -> GetClientData () -> qcd_verbose_flag;
+
+	QTableWidgetItem *column_header_p = new QTableWidgetItem (name_s);
+
+	if (verbose_flag)
+		{
+			qDebug () << "name_s: " << name_s << endl;
+		}
+
+	if (column_header_p)
+		{
+			if (type_s)
+				{
+					QVariant v (type_s);
+					column_header_p -> setData (Qt::UserRole, v);
+				}
+
+			if (verbose_flag)
+				{
+					qDebug () << "setting header " <<  column_header_p -> text () << " for column " << col << " with data " << type_s << " = " << column_header_p -> data (Qt :: UserRole) <<  endl;
+				}
+
+			ptw_table_p -> setHorizontalHeaderItem (col, column_header_p);
+			success_flag = true;
+		}
+	else
+		{
+			qDebug () << "failed to create column header for header_s: " << name_s << endl;
+		}
+
+	return success_flag;
 }
 
 
@@ -140,38 +227,9 @@ bool BaseTableWidget :: SetColumnHeaders (Parameter *param_p)
 
 									if (name_s)
 										{
-											const bool verbose_flag = bpw_parent_p -> GetClientData () -> qcd_verbose_flag;
+											const char *type_s = GetJSONString (column_info_p, PARAM_TYPE_S);
 
-
-											QTableWidgetItem *column_header_p = new QTableWidgetItem (name_s);
-
-											if (verbose_flag)
-												{
-													qDebug () << "name_s: " << name_s << endl;
-												}
-
-											if (column_header_p)
-												{
-													const char *type_s = GetJSONString (column_info_p, PARAM_TYPE_S);
-
-													if (type_s)
-														{
-															QVariant v (type_s);
-															column_header_p -> setData (Qt::UserRole, v);
-														}
-
-													if (verbose_flag)
-														{
-															qDebug () << "setting header " <<  column_header_p -> text () << " for column " << i << " with data " << type_s << " = " << column_header_p -> data (Qt :: UserRole) <<  endl;
-														}
-
-													ptw_table_p -> setHorizontalHeaderItem (i, column_header_p);
-
-												}
-											else
-												{
-													qDebug () << "failed to create column header for header_s: " << name_s << endl;
-												}
+											bool b = SetColumnHeader (i, name_s, type_s);
 										}
 
 								}
@@ -204,7 +262,9 @@ void BaseTableWidget :: ClearTable (bool triggered_flag)
 void BaseTableWidget :: Clear ()
 {
 	ptw_table_p -> clear ();
+	ptw_additional_column_headers.clear ();
 	SetColumnHeaders (bpw_param_p);
+
 }
 
 

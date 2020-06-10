@@ -2,6 +2,7 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QDebug>
+#include <QInputDialog>
 
 #include "droppable_table_widget.h"
 #include "string_utils.h"
@@ -155,12 +156,42 @@ bool DroppableTableWidget :: dropMimeData (int row, int column, const QMimeData 
 void DroppableTableWidget :: ShowPopupMenu (const QPoint &p)
 {
 	QMenu *menu_p = new QMenu (this);
-	QAction *action_p = new QAction (tr ("Clear Table"), this);
 
+	QAction *action_p = new QAction (tr ("Clear Table"), this);
 	connect (action_p, &QAction :: triggered, dtw_param_table_widget_p, &BaseTableWidget :: ClearTable);
 	menu_p -> addAction (action_p);
 
+	if (dtw_param_table_widget_p -> AreColumnsAddable ())
+		{
+			action_p = new QAction (tr ("Add Column"), this);
+			connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: AddColumn);
+			menu_p -> addAction (action_p);
+		}
+
 	menu_p->exec (mapToGlobal (p));
+}
+
+
+void DroppableTableWidget :: AddColumn (bool triggered_flag)
+{
+
+	/*
+	 * Get column name to add
+	 */
+  bool ok_flag;
+	QString column = QInputDialog::getText (this, tr ("Add Column"), tr ("Name:"), QLineEdit :: Normal, "", &ok_flag);
+
+	if (ok_flag && (!column.isEmpty ()))
+		{
+			QByteArray ba = column.toLocal8Bit ();
+			const char * const column_s = ba.constData ();
+
+			if (!dtw_param_table_widget_p -> AddColumnHeader (column_s))
+				{
+
+				}
+
+		}
 }
 
 

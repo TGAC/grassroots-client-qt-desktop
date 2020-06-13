@@ -140,7 +140,7 @@ bool BaseTableWidget :: AreColumnsAddable () const
 }
 
 
-bool BaseTableWidget :: AddColumnHeader (const char * const header_s)
+bool BaseTableWidget :: AddColumnHeader (const char * const name_s)
 {
 	bool success_flag = false;
 
@@ -148,9 +148,9 @@ bool BaseTableWidget :: AddColumnHeader (const char * const header_s)
 
 	ptw_table_p -> setColumnCount (i + 1);
 
-	if (SetColumnHeader (i, header_s, nullptr))
+	if (SetColumnHeader (i, name_s, nullptr, nullptr, false))
 		{
-			ptw_additional_column_headers << QString (header_s);
+			ptw_additional_column_headers << QString (name_s);
 			success_flag = true;
 		}
 	else
@@ -162,7 +162,8 @@ bool BaseTableWidget :: AddColumnHeader (const char * const header_s)
 }
 
 
-bool BaseTableWidget :: SetColumnHeader (int col, const char *name_s, const char *type_s)
+
+bool BaseTableWidget :: SetColumnHeader (int col, const char * const name_s, const char * const description_s, const char *type_s, const bool required_flag)
 {
 	bool success_flag = false;
 	const bool verbose_flag = bpw_parent_p -> GetClientData () -> qcd_verbose_flag;
@@ -184,6 +185,19 @@ bool BaseTableWidget :: SetColumnHeader (int col, const char *name_s, const char
 			else
 				{
 					type_s = "NULL";
+				}
+
+
+			if (description_s)
+				{
+					column_header_p -> setToolTip (description_s);
+				}
+
+			if (required_flag)
+				{
+					QFont f = column_header_p -> font ();
+					f.setBold (true);
+					column_header_p -> setFont (f);
 				}
 
 			if (verbose_flag)
@@ -232,8 +246,12 @@ bool BaseTableWidget :: SetColumnHeaders (Parameter *param_p)
 									if (name_s)
 										{
 											const char *type_s = GetJSONString (column_info_p, PARAM_TYPE_S);
+											const char *description_s = GetJSONString (column_info_p, PARAM_DESCRIPTION_S);
+											bool required_flag = false;
 
-											bool b = SetColumnHeader (i, name_s, type_s);
+											GetJSONBoolean (column_info_p, PARAM_REQUIRED_S, &required_flag);
+
+											bool b = SetColumnHeader (i, name_s, description_s, type_s, required_flag);
 										}
 
 								}

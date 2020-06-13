@@ -27,7 +27,7 @@ public:
 
 	bool AddColumnHeader (const char * const header_s);
 
-	bool SetColumnHeader (int col, const char * const header_s, const char *type_s);
+	bool SetColumnHeader (int col, const char * const name_s, const char * const description_s, const char *type_s, const bool required_flag);
 
 	bool AreColumnsAddable () const;
 

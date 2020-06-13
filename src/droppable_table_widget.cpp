@@ -574,6 +574,28 @@ bool DroppableTableWidget :: SetValueFromText (const char *data_s)
 }
 
 
+int DroppableTableWidget :: LoadJSON (const char *filename_s)
+{
+	int res = 0;
+	json_error_t err;
+	json_t *data_p = json_load_file (filename_s, 0, &err);
+
+	if (data_p)
+		{
+			if (json_is_array (data_p))
+				{
+					size_t num_rows = json_array_size (data_p);
+
+
+				}
+
+			json_decref (data_p);
+		}
+
+	return res;
+}
+
+
 void DroppableTableWidget :: LoadText (const char *filename_s)
 {
 	FILE *in_f = fopen (filename_s, "r");
@@ -587,6 +609,17 @@ void DroppableTableWidget :: LoadText (const char *filename_s)
 			int row = 0;
 
 			setSortingEnabled (false);
+
+			/*
+			if (dtw_first_row_as_headers_flag)
+				{
+					if (GetLineFromFile (in_f, &buffer_s))
+						{
+							SetColumnHeaders (buffer_s);
+						}
+				}
+			 */
+
 
 			while (loop_flag)
 				{

@@ -46,6 +46,8 @@ protected:
 	virtual void dragMoveEvent (QDragMoveEvent *event_p);
 
 	void LoadText (const char *filename_s);
+	int LoadJSON (const char *filename_s);
+
 	char *GetEntry (const char *start_s, const char *end_s);
 
 	bool IsTableEmpty () const;

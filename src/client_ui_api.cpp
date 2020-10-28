@@ -139,11 +139,11 @@ static QTClientData *AllocateQTClientData (Connection *connection_p)
 
 					QObject :: connect (data_p -> qcd_window_p, &MainWindow :: Closed, data_p -> qcd_app_p, &QApplication :: quit);
 
-					data_p -> qcd_results_widgets_p = new QLinkedList <ResultsWindow *>;
+					data_p -> qcd_results_widgets_p = new QVector <ResultsWindow *>;
 
 					data_p -> qcd_progress_p = new ProgressWindow (data_p -> qcd_window_p, data_p);
 
-					data_p -> qcd_viewer_widgets_p = new QLinkedList <ViewerWidget *>;
+					data_p -> qcd_viewer_widgets_p = new QVector <ViewerWidget *>;
 
 					data_p -> qcd_init_flag = false;
 
@@ -167,8 +167,8 @@ static void FreeQTClientData (QTClientData *qt_data_p)
 
 	while (! (qt_data_p -> qcd_viewer_widgets_p -> isEmpty ()))
 		{
-			ViewerWidget *widget_p = qt_data_p -> qcd_viewer_widgets_p -> first ();
-			qt_data_p -> qcd_viewer_widgets_p -> removeFirst ();
+			ViewerWidget *widget_p = qt_data_p -> qcd_viewer_widgets_p -> last ();
+			qt_data_p -> qcd_viewer_widgets_p -> removeLast ();
 
 			widget_p -> close ();
 			delete widget_p;
@@ -179,8 +179,8 @@ static void FreeQTClientData (QTClientData *qt_data_p)
 
 	while (! (qt_data_p -> qcd_results_widgets_p -> isEmpty ()))
 		{
-			ResultsWindow *widget_p = qt_data_p -> qcd_results_widgets_p -> first ();
-			qt_data_p -> qcd_results_widgets_p -> removeFirst ();
+			ResultsWindow *widget_p = qt_data_p -> qcd_results_widgets_p -> last ();
+			qt_data_p -> qcd_results_widgets_p -> removeLast ();
 
 			widget_p -> close ();
 			delete widget_p;

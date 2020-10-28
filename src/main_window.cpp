@@ -65,10 +65,6 @@ MainWindow :: MainWindow (QTClientData *data_p)
 	connect (mw_prefs_widget_p, &PrefsWidget :: RunServices, this, &MainWindow :: RunServices);
 	mw_tabs_p -> addTab (mw_prefs_widget_p, QIcon ("images/list_wand"), "All Services");
 
-	mw_keyword_widget_p = new KeywordWidget (this, PL_SIMPLE);
-	connect (mw_keyword_widget_p, &KeywordWidget :: RunKeywordSearch, this, &MainWindow :: RunKeywordSearch);
-	mw_tabs_p -> addTab (mw_keyword_widget_p, QIcon ("images/list_search"), "Run by search");
-
 	setWindowTitle (data_p -> qcd_dummy_arg_s);
 	setWindowIcon (QIcon ("images/app"));
 
@@ -287,38 +283,6 @@ void MainWindow :: RunService (json_t *service_p)
 		}		/* if (service_p) */
 }
 
-
-void MainWindow :: RunKeywordSearch (QString keywords)
-{
-	QByteArray ba = keywords.toLocal8Bit ();
-	const char *keywords_s = ba.constData ();
-	UserDetails *user_p = nullptr;
-	json_t *query_p  = GetKeywordServicesRequest (user_p, keywords_s, mw_client_data_p -> qcd_base_data.cd_schema_p);
-
-	if (query_p)
-		{
-			json_t *results_p = nullptr;
-
-
-			if (mw_client_data_p -> qcd_verbose_flag)
-				{
-					PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, query_p, "\n\nquery:\n");
-				}
-
-			setCursor (Qt :: BusyCursor);
-			results_p = MakeRemoteJsonCall (query_p, mw_client_data_p -> qcd_base_data.cd_connection_p);
-			setCursor (Qt :: ArrowCursor);
-
-			if (results_p)
-				{
-					ProcessResults (results_p);
-					json_decref (results_p);
-				}		/* if (results_p) */
-
-			json_decref (query_p);
-		}		/* if (query_p) */
-
-}
 
 
 //bool MainWindow :: AddResults (const json_t *service_results_p)
@@ -544,11 +508,6 @@ void MainWindow :: AddActions ()
 	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: GetInterestedServices);
 	menu_p -> addAction (action_p);
 
-	// Run keyword services
-	action_p = new QAction (tr ("Run keyword services"), this);
-	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: RunKeywordServices);
-	menu_p -> addAction (action_p);
-
 	// Get named services
 	action_p = new QAction (tr ("Get named services"), this);
 	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: GetNamedServices);
@@ -620,12 +579,6 @@ void MainWindow :: GetAllServices ()
 
 
 void MainWindow :: GetInterestedServices ()
-{
-
-}
-
-
-void MainWindow :: RunKeywordServices ()
 {
 
 }

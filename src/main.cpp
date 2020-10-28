@@ -60,10 +60,11 @@ int main (int argc, char *argv [])
 					"\t-h <server_url>, the web address of the Grassroots server to connect to.\n"
 					"\t--list-all, get all available services from the Grassroots server.\n"
 					"\t--get-service <service name> get named services from the Grassroots server.\n"
-					"\t--keyword-search <keyword>, perform a keyword search against all keyword-aware services.\n"
 					"\t--list-interested <resource>, get all services that are able to run against a given resource.\n"
 					"\t--get-service-data <service_name>, get the JSON for Lucene indexing.\n"
 					"\t--verbose, display more information whilst running the client\n"
+					"\t--username, username"
+					"\t--password, password"
 					"\t\tThe resource is in the form <protocol>://<name> e.g. file:///home/test.fa, https://my.data/object, irods://data.fa\n"
 					);
 			return 0;
@@ -72,6 +73,8 @@ int main (int argc, char *argv [])
 		{
 			int i = 1;
 			const char *hostname_s = "localhost";
+			const char *username_s = NULL;
+			const char *password_s = NULL;
 			char *protocol_s = NULL;
 			char *query_s = NULL;
 			const char *keyword_s = NULL;
@@ -140,20 +143,6 @@ int main (int argc, char *argv [])
 									printf ("hostname argument missing");
 								}
 						}
-					else if (strcmp (argv [i], "--keyword-search") == 0)
-						{
-							op = OP_RUN_KEYWORD_SERVICES;
-
-
-							if ((i + 1) < argc)
-								{
-									keyword_s = argv [++ i];
-								}
-							else
-								{
-									printf ("Keyword argument missing");
-								}
-						}
 					else if (strcmp (argv [i], "--get-service") == 0)
 						{
 							op = OP_GET_NAMED_SERVICES;
@@ -178,6 +167,28 @@ int main (int argc, char *argv [])
 							else
 								{
 									printf ("named service argument missing");
+								}
+						}
+					else if (strcmp (argv [i], "--username") == 0)
+						{
+							if ((i + 1) < argc)
+								{
+									username_s = argv [++ i];
+								}
+							else
+								{
+									printf ("username argument missing");
+								}
+						}
+					else if (strcmp (argv [i], "--password") == 0)
+						{
+							if ((i + 1) < argc)
+								{
+									password_s = argv [++ i];
+								}
+							else
+								{
+									printf ("password argument missing");
 								}
 						}
 					else if (strcmp (argv [i], "--verbose") == 0)
@@ -216,6 +227,14 @@ int main (int argc, char *argv [])
 							SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
 							UserDetails *user_p = NULL;
 
+							if (username_s && password_s)
+								{
+									if (!SetConnectionCredentials (connection_p, username_s, password_s))
+										{
+											PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set credentials");
+										}
+								}
+
 							SetClientSchema (client_p, sv_p);
 
 							qt_data_p -> qcd_verbose_flag = verbose_flag;
@@ -231,37 +250,6 @@ int main (int argc, char *argv [])
 									case OP_LIST_INTERESTED_SERVICES:
 										{
 											GetInterestedServicesInClient (client_p, protocol_s, query_s, user_p);
-										}
-										break;
-
-									case OP_RUN_KEYWORD_SERVICES:
-										{
-											json_t *req_p = GetKeywordServicesRequest (user_p, keyword_s, sv_p);
-
-											if (req_p)
-												{
-													json_t *response_p = MakeRemoteJsonCall (req_p, connection_p);
-
-													if (response_p)
-														{
-															if (DisplayResultsInClient (client_p, response_p))
-																{
-
-																}
-
-															json_decref (response_p);
-														}		/* if (response_p) */
-													else
-														{
-															PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "MakeRemoteJsonCall failed");
-														}
-
-													json_decref (req_p);
-												}		/* if (req_p) */
-											else
-												{
-													PrintErrors (STM_LEVEL_SEVERE,__FILE__, __LINE__, "GetKeywordServicesRequest failed for %s", query_s);
-												}
 										}
 										break;
 

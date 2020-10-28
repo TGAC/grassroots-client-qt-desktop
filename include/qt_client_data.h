@@ -22,7 +22,7 @@
 #define QT_CLIENT_DATA_H
 
 #include <QApplication>
-#include <QLinkedList>
+#include <QVector>
 
 #include "client.h"
 
@@ -41,8 +41,8 @@ typedef struct QTClientData
 	QApplication *qcd_app_p;
 	MainWindow *qcd_window_p;
 	ProgressWindow *qcd_progress_p;
-	QLinkedList <ViewerWidget *> *qcd_viewer_widgets_p;
-	QLinkedList <ResultsWindow *> *qcd_results_widgets_p;
+	QVector <ViewerWidget *> *qcd_viewer_widgets_p;
+	QVector <ResultsWindow *> *qcd_results_widgets_p;
 	char *qcd_dummy_arg_s;
 	char *qcd_server_url_s;
 	bool qcd_init_flag;

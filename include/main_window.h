@@ -52,6 +52,9 @@ public slots:
 
 	void RunService (json_t *service_p);
 
+	void GetIndexingData ();
+
+
 	void GetAllServices ();
 	void GetInterestedServices ();
 	void GetNamedServices ();
@@ -91,7 +94,7 @@ private:
 
 
 private slots:
-	void Accept ();
+	void Run ();
 	void Reject ();
 
 };

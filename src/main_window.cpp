@@ -57,13 +57,10 @@ MainWindow :: MainWindow (QTClientData *data_p)
 {
 	setAcceptDrops (true);
 
-
-	mw_tabs_p = new QTabWidget;
-	setCentralWidget (mw_tabs_p);
-
 	mw_prefs_widget_p = new PrefsWidget (this, PL_SIMPLE, false, data_p);
 	connect (mw_prefs_widget_p, &PrefsWidget :: RunServices, this, &MainWindow :: RunServices);
-	mw_tabs_p -> addTab (mw_prefs_widget_p, QIcon ("images/list_wand"), "All Services");
+
+	setCentralWidget (mw_prefs_widget_p);
 
 	setWindowTitle (data_p -> qcd_dummy_arg_s);
 	setWindowIcon (QIcon ("images/app"));
@@ -82,7 +79,13 @@ MainWindow :: ~MainWindow ()
 {
 }
 
-void MainWindow :: Accept ()
+
+void MainWindow :: GetIndexingData ()
+{
+
+}
+
+void MainWindow :: Run ()
 {
 	RunServices (true);
 }
@@ -481,12 +484,19 @@ void MainWindow :: AddActions ()
 	// Run
 	action_p = new QAction (QIcon ("images/run"), tr ("Run"), this);
 	main_toolbar_p -> addAction (action_p);
-	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: Accept);
+	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: Run);
+
+
+	// Run
+	action_p = new QAction (QIcon ("images/index"), tr ("Get Indexing Data"), this);
+	main_toolbar_p -> addAction (action_p);
+	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: GetIndexingData);
+
 
 	// Cancel
 	action_p = new QAction (QIcon ("images/cancel"), tr ("Quit"), this);
 	main_toolbar_p -> addAction (action_p);
-	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: Accept);
+	connect (action_p, &QAction :: triggered, this, &MainWindow :: Run);
 
 
 	// Connect Menu

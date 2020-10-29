@@ -79,6 +79,7 @@ public:
 
 	bool SelectService (const char *service_name_s, const json_t * const params_p);
 
+	QVector <const char *> *GetActiveServices ();
 
 
 private:

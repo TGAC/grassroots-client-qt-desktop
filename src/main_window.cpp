@@ -82,7 +82,85 @@ MainWindow :: ~MainWindow ()
 
 void MainWindow :: GetIndexingData ()
 {
+	qDebug () << "GetIndexingData" << Qt :: endl;
 
+	QVector <const char *> *active_services_p = mw_prefs_widget_p -> GetActiveServices ();
+
+	if (active_services_p)
+		{
+			ByteBuffer *buffer_p = AllocateByteBuffer (1024);
+
+			if (buffer_p)
+				{
+					bool success_flag = true;
+					const int last_index = active_services_p -> size () - 1;
+
+					qDebug () << "last_index: " << last_index << Qt :: endl;
+
+					if (last_index >= 0)
+						{
+							for (int i = 0; i < last_index; ++ i)
+								{
+									const char *name_s = active_services_p -> takeFirst ();
+
+									qDebug () << "i: " << i << " name: " << name_s << Qt :: endl;
+
+									if (!AppendStringsToByteBuffer (buffer_p, name_s, ",", NULL))
+										{
+											success_flag = false;
+											i = last_index;
+										}
+								}
+
+							if (success_flag)
+								{
+									const char *name_s = active_services_p -> takeFirst ();
+
+									if (AppendStringToByteBuffer (buffer_p, name_s))
+										{
+											const char *services_s = GetByteBufferData (buffer_p);
+
+											if (services_s)
+												{
+													json_t *req_p = GetNamedServicesIndexingDataRequest (nullptr, services_s, mw_client_data_p -> qcd_base_data.cd_schema_p);
+
+													if (req_p)
+														{
+															if (mw_client_data_p -> qcd_verbose_flag)
+																{
+																	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, req_p, "Client sending: ");
+																}
+
+															setCursor (Qt :: BusyCursor);
+															json_t *services_json_p = CallServices (req_p, nullptr, mw_client_data_p -> qcd_base_data.cd_connection_p);
+															setCursor (Qt :: ArrowCursor);
+
+															if (services_json_p)
+																{
+																	json_decref (services_json_p);
+																}
+
+															json_decref (req_p);
+														}
+
+												}
+										}
+								}
+						}
+
+					FreeByteBuffer (buffer_p);
+				}
+			else
+				{
+					qDebug () << "No buffer" << Qt :: endl;
+				}
+
+			delete active_services_p;
+		}
+	else
+		{
+			qDebug () << "No services" << Qt :: endl;
+		}
 }
 
 void MainWindow :: Run ()
@@ -487,10 +565,10 @@ void MainWindow :: AddActions ()
 	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: Run);
 
 
-	// Run
+	// Indexing json
 	action_p = new QAction (QIcon ("images/index"), tr ("Get Indexing Data"), this);
 	main_toolbar_p -> addAction (action_p);
-	connect (action_p, &QAction :: triggered, 	this, &MainWindow :: GetIndexingData);
+	connect (action_p, &QAction :: triggered, this, &MainWindow :: GetIndexingData);
 
 
 	// Cancel

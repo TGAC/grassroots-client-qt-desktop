@@ -26,6 +26,7 @@
 #include <QFormLayout>
 #include <QString>
 #include <QTabWidget>
+#include <QVector>
 
 #include "prefs_widget.h"
 #include "main_window.h"
@@ -39,7 +40,7 @@
 #include "json_tools.h"
 #include "string_utils.h"
 #include "service_metadata.h"
-
+#include "json_util.h"
 
 using namespace std;
 
@@ -281,5 +282,39 @@ json_t *PrefsWidget :: GetUserValuesAsJSON (const bool full_flag, const Paramete
 
 	return root_p;
 }
+
+
+QVector <const char *> *PrefsWidget :: GetActiveServices ()
+{
+	QVector <const char *> *active_services_p = new QVector <const char *> ();
+
+	if (active_services_p)
+		{
+			const int num_services = pw_service_widgets.size ();
+			int i = 0;
+			bool success_flag = true;
+
+			while (success_flag && (i < num_services))
+				{
+					ServicePrefsWidget *spw_p = pw_service_widgets.at (i);
+
+					if (spw_p -> GetRunFlag ())
+						{
+							const char *name_s = spw_p -> GetServiceName ();
+							active_services_p -> push_back (name_s);
+
+							qDebug () << "added: " << name_s << Qt :: endl;
+
+						}
+
+					++ i;
+				}
+
+
+		}		/* if (root_p) */
+
+	return active_services_p;
+}
+
 
 

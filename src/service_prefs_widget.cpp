@@ -24,9 +24,11 @@
 #include "qt_client_data.h"
 #include "service_prefs_widget.h"
 #include "json_tools.h"
+#include "json_util.h"
 #include "service.h"
 #include "streams.h"
 #include "parameter.h"
+
 
 #ifdef _DEBUG
 	#define SERVICE_PREFS_WIDGET_DEBUG (DEBUG_FINE)

@@ -7,6 +7,10 @@
 #include "unsigned_int_validator.h"
 
 
+
+int UnsignedIntSpinner :: UIS_SPECIAL_VALUE = -1;
+const char *UnsignedIntSpinner :: UIS_SPECIAL_VALUE_TEXT_S = "<no value>";
+
 UnsignedIntSpinner :: UnsignedIntSpinner (bool required_flag, QWidget *parent_p)
 	: QSpinBox (parent_p)
 {
@@ -14,8 +18,10 @@ UnsignedIntSpinner :: UnsignedIntSpinner (bool required_flag, QWidget *parent_p)
 	uis_null_flag = false;
 	uis_validator_p = new UnsignedIntValidator (parent_p);
 
-//	SetMinimum (0);
-//	SetMaximum (UINT_MAX);
+	setMinimum (UIS_SPECIAL_VALUE);
+	setMaximum (INT_MAX);
+
+	setSpecialValueText (UIS_SPECIAL_VALUE_TEXT_S);
 }
 
 
@@ -24,7 +30,7 @@ UnsignedIntSpinner :: ~UnsignedIntSpinner ()
 {
 }
 
-
+/*
 void UnsignedIntSpinner :: setMinimum (uint32 min)
 {
 	int i = MapUIntToInt (min);
@@ -37,7 +43,7 @@ void UnsignedIntSpinner :: setMaximum (uint32 max)
 	int i = MapUIntToInt (max);
 	QSpinBox :: setMaximum (i);
 }
-
+*/
 
 bool UnsignedIntSpinner :: ClearValue (	)
 {
@@ -47,8 +53,9 @@ bool UnsignedIntSpinner :: ClearValue (	)
 		{
 			QString nullstr;
 
-			valueFromText (nullstr);
 			uis_null_flag = true;
+
+			setValue (UIS_SPECIAL_VALUE);
 		}
 
 	return success_flag;
@@ -151,19 +158,23 @@ int32 UnsignedIntSpinner :: MapUIntToInt (uint32 u) const
 	return *i_p;
 }
 
-
+/*
 void UnsignedIntSpinner :: setValue (uint32 value)
 {
 	int i = MapUIntToInt (value);
 
+	qDebug () << "setting spinner to " << i << " from " << value << Qt :: endl;
+
 	QSpinBox :: setValue (i);
 }
-
+*/
 
 uint32 UnsignedIntSpinner :: GetValue () const
 {
 	int i = value ();
 	uint32 u = MapIntToUInt (i);
+
+	qDebug () << "getting spinner " << u << " from " << i << Qt :: endl;
 
 	return u;
 }

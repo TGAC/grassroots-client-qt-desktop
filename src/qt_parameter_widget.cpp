@@ -663,24 +663,24 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 													if (! (widget_p -> SetValueFromJSON (param_value_p)))
 														{
 															success_flag = false;
-															PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_value_p, "Failed to set %s -> %s from json", service_name_s, param_name_s);
+															PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_value_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
 														}
 												}
 											else
 												{
-													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter value %s -> %s from json", service_name_s, PARAM_CURRENT_VALUE_S);
+													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter value %s -> %s from json\n", service_name_s, PARAM_CURRENT_VALUE_S);
 												}
 
 										}		/* if (widget_p) */
 									else
 										{
-											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get widget for %s -> %s from json", service_name_s, param_name_s);
+											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get widget for %s -> %s from json\n", service_name_s, param_name_s);
 										}
 
 								}		/* if (param_name_s) */
 							else
 								{
-									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter name %s -> %s from json", service_name_s, PARAM_NAME_S);
+									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter name %s -> %s from json\n", service_name_s, PARAM_NAME_S);
 								}
 
 						}		/* json_array_foreach (params_json_p, i, param_p) */
@@ -770,7 +770,8 @@ void QTParameterWidget :: RefreshService ()
 																										}
 																								}
 																						}
-																				}
+
+																				}		/* for (i = 0; i < num_services; ++ i) */
 																		}
 																}
 														}

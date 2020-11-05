@@ -22,8 +22,13 @@ public:
 
 	bool ClearValue ();
 
-	void setValue (uint32 u);
 
+	virtual QValidator::State validate (QString &input_r, int &pos_r) const override;
+
+
+//	void setValue (uint32 u);
+
+/*
 	void setMinimum (uint32 min);
 
 	void setMaximum (uint32 max);
@@ -31,11 +36,14 @@ public:
 	int minimum () const;
 
 	int maximum () const;
+*/
 
 	uint32 GetValue () const;
 
 
 protected:
+	static int UIS_SPECIAL_VALUE;
+	static const char *UIS_SPECIAL_VALUE_TEXT_S;
 	bool uis_required_flag;
 	mutable bool uis_null_flag;
 	QValidator *uis_validator_p;
@@ -44,7 +52,6 @@ protected:
 
 	virtual QString textFromValue (int value) const override;
 
-	virtual QValidator::State validate (QString &input_r, int &pos_r) const override;
 
 	uint32 MapIntToUInt (int32 i) const;
 

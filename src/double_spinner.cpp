@@ -3,7 +3,8 @@
 
 #include "double_spinner.h"
 
-double DoubleSpinner :: DS_UNSET_VALUE = -DBL_MAX;
+double DoubleSpinner :: DS_SPECIAL_VALUE = -DBL_MAX;
+const char *DoubleSpinner :: DS_SPECIAL_VALUE_TEXT_S = "<no value>";
 
 
 DoubleSpinner :: DoubleSpinner (Parameter *param_p, QWidget *parent_p)
@@ -11,6 +12,11 @@ DoubleSpinner :: DoubleSpinner (Parameter *param_p, QWidget *parent_p)
 {
 	ds_param_p = param_p;
 	ds_null_flag = false;
+
+	if (! (ds_param_p -> pa_required_flag))
+		{
+			setSpecialValueText (DS_SPECIAL_VALUE_TEXT_S);
+		}
 }
 
 
@@ -25,10 +31,8 @@ bool DoubleSpinner :: ClearValue (	)
 
 	if (! (ds_param_p -> pa_required_flag))
 		{
-			QString nullstr;
-
-			valueFromText (nullstr);
 			ds_null_flag = true;
+			setValue (DoubleSpinner :: DS_SPECIAL_VALUE);
 		}
 
 	return success_flag;
@@ -37,7 +41,7 @@ bool DoubleSpinner :: ClearValue (	)
 
 double DoubleSpinner :: valueFromText (const QString &text_r) const
 {
-	double d = DoubleSpinner :: DS_UNSET_VALUE;
+	double d = DoubleSpinner :: DS_SPECIAL_VALUE;
 
 	if (! ((text_r.isNull ()) || (text_r.isEmpty ())))
 		{
@@ -75,6 +79,7 @@ bool DoubleSpinner :: IsValueSet () const
 }
 
 
+/*
 QValidator :: State DoubleSpinner :: validate (QString &input_r, int &pos_r) const
 {
 	QValidator :: State state = QValidator :: Invalid;
@@ -98,3 +103,4 @@ QValidator :: State DoubleSpinner :: validate (QString &input_r, int &pos_r) con
 
 	return state;
 }
+*/

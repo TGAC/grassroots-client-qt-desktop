@@ -109,14 +109,31 @@ bool UnsignedIntParamSpinBox :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (json_is_integer (value_p))
+	if (!value_p)
 		{
-			const int d = json_integer_value (value_p);
-
-			if (d >= 0)
+			uipsb_spin_box_p -> ClearValue ();
+		}
+	else
+		{
+			if (json_is_integer (value_p))
 				{
-					uipsb_spin_box_p -> setValue (d);
-					success_flag = true;
+					const int d = json_integer_value (value_p);
+
+					if (d >= 0)
+						{
+							uipsb_spin_box_p -> setValue (d);
+							success_flag = true;
+
+							PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "value %d for %s\n", d, bpw_param_name_s);
+						}
+					else
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "value %d is not an unsigned integer for %s\n", d, bpw_param_name_s);
+						}
+				}
+			else
+				{
+					PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, value_p, "JSON is not integer for %s\n", bpw_param_name_s);
 				}
 		}
 

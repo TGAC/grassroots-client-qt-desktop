@@ -125,7 +125,11 @@ bool ParamTextBox :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (json_is_string (value_p))
+	if ((!value_p) || (json_is_null (value_p)))
+		{
+			ptb_text_box_p -> setPlainText (nullptr);
+		}
+	else if (json_is_string (value_p))
 		{
 			const char *value_s = json_string_value (value_p);
 

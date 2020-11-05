@@ -24,6 +24,7 @@
 #include <QMimeData>
 #include <QPushButton>
 #include <QPluginLoader>
+#include <QTextStream>
 
 #include <QUrl>
 #include <QTabWidget>

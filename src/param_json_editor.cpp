@@ -54,9 +54,10 @@ bool DroppableJSONBox :: SetFromJSON (const json_t * const value_p)
 	bool success_flag = false;
 	char *data_s = json_dumps (value_p, 0);
 
+	clear ();
+
 	if (data_s)
 		{
-			clear ();
 			insertPlainText (data_s);
 			success_flag = true;
 

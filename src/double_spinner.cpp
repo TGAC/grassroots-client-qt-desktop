@@ -1,6 +1,8 @@
 
 #include <cfloat>
 
+#include <QDebug>
+
 #include "double_spinner.h"
 
 double DoubleSpinner :: DS_SPECIAL_VALUE = -DBL_MAX;
@@ -76,6 +78,16 @@ QString DoubleSpinner :: textFromValue (double value) const
 bool DoubleSpinner :: IsValueSet () const
 {
 	return !ds_null_flag;
+}
+
+
+void DoubleSpinner :: setValue (double d)
+{
+	qDebug () << "setting spinner to " << d << Qt :: endl;
+
+	ds_null_flag = false;
+
+	QDoubleSpinBox :: setValue (d);
 }
 
 

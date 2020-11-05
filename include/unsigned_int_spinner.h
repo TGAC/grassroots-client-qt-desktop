@@ -23,8 +23,9 @@ public:
 	bool ClearValue ();
 
 
-	virtual QValidator::State validate (QString &input_r, int &pos_r) const override;
+	//virtual QValidator::State validate (QString &input_r, int &pos_r) const override;
 
+	void setValue (int i);
 
 //	void setValue (uint32 u);
 
@@ -51,11 +52,6 @@ protected:
 	virtual int valueFromText (const QString &text_r) const override;
 
 	virtual QString textFromValue (int value) const override;
-
-
-	uint32 MapIntToUInt (int32 i) const;
-
-	int32 MapUIntToInt (uint32 i) const;
 
 };
 

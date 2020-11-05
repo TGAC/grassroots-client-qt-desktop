@@ -20,6 +20,8 @@ public:
 
 //	QValidator::State validate (QString &input_r, int &pos_r) const override;
 
+	void setValue (double d);
+
 	bool IsValueSet () const;
 
 	bool ClearValue ();

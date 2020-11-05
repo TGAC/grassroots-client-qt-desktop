@@ -18,10 +18,18 @@ UnsignedIntSpinner :: UnsignedIntSpinner (bool required_flag, QWidget *parent_p)
 	uis_null_flag = false;
 	uis_validator_p = new UnsignedIntValidator (parent_p);
 
-	setMinimum (UIS_SPECIAL_VALUE);
-	setMaximum (INT_MAX);
+	if (required_flag)
+		{
+			setMinimum (0);
+		}
+	else
+		{
+			setMinimum (UIS_SPECIAL_VALUE);
+			setSpecialValueText (UIS_SPECIAL_VALUE_TEXT_S);
 
-	setSpecialValueText (UIS_SPECIAL_VALUE_TEXT_S);
+		}
+
+	setMaximum (INT_MAX);
 }
 
 
@@ -51,8 +59,6 @@ bool UnsignedIntSpinner :: ClearValue (	)
 
 	if (!uis_required_flag)
 		{
-			QString nullstr;
-
 			uis_null_flag = true;
 
 			setValue (UIS_SPECIAL_VALUE);
@@ -71,24 +77,32 @@ void UnsignedIntSpinner :: SetValue (uint32 u)
 
 int UnsignedIntSpinner :: valueFromText (const QString &text_r) const
 {
-	int i = 0;
+	int i = UnsignedIntSpinner :: UIS_SPECIAL_VALUE;
 
 	if (! ((text_r.isNull ()) || (text_r.isEmpty ())))
 		{
 			bool success_flag;
-			uint32 u = text_r.toUInt (&success_flag);
+			int j = text_r.toInt (&success_flag);
 
 			if (success_flag)
 				{
-					i = MapUIntToInt (u);
+					if (j >= 0)
+						{
+							i = j;
+							uis_null_flag = false;
+						}
+					else
+						{
+							uis_null_flag = true;
+						}
 				}
-
-			uis_null_flag = !success_flag;
 		}
 	else if (uis_required_flag)
 		{
 			uis_null_flag = true;
 		}
+
+	qDebug () << "UnsignedIntSpinner :: valueFromText:  s \"" << text_r << "\" value " << i;
 
 	return i;
 }
@@ -96,18 +110,22 @@ int UnsignedIntSpinner :: valueFromText (const QString &text_r) const
 
 QString UnsignedIntSpinner :: textFromValue (int value) const
 {
+	QString s = nullptr;
+
 	if (uis_null_flag)
 		{
-			return QString ();
+			s = QString ();
 		}
 	else
 		{
-			uint32 u = MapIntToUInt (value);
-			QString s;
-
-			s.setNum (u);
-			return s;
+			s = QString ();
+			s.setNum (value);
 		}
+
+
+	qDebug () << "UnsignedIntSpinner :: textFromValue:  s \"" << s << "\" value " << value;
+
+	return s;
 }
 
 
@@ -117,7 +135,7 @@ bool UnsignedIntSpinner :: IsValueSet () const
 	return !uis_null_flag;
 }
 
-
+/*
 QValidator :: State UnsignedIntSpinner :: validate (QString &input_r, int &pos_r) const
 {
 	QValidator :: State state = QValidator :: Invalid;
@@ -143,39 +161,24 @@ QValidator :: State UnsignedIntSpinner :: validate (QString &input_r, int &pos_r
 
 	return state;
 }
+*/
 
-
-uint32 UnsignedIntSpinner :: MapIntToUInt (int32 i) const
+void UnsignedIntSpinner :: setValue (int i)
 {
-	uint32 *u_p = reinterpret_cast <uint32 *> (&i);
-	return *u_p;
-}
+	qDebug () << "setting spinner to " << i << Qt :: endl;
 
-
-int32 UnsignedIntSpinner :: MapUIntToInt (uint32 u) const
-{
-	int32 *i_p = reinterpret_cast <int32 *> (&u);
-	return *i_p;
-}
-
-/*
-void UnsignedIntSpinner :: setValue (uint32 value)
-{
-	int i = MapUIntToInt (value);
-
-	qDebug () << "setting spinner to " << i << " from " << value << Qt :: endl;
+	uis_null_flag = false;
 
 	QSpinBox :: setValue (i);
 }
-*/
+
 
 uint32 UnsignedIntSpinner :: GetValue () const
 {
 	int i = value ();
-	uint32 u = MapIntToUInt (i);
 
-	qDebug () << "getting spinner " << u << " from " << i << Qt :: endl;
+	qDebug () << "getting spinner " << i << Qt :: endl;
 
-	return u;
+	return i;
 }
 

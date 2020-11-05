@@ -74,11 +74,11 @@ bool UnsignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 			const uint32 value = uipsb_spin_box_p -> GetValue ();
 			b = SetUnsignedIntParameterCurrentValue (uips_param_p, &value);
 
-			qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+			qDebug () << "UnsignedIntParamSpinBox :: StoreParameterValue: Setting " << bpw_param_p -> pa_name_s << " to " << value;
 		}
 	else
 		{
-			qDebug () << "Setting " << bpw_param_p -> pa_name_s << "to NULL value";
+			qDebug () << "UnsignedIntParamSpinBox :: StoreParameterValue: Setting " << bpw_param_p -> pa_name_s << "to NULL value";
 			b = true;
 		}
 
@@ -90,7 +90,10 @@ bool UnsignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 bool UnsignedIntParamSpinBox :: SetValueFromText (const char *value_s)
 {
 	bool success_flag  = true;
+
 	int value;
+
+	qDebug () << "UnsignedIntParamSpinBox :: SetValueFromText  " << bpw_param_p -> pa_name_s << " value " << value_s <<  Qt :: endl;
 
 	if (GetValidInteger (&value_s, &value))
 		{
@@ -109,15 +112,20 @@ bool UnsignedIntParamSpinBox :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (!value_p)
+	qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON  " << bpw_param_p -> pa_name_s << Qt :: endl;
+
+	if ((!value_p) || (json_is_null (value_p)))
 		{
 			uipsb_spin_box_p -> ClearValue ();
+			qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON  clearing " << bpw_param_p -> pa_name_s << Qt :: endl;
 		}
 	else
 		{
 			if (json_is_integer (value_p))
 				{
 					const int d = json_integer_value (value_p);
+
+					qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON d:  " << d << Qt :: endl;
 
 					if (d >= 0)
 						{

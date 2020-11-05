@@ -127,6 +127,7 @@ bool ParamDoubleSpinBox :: SetValueFromJSON (const json_t * const value_p)
 			success_flag = true;
 		}
 
+
 	return success_flag;
 }
 

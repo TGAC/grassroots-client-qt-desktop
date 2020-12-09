@@ -77,14 +77,18 @@ bool UnsignedIntComboBox :: SetValueFromText (const char *value_s)
 bool UnsignedIntComboBox :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
+	const json_t *param_value_p = json_object_get (value_p, PARAM_CURRENT_VALUE_S);
 
-	if (json_is_integer (value_p))
+	if (param_value_p)
 		{
-			int i = json_integer_value (value_p);
-
-			if (i >= 0)
+			if (json_is_integer (param_value_p))
 				{
-					success_flag = SetValue (static_cast <uint32> (i));
+					int i = json_integer_value (param_value_p);
+
+					if (i >= 0)
+						{
+							success_flag = SetValue (static_cast <uint32> (i));
+						}
 				}
 		}
 

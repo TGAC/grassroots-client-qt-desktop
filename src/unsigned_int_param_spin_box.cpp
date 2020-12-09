@@ -111,38 +111,43 @@ bool UnsignedIntParamSpinBox :: SetValueFromText (const char *value_s)
 bool UnsignedIntParamSpinBox :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
+	const json_t *param_value_p = json_object_get (value_p, PARAM_CURRENT_VALUE_S);
 
-	qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON  " << bpw_param_p -> pa_name_s << Qt :: endl;
+	if (param_value_p)
+		{
+			qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON  " << bpw_param_p -> pa_name_s << Qt :: endl;
 
-	if ((!value_p) || (json_is_null (value_p)))
-		{
-			uipsb_spin_box_p -> ClearValue ();
-			qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON  clearing " << bpw_param_p -> pa_name_s << Qt :: endl;
-		}
-	else
-		{
-			if (json_is_integer (value_p))
+			if ((!param_value_p) || (json_is_null (param_value_p)))
 				{
-					const int d = json_integer_value (value_p);
-
-					qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON d:  " << d << Qt :: endl;
-
-					if (d >= 0)
-						{
-							uipsb_spin_box_p -> setValue (d);
-							success_flag = true;
-
-							PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "value %d for %s\n", d, bpw_param_name_s);
-						}
-					else
-						{
-							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "value %d is not an unsigned integer for %s\n", d, bpw_param_name_s);
-						}
+					uipsb_spin_box_p -> ClearValue ();
+					qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON  clearing " << bpw_param_p -> pa_name_s << Qt :: endl;
 				}
 			else
 				{
-					PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, value_p, "JSON is not integer for %s\n", bpw_param_name_s);
+					if (json_is_integer (param_value_p))
+						{
+							const int d = json_integer_value (param_value_p);
+
+							qDebug () << "UnsignedIntParamSpinBox :: SetValueFromJSON d:  " << d << Qt :: endl;
+
+							if (d >= 0)
+								{
+									uipsb_spin_box_p -> setValue (d);
+									success_flag = true;
+
+									PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "value %d for %s\n", d, bpw_param_name_s);
+								}
+							else
+								{
+									PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "value %d is not an unsigned integer for %s\n", d, bpw_param_name_s);
+								}
+						}
+					else
+						{
+							PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, value_p, "JSON is not integer for %s\n", bpw_param_name_s);
+						}
 				}
+
 		}
 
 	return success_flag;

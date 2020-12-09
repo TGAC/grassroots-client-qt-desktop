@@ -89,10 +89,15 @@ bool StringTableWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (json_is_string (value_p))
+	const json_t *param_value_p = json_object_get (value_p, PARAM_CURRENT_VALUE_S);
+
+	if (param_value_p)
 		{
-			const char *value_s = json_string_value (value_p);
-			success_flag = SetValueFromText (value_s);
+			if (json_is_string (param_value_p))
+				{
+					const char *value_s = json_string_value (value_p);
+					success_flag = SetValueFromText (value_s);
+				}
 		}
 
 	return success_flag;

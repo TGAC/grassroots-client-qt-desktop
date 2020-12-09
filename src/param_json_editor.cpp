@@ -167,5 +167,13 @@ bool ParamJSONEditor :: SetValueFromText (const char *value_s)
 
 bool ParamJSONEditor :: SetValueFromJSON (const json_t * const value_p)
 {
-	return (static_cast <DroppableJSONBox *> (pje_text_box_p)) -> SetFromJSON (value_p);
+	bool success_flag = false;
+	const json_t *param_value_p = json_object_get (value_p, PARAM_CURRENT_VALUE_S);
+
+	if (param_value_p)
+		{
+			success_flag = (static_cast <DroppableJSONBox *> (pje_text_box_p)) -> SetFromJSON (value_p);
+		}
+
+	return success_flag;
 }

@@ -656,21 +656,11 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 									if (widget_p)
 										{
-											const json_t *param_value_p = json_object_get (param_p, PARAM_CURRENT_VALUE_S);
-
-											if (param_value_p)
+											if (! (widget_p -> SetValueFromJSON (param_p)))
 												{
-													if (! (widget_p -> SetValueFromJSON (param_value_p)))
-														{
-															success_flag = false;
-															PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_value_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
-														}
+													success_flag = false;
+													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
 												}
-											else
-												{
-													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter value %s -> %s from json\n", service_name_s, PARAM_CURRENT_VALUE_S);
-												}
-
 										}		/* if (widget_p) */
 									else
 										{

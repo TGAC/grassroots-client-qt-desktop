@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include <QGroupBox>
+#include <QListWidget>
 
 #include "param_group_box.h"
 
@@ -29,12 +30,13 @@ protected:
 	void paintEvent (QPaintEvent *event_p);
 
 private:
+	QListWidget *rpgb_boxes_p;
 	QPushButton *rpgb_add_row_btn_p;
 	QList <ParamGroupBox *> rpgb_children;
 	ParameterGroup *rpgb_parameter_group_p;
 	QGroupBox *rpgb_parent_box_p;
 	QTParameterWidget *rpgb_qt_param_widget_parent_p;
-
+	QListWidget *rpgb_list_p;
 
 	void AddRepeatableGroup ();
 

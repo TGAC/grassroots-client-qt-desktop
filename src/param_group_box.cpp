@@ -34,30 +34,10 @@ ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_p
 	setChecked (group_p -> pg_visible_flag);
 	setAlignment (Qt :: AlignLeft);
 
-	connect (this, &ParamGroupBox :: clicked, this, &ParamGroupBox :: ToggleCollapsed);
-
 	pgb_layout_p = new QFormLayout;
 
-	if (removable_flag)
-		{
-			QHBoxLayout *layout_p = new QHBoxLayout;
+	setLayout (pgb_layout_p);
 
-			layout_p -> addLayout (pgb_layout_p);
-
-			QPushButton *remove_row_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
-			connect (remove_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxRemoved);
-			layout_p -> addWidget (remove_row_button_p);
-
-
-			setLayout (layout_p);
-
-		//	setLayout (pgb_layout_p);
-
-		}
-	else
-		{
-			setLayout (pgb_layout_p);
-		}
 
 	AddParamGroupWidgets (add_params_flag);
 }

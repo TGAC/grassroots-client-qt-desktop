@@ -24,6 +24,7 @@
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QObject>
+#include <QListWidget>
 
 #include "base_param_widget.h"
 #include "parameter_widget_container.h"

@@ -17,14 +17,19 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
   layout_p = new QVBoxLayout;
   rpgb_parent_box_p -> setLayout (layout_p);
 
-	QString s ("Add another ");
-	s.append (group_p -> pg_name_s);
-	s.append (" set");
+	rpgb_list_p = new QListWidget (this);
 
-	rpgb_add_row_btn_p = new QPushButton (QIcon ("images/add"), s, this);
-  connect (rpgb_add_row_btn_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: AddRow);
+	layout_p -> addWidget (rpgb_list_p);
 
-  layout_p -> addWidget (rpgb_add_row_btn_p);
+	QHBoxLayout *buttons_layout_p = new QHBoxLayout;
+	QPushButton *row_button_p = new QPushButton (QIcon ("images/add"), "Add", this);
+	//connect (add_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxAdded);
+	buttons_layout_p -> addWidget (row_button_p);
+
+	row_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
+	//connect (add_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxAdded);
+	buttons_layout_p -> addWidget (row_button_p);
+	layout_p -> addItem (buttons_layout_p);
 
   AddRepeatableGroup ();
 }
@@ -71,7 +76,7 @@ void RepeatableParamGroupBox :: AddRepeatableGroup ()
 
 			if (rpgb_children.size () > 0)
 				{
-					ParameterGroup *new_group_p = CreateAndAddParameterGroupChild (rpgb_parameter_group_p, group_name_s, NULL, true);
+					ParameterGroup *new_group_p = CreateAndAddParameterGroupChild (rpgb_parameter_group_p, group_name_s, true, true);
 
 					if (new_group_p)
 						{

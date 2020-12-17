@@ -7,42 +7,28 @@
 
 #include "param_group_box.h"
 
-class RepeatableParamGroupBox : public QGroupBox, public ParameterWidgetContainer
+class QTParameterWidget;
+
+class RepeatableParamGroupBox : public ParamGroupBox
 {
 	Q_OBJECT
 
 public:
-	RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p);
+	RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p, bool removable_flag, bool add_params_flag);
 
 	virtual ~RepeatableParamGroupBox ();
 
-	virtual void AddParameterWidget (BaseParamWidget *widget_p);
-
-	virtual QWidget *GetWidget ();
-
-	virtual void CheckVisibility (ParameterLevel level);
-
-public slots:
-	void ParamGroupBoxRemoved (ParamGroupBox *box_p);
-
-
 protected:
-	void paintEvent (QPaintEvent *event_p);
+	virtual void init (bool add_params_flag);
 
 private:
-	QListWidget *rpgb_boxes_p;
-	QPushButton *rpgb_add_row_btn_p;
-	QList <ParamGroupBox *> rpgb_children;
-	ParameterGroup *rpgb_parameter_group_p;
-	QGroupBox *rpgb_parent_box_p;
-	QTParameterWidget *rpgb_qt_param_widget_parent_p;
-	QListWidget *rpgb_list_p;
-
-	void AddRepeatableGroup ();
-
+	QListWidget *rpgb_entries_p;
+	BaseParamWidget *rpgb_label_param_p;
 
 private slots:
-	void AddRow (bool clicked_flag = false);
+	void AddEntry ();
+	void RemoveEntry ();
+
 };
 
 #endif // REPEATABLE_PARAM_GROUP_BOX_HPP

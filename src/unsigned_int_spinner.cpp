@@ -1,7 +1,7 @@
 
 #include <climits>
 
-#include "QDebug"
+#include <QDebug>
 
 #include "unsigned_int_spinner.h"
 #include "unsigned_int_validator.h"
@@ -102,7 +102,7 @@ int UnsignedIntSpinner :: valueFromText (const QString &text_r) const
 			uis_null_flag = true;
 		}
 
-	qDebug () << "UnsignedIntSpinner :: valueFromText:  s \"" << text_r << "\" value " << i;
+//	qDebug () << "UnsignedIntSpinner :: valueFromText:  s \"" << text_r << "\" value " << i;
 
 	return i;
 }
@@ -123,7 +123,7 @@ QString UnsignedIntSpinner :: textFromValue (int value) const
 		}
 
 
-	qDebug () << "UnsignedIntSpinner :: textFromValue:  s \"" << s << "\" value " << value;
+//	qDebug () << "UnsignedIntSpinner :: textFromValue:  s \"" << s << "\" value " << value;
 
 	return s;
 }
@@ -165,7 +165,7 @@ QValidator :: State UnsignedIntSpinner :: validate (QString &input_r, int &pos_r
 
 void UnsignedIntSpinner :: setValue (int i)
 {
-	qDebug () << "setting spinner to " << i << Qt :: endl;
+//	qDebug () << "setting spinner to " << i << Qt :: endl;
 
 	uis_null_flag = false;
 
@@ -177,7 +177,7 @@ uint32 UnsignedIntSpinner :: GetValue () const
 {
 	int i = value ();
 
-	qDebug () << "getting spinner " << i << Qt :: endl;
+//	qDebug () << "getting spinner " << i << Qt :: endl;
 
 	return i;
 }

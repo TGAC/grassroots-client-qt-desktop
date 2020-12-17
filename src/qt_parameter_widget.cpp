@@ -476,7 +476,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			if (group_p -> pg_repeatable_flag)
 				{
-					container_p = new RepeatableParamGroupBox (group_p, this);
+					container_p = new RepeatableParamGroupBox (group_p, this, false, false);
 				}
 			else
 				{

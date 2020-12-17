@@ -36,8 +36,7 @@ ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_p
 
 	pgb_layout_p = new QFormLayout;
 
-	setLayout (pgb_layout_p);
-
+	init (add_params_flag);
 
 	AddParamGroupWidgets (add_params_flag);
 }
@@ -58,6 +57,14 @@ ParamGroupBox :: ~ParamGroupBox ()
 {
 
 }
+
+void ParamGroupBox :: init (bool add_params_flag)
+{
+	qDebug () << "ParamGroupBox :: init for " << pgb_parameter_group_p -> pg_name_s << Qt :: endl;
+
+	setLayout (pgb_layout_p);
+}
+
 
 
 void ParamGroupBox :: AddParamGroupWidgets (bool add_params_flag)

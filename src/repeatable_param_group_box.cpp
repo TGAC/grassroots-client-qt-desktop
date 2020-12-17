@@ -1,25 +1,56 @@
+#include <QDebug>
+
+
 #include "repeatable_param_group_box.h"
 #include "parameter_group.h"
 #include "string_utils.h"
+#include "qt_parameter_widget.h"
 
 
-RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p)
- : QGroupBox (group_p -> pg_name_s),
-	 rpgb_parameter_group_p (group_p),
-   rpgb_qt_param_widget_parent_p (qt_param_widget_p)
+RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p,  bool removable_flag, bool add_params_flag)
+ : ParamGroupBox (group_p, qt_param_widget_p, removable_flag, add_params_flag)
 {
-  QLayout *layout_p = new QVBoxLayout;
-  setLayout (layout_p);
+	rpgb_label_param_p = nullptr;
 
-	rpgb_parent_box_p = new QGroupBox (group_p -> pg_name_s, this);
-  layout_p -> addWidget (rpgb_parent_box_p);
+	const char *label_s = group_p -> pg_repeatable_param_label_s;
 
-  layout_p = new QVBoxLayout;
-  rpgb_parent_box_p -> setLayout (layout_p);
+	if (label_s)
+		{
+			QList <BaseParamWidget *> :: const_iterator itr = pgb_children.cbegin ();
 
-	rpgb_list_p = new QListWidget (this);
+			while ((itr != pgb_children.end ()) && (rpgb_label_param_p == nullptr))
+				{
+					BaseParamWidget *widget_p = *itr;
+					const char *name_s = widget_p -> GetParameterName ();
 
-	layout_p -> addWidget (rpgb_list_p);
+					if (strcmp (name_s, label_s) == 0)
+						{
+							rpgb_label_param_p = widget_p;
+						}
+					else
+						{
+							++ itr;
+						}
+				}
+
+		}
+}
+
+
+RepeatableParamGroupBox :: ~RepeatableParamGroupBox ()
+{
+}
+
+
+
+void RepeatableParamGroupBox :: init (bool add_params_flag)
+{
+	QVBoxLayout *layout_p = new QVBoxLayout ();
+
+	qDebug () << "RepeatableParamGroupBox :: init for " << pgb_parameter_group_p -> pg_name_s << Qt :: endl;
+
+	rpgb_entries_p = new QListWidget (this);
+	layout_p -> addWidget (rpgb_entries_p);
 
 	QHBoxLayout *buttons_layout_p = new QHBoxLayout;
 	QPushButton *row_button_p = new QPushButton (QIcon ("images/add"), "Add", this);
@@ -29,93 +60,42 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
 	row_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
 	//connect (add_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxAdded);
 	buttons_layout_p -> addWidget (row_button_p);
+
 	layout_p -> addItem (buttons_layout_p);
 
-  AddRepeatableGroup ();
+	layout_p -> addItem (pgb_layout_p);
+
+	setLayout (layout_p);
 }
 
 
-RepeatableParamGroupBox :: ~RepeatableParamGroupBox ()
+void RepeatableParamGroupBox :: AddEntry ()
 {
-}
+	json_t *group_json_p = GetParameterGroupAsJSON (pgb_parameter_group_p);
+	char *label_s;
 
 
-void RepeatableParamGroupBox ::AddParameterWidget (BaseParamWidget *widget_p)
-{
-	ParamGroupBox *current_row_p = rpgb_children.last ();
-
-	current_row_p -> AddParameterWidget (widget_p);
-}
-
-
-QWidget *RepeatableParamGroupBox :: GetWidget ()
-{
-	return this;
-}
-
-
-void RepeatableParamGroupBox :: paintEvent (QPaintEvent *event_p)
-{
-	//ParamGroupBox :: paintEvent (event_p);
-}
-
-
-void RepeatableParamGroupBox :: AddRow (bool clicked_flag)
-{
-	AddRepeatableGroup ();
-}
-
-
-void RepeatableParamGroupBox :: AddRepeatableGroup ()
-{
-	char *group_name_s = GetRepeatableParameterGroupName (rpgb_parameter_group_p);
-
-	if (group_name_s)
+	if (0 /* rpgb_label_param_p */)
 		{
-			ParamGroupBox *new_row_p = 0;
 
-			if (rpgb_children.size () > 0)
-				{
-					ParameterGroup *new_group_p = CreateAndAddParameterGroupChild (rpgb_parameter_group_p, group_name_s, true, true);
+		}
+	else
+		{
+			int i = rpgb_entries_p -> count ();
 
-					if (new_group_p)
-						{
-							new_row_p = new ParamGroupBox (new_group_p, this -> rpgb_qt_param_widget_parent_p, true, true);
-						}
-					else
-						{
+		}
 
-						}
+	QListWidgetItem *item_p = new QListWidgetItem ("blah", rpgb_entries_p);
 
-				}
-			else
-				{
-					new_row_p = new ParamGroupBox (rpgb_parameter_group_p, this -> rpgb_qt_param_widget_parent_p, true, false);
-				}
+	char *value_s = json_dumps (group_json_p, 0);
+	item_p -> setData (Qt::UserRole, value_s);
 
-			if (new_row_p)
-				{
-					new_row_p -> setTitle (group_name_s);
-
-					rpgb_children.append (new_row_p);
-					rpgb_parent_box_p -> layout () -> addWidget (new_row_p);
-
-					connect (new_row_p, &ParamGroupBox :: RemoveParamGroupBox, this, &RepeatableParamGroupBox :: ParamGroupBoxRemoved);
-				}
-
-			FreeCopiedString (group_name_s);
-		}		/* if (group_name_s) */
-
+	rpgb_entries_p -> addItem (item_p);
 }
 
-
-void RepeatableParamGroupBox :: CheckVisibility (ParameterLevel level)
-{
-}
-
-
-void RepeatableParamGroupBox :: ParamGroupBoxRemoved (ParamGroupBox *box_p)
+void RepeatableParamGroupBox :: RemoveEntry ()
 {
 
 }
+
 

@@ -10,30 +10,15 @@
 RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p,  bool removable_flag, bool add_params_flag)
  : ParamGroupBox (group_p, qt_param_widget_p, removable_flag, add_params_flag)
 {
+	rpgb_entries_p = new QListWidget (this);
 	rpgb_label_param_p = nullptr;
+	const char *label_s = nullptr;
 
-	const char *label_s = group_p -> pg_repeatable_param_label_s;
-
-	if (label_s)
+	if (group_p -> pg_repeatable_param_p)
 		{
-			QList <BaseParamWidget *> :: const_iterator itr = pgb_children.cbegin ();
-
-			while ((itr != pgb_children.end ()) && (rpgb_label_param_p == nullptr))
-				{
-					BaseParamWidget *widget_p = *itr;
-					const char *name_s = widget_p -> GetParameterName ();
-
-					if (strcmp (name_s, label_s) == 0)
-						{
-							rpgb_label_param_p = widget_p;
-						}
-					else
-						{
-							++ itr;
-						}
-				}
-
+			rpgb_label_param_p = group_p -> pg_repeatable_param_p;
 		}
+
 }
 
 
@@ -49,7 +34,7 @@ void RepeatableParamGroupBox :: init (bool add_params_flag)
 
 	qDebug () << "RepeatableParamGroupBox :: init for " << pgb_parameter_group_p -> pg_name_s << Qt :: endl;
 
-	rpgb_entries_p = new QListWidget (this);
+
 	layout_p -> addWidget (rpgb_entries_p);
 
 	QHBoxLayout *buttons_layout_p = new QHBoxLayout;

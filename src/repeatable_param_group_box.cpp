@@ -11,6 +11,8 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
  : ParamGroupBox (group_p, qt_param_widget_p, removable_flag, add_params_flag)
 {
 	rpgb_entries_p = new QListWidget (this);
+	rpgb_entries_p -> setSelectionMode (QAbstractItemView :: SingleSelection);
+
 	rpgb_label_param_p = nullptr;
 
 	if (group_p -> pg_repeatable_param_p)
@@ -38,16 +40,19 @@ void RepeatableParamGroupBox :: init (bool add_params_flag)
 
 	QHBoxLayout *buttons_layout_p = new QHBoxLayout;
 	QPushButton *row_button_p = new QPushButton (QIcon ("images/add"), "Add", this);
-	//connect (add_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxAdded);
+	connect (row_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: AddEntry);
 	buttons_layout_p -> addWidget (row_button_p);
 
-	row_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
-	//connect (add_row_button_p, &QPushButton :: clicked, this, &ParamGroupBox :: ParamGroupBoxAdded);
-	buttons_layout_p -> addWidget (row_button_p);
+	rpgb_remove_entry_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
+	connect (rpgb_remove_entry_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: RemoveEntry);
+	buttons_layout_p -> addWidget (rpgb_remove_entry_button_p);
 
 	layout_p -> addItem (buttons_layout_p);
 
 	layout_p -> addItem (pgb_layout_p);
+
+
+	connect (rpgb_entries_p, &QListWidget::currentRowChanged, this, &RepeatableParamGroupBox :: SelectedListEntryChanged);
 
 	setLayout (layout_p);
 }
@@ -82,3 +87,16 @@ void RepeatableParamGroupBox :: RemoveEntry ()
 }
 
 
+void RepeatableParamGroupBox :: SelectedListEntryChanged (int row)
+{
+	qDebug () << "row " << row << Qt :: endl;
+
+	if (row != -1)
+		{
+			rpgb_remove_entry_button_p -> setEnabled (true);
+		}
+	else
+		{
+			rpgb_remove_entry_button_p -> setEnabled (false);
+		}
+}

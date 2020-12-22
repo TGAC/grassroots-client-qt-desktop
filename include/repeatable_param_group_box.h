@@ -25,10 +25,12 @@ protected:
 private:
 	QListWidget *rpgb_entries_p;
 	Parameter *rpgb_label_param_p;
+	QPushButton *rpgb_remove_entry_button_p;
 
 private slots:
 	void AddEntry ();
 	void RemoveEntry ();
+	void SelectedListEntryChanged (int);
 
 };
 

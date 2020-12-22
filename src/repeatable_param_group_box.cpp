@@ -12,7 +12,6 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
 {
 	rpgb_entries_p = new QListWidget (this);
 	rpgb_label_param_p = nullptr;
-	const char *label_s = nullptr;
 
 	if (group_p -> pg_repeatable_param_p)
 		{
@@ -57,8 +56,7 @@ void RepeatableParamGroupBox :: init (bool add_params_flag)
 void RepeatableParamGroupBox :: AddEntry ()
 {
 	json_t *group_json_p = GetParameterGroupAsJSON (pgb_parameter_group_p);
-	char *label_s;
-
+	QString label;
 
 	if (0 /* rpgb_label_param_p */)
 		{
@@ -67,10 +65,10 @@ void RepeatableParamGroupBox :: AddEntry ()
 	else
 		{
 			int i = rpgb_entries_p -> count ();
-
+			label = QString :: number (i);
 		}
 
-	QListWidgetItem *item_p = new QListWidgetItem ("blah", rpgb_entries_p);
+	QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);
 
 	char *value_s = json_dumps (group_json_p, 0);
 	item_p -> setData (Qt::UserRole, value_s);

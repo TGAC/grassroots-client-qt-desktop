@@ -30,7 +30,7 @@ private:
 private slots:
 	void AddEntry ();
 	void RemoveEntry ();
-	void SelectedListEntryChanged (int);
+	void SelectedListEntryChanged ();
 
 };
 

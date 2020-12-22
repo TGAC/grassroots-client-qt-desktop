@@ -5,6 +5,7 @@
 #include "parameter_group.h"
 #include "string_utils.h"
 #include "qt_parameter_widget.h"
+#include "qt_client_data.h"
 
 
 RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p,  bool removable_flag, bool add_params_flag)
@@ -52,7 +53,7 @@ void RepeatableParamGroupBox :: init (bool add_params_flag)
 	layout_p -> addItem (pgb_layout_p);
 
 
-	connect (rpgb_entries_p, &QListWidget::currentRowChanged, this, &RepeatableParamGroupBox :: SelectedListEntryChanged);
+	connect (rpgb_entries_p, &QListWidget :: itemSelectionChanged, this, &RepeatableParamGroupBox :: SelectedListEntryChanged);
 
 	setLayout (layout_p);
 }
@@ -60,7 +61,8 @@ void RepeatableParamGroupBox :: init (bool add_params_flag)
 
 void RepeatableParamGroupBox :: AddEntry ()
 {
-	json_t *group_json_p = GetParameterGroupAsJSON (pgb_parameter_group_p);
+	const SchemaVersion *sv_p = pgb_parent_p -> GetClientData () -> qcd_base_data.cd_schema_p;
+	json_t *group_json_p = GetParameterGroupAsJSON (pgb_parameter_group_p, true, false, sv_p);
 	QString label;
 
 	if (0 /* rpgb_label_param_p */)
@@ -76,22 +78,41 @@ void RepeatableParamGroupBox :: AddEntry ()
 	QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);
 
 	char *value_s = json_dumps (group_json_p, 0);
-	item_p -> setData (Qt::UserRole, value_s);
+	item_p -> setData (Qt :: UserRole, value_s);
+
+
+	qDebug () << "adding " << label << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+
 
 	rpgb_entries_p -> addItem (item_p);
 }
 
 void RepeatableParamGroupBox :: RemoveEntry ()
 {
+	QList <QListWidgetItem *> l =	rpgb_entries_p -> selectedItems ();
+	const int count = l.size ();
 
+	if (count == 1)
+		{
+			QListWidgetItem *item_p = l.at (0);
+
+			qDebug () << "removing " << item_p -> text () << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+
+
+			rpgb_entries_p -> removeItemWidget (item_p);
+			delete item_p;
+		}
 }
 
 
-void RepeatableParamGroupBox :: SelectedListEntryChanged (int row)
+void RepeatableParamGroupBox :: SelectedListEntryChanged ()
 {
-	qDebug () << "row " << row << Qt :: endl;
+	QList <QListWidgetItem *> l =	rpgb_entries_p -> selectedItems ();
+	const int count = l.size ();
 
-	if (row != -1)
+	qDebug () << "selected " << count << Qt :: endl;
+
+	if (count > 0)
 		{
 			rpgb_remove_entry_button_p -> setEnabled (true);
 		}

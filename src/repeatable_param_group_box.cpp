@@ -65,9 +65,9 @@ void RepeatableParamGroupBox :: AddEntry ()
 	json_t *group_json_p = GetParameterGroupAsJSON (pgb_parameter_group_p, true, false, sv_p);
 	QString label;
 
-	if (0 /* rpgb_label_param_p */)
+	if (pgb_parameter_group_p -> pg_repeatable_param_p)
 		{
-
+			label = pgb_parameter_group_p -> pg_repeatable_param_p -> pa_name_s;
 		}
 	else
 		{

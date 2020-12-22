@@ -18,8 +18,9 @@ public:
 
 	virtual ~RepeatableParamGroupBox ();
 
+	virtual void init (bool add_params_flag);
+
 protected:
-	void init (bool add_params_flag) override;
 
 private:
 	QListWidget *rpgb_entries_p;

@@ -54,14 +54,15 @@ public:
 
 	void AddParamGroupWidgets (bool add_params_flag);
 
+	virtual void init (bool add_params_flag);
+
+
 protected:
 	QList <BaseParamWidget *> pgb_children;
 	QFormLayout *pgb_layout_p;
 	QTParameterWidget *pgb_parent_p;
 	ParameterGroup *pgb_parameter_group_p;
 	bool pgb_removable_flag;
-
-	virtual void init (bool add_params_flag);
 
 
 	void paintEvent (QPaintEvent *event_p);

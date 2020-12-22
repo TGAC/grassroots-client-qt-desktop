@@ -36,8 +36,6 @@ ParamGroupBox :: ParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_p
 
 	pgb_layout_p = new QFormLayout;
 
-	init (add_params_flag);
-
 	AddParamGroupWidgets (add_params_flag);
 }
 

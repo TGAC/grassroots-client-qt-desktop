@@ -476,12 +476,19 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			if (group_p -> pg_repeatable_flag)
 				{
-					container_p = new RepeatableParamGroupBox (group_p, this, false, false);
+					RepeatableParamGroupBox *box_p = new RepeatableParamGroupBox (group_p, this, false, false);
+
+					box_p -> init (false);
+					container_p = box_p;
 				}
 			else
 				{
-					container_p = new ParamGroupBox (group_p, this, false, false);
+					ParamGroupBox *box_p = new ParamGroupBox (group_p, this, false, false);
+
+					box_p -> init (false);
+					container_p = box_p;
 				}
+
 
 			int row = qpw_layout_p -> rowCount ();
 

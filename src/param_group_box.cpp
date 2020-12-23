@@ -91,6 +91,18 @@ void ParamGroupBox :: AddParamGroupWidgets (bool add_params_flag)
 		}
 }
 
+void ParamGroupBox :: StoreValues ()
+{
+	QList <BaseParamWidget *> :: Iterator i = pgb_children.begin ();
+
+	for ( ; i != pgb_children.end (); ++ i)
+		{
+			BaseParamWidget *widget_p = *i;
+
+			widget_p -> StoreParameterValue (false);
+		}
+
+}
 
 void ParamGroupBox :: AddParameterWidget (BaseParamWidget *param_widget_p)
 {

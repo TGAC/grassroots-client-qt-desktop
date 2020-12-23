@@ -61,15 +61,32 @@ void RepeatableParamGroupBox :: init (bool add_params_flag)
 
 void RepeatableParamGroupBox :: AddEntry ()
 {
+	StoreValues ();
+
 	const SchemaVersion *sv_p = pgb_parent_p -> GetClientData () -> qcd_base_data.cd_schema_p;
 	json_t *group_json_p = GetParameterGroupAsJSON (pgb_parameter_group_p, true, false, sv_p);
 	QString label;
+	bool set_label_flag = false;
+	Parameter *param_p = pgb_parameter_group_p -> pg_repeatable_param_p;
 
-	if (pgb_parameter_group_p -> pg_repeatable_param_p)
+	if (param_p)
 		{
-			label = pgb_parameter_group_p -> pg_repeatable_param_p -> pa_name_s;
+			bool alloc_flag = false;
+			char *value_s = GetParameterValueAsString (param_p, &alloc_flag);
+
+			if (value_s)
+				{
+					label = value_s;
+					set_label_flag = true;
+				}
+
+			if (alloc_flag)
+				{
+					FreeCopiedString (value_s);
+				}
 		}
-	else
+
+	if (!set_label_flag)
 		{
 			int i = rpgb_entries_p -> count ();
 			label = QString :: number (i);
@@ -98,7 +115,6 @@ void RepeatableParamGroupBox :: RemoveEntry ()
 
 			qDebug () << "removing " << item_p -> text () << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
 
-
 			rpgb_entries_p -> removeItemWidget (item_p);
 			delete item_p;
 		}
@@ -110,7 +126,11 @@ void RepeatableParamGroupBox :: SelectedListEntryChanged ()
 	QList <QListWidgetItem *> l =	rpgb_entries_p -> selectedItems ();
 	const int count = l.size ();
 
-	qDebug () << "selected " << count << Qt :: endl;
+	if (count == 1)
+		{
+			QListWidgetItem *item_p = l.at (0);
+			qDebug () << "selected " << item_p -> text () << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+		}
 
 	if (count > 0)
 		{

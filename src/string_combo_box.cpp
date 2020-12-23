@@ -34,8 +34,8 @@ StringComboBox :: ~StringComboBox ()
 
 bool StringComboBox :: AddOption (const char *value_s, const char *description_s)
 {
-	QVariant *v_p = new QVariant (value_s);
-	bcb_combo_box_p -> addItem (description_s, *v_p);
+	QVariant v (value_s);
+	bcb_combo_box_p -> addItem (description_s, v);
 
 	return true;
 }

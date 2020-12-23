@@ -65,43 +65,52 @@ void RepeatableParamGroupBox :: AddEntry ()
 
 	const SchemaVersion *sv_p = pgb_parent_p -> GetClientData () -> qcd_base_data.cd_schema_p;
 	json_t *group_json_p = GetParameterGroupAsJSON (pgb_parameter_group_p, true, false, sv_p);
-	QString label;
-	bool set_label_flag = false;
-	Parameter *param_p = pgb_parameter_group_p -> pg_repeatable_param_p;
 
-	if (param_p)
+	if (group_json_p)
 		{
-			bool alloc_flag = false;
-			char *value_s = GetParameterValueAsString (param_p, &alloc_flag);
+			QString label;
+			bool set_label_flag = false;
+			Parameter *param_p = pgb_parameter_group_p -> pg_repeatable_param_p;
 
+			if (param_p)
+				{
+					bool alloc_flag = false;
+					char *value_s = GetParameterValueAsString (param_p, &alloc_flag);
+
+					if (value_s)
+						{
+							label = value_s;
+							set_label_flag = true;
+						}
+
+					if (alloc_flag)
+						{
+							FreeCopiedString (value_s);
+						}
+				}
+
+			if (!set_label_flag)
+				{
+					int i = rpgb_entries_p -> count ();
+					label = QString :: number (i);
+				}
+
+			QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);
+
+			char *value_s = json_dumps (group_json_p, 0);
 			if (value_s)
 				{
-					label = value_s;
-					set_label_flag = true;
+					item_p -> setData (Qt :: UserRole, value_s);
+					free (value_s);
 				}
 
-			if (alloc_flag)
-				{
-					FreeCopiedString (value_s);
-				}
+			qDebug () << "adding " << label << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+
+			rpgb_entries_p -> addItem (item_p);
+
+			json_decref (group_json_p);
 		}
 
-	if (!set_label_flag)
-		{
-			int i = rpgb_entries_p -> count ();
-			label = QString :: number (i);
-		}
-
-	QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);
-
-	char *value_s = json_dumps (group_json_p, 0);
-	item_p -> setData (Qt :: UserRole, value_s);
-
-
-	qDebug () << "adding " << label << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
-
-
-	rpgb_entries_p -> addItem (item_p);
 }
 
 void RepeatableParamGroupBox :: RemoveEntry ()

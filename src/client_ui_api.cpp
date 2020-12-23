@@ -85,7 +85,7 @@ bool ReleaseClient (Client *client_p)
 	QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
 
 	FreeQTClientData (qt_data_p);
-	FreeMemory (client_p);
+	FreeClient (client_p);
 
 	return true;
 }

@@ -36,6 +36,7 @@ UnsignedIntSpinner :: UnsignedIntSpinner (bool required_flag, QWidget *parent_p)
 
 UnsignedIntSpinner :: ~UnsignedIntSpinner ()
 {
+	delete uis_validator_p;
 }
 
 /*

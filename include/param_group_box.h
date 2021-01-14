@@ -56,7 +56,7 @@ public:
 
 	virtual void init (bool add_params_flag);
 
-
+	const QList <BaseParamWidget *> *GetChildren ();
 
 protected:
 	QList <BaseParamWidget *> pgb_children;

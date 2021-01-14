@@ -37,6 +37,7 @@
 #include "base_param_widget.h"
 #include "param_group_box.h"
 #include "parameter_widget_container.h"
+#include "repeatable_param_group_box.h"
 
 
 // forward class declaration
@@ -110,7 +111,9 @@ private:
 
 	QList <QWebEngineView *> qpw_browsers;
 
-	QHash <const char *, ParameterWidgetContainer *> qpw_groupings;
+	QHash <const char *, ParamGroupBox *> qpw_groupings;
+
+	QHash <const char *, RepeatableParamGroupBox *> qpw_repeatable_groupings;
 
 	const struct QTClientData *qpw_client_data_p;
 

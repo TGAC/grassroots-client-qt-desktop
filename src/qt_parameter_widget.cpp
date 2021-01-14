@@ -36,7 +36,6 @@
 #include "prefs_widget.h"
 #include "string_table_widget.h"
 #include "param_json_editor.h"
-#include "repeatable_param_group_box.h"
 #include "json_table_widget.h"
 
 
@@ -479,14 +478,14 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 					RepeatableParamGroupBox *box_p = new RepeatableParamGroupBox (group_p, this, false, false);
 
 					box_p -> init (false);
-					container_p = box_p;
+					qpw_repeatable_groupings.insert (group_p -> pg_name_s, box_p);
 				}
 			else
 				{
 					ParamGroupBox *box_p = new ParamGroupBox (group_p, this, false, false);
 
 					box_p -> init (false);
-					container_p = box_p;
+					qpw_groupings.insert (group_p -> pg_name_s, box_p);
 				}
 
 
@@ -954,19 +953,69 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 }
 
 
+
+
+json_t *QTParameterWidget :: GetServiceParamsAsJSON (bool full_flag, const ParameterLevel level) const
+{
+	json_t *res_p = nullptr;
+	const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
+	const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName();
+
+	ParameterSet *params_p = spw_params_widget_p -> GetParameterSet (false);
+
+	if (params_p)
+		{
+			res_p = GetServiceRunRequest (service_name_s, params_p, sv_p, true, level);
+		}
+
+	return res_p;
+}
+
+
 ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
 {
+	QHash <BaseParamWidget *, BaseParamWidget *> repeated_widgets;
+
 	/* make sure that all of the parameter values are up to date */
 	QList <BaseParamWidget *> widgets = qpw_widgets_map.values ();
+
+
+	/* check for any repeatable paramaeter groups */
+	QHash <const char *, RepeatableParamGroupBox *> :: const_iterator i;
+
+	for (i = qpw_repeatable_groupings.constBegin (); i != qpw_repeatable_groupings.constEnd (); ++ i)
+		{
+			RepeatableParamGroupBox *box_p = i.value ();
+			const QList <BaseParamWidget *> *children_p = box_p -> GetChildren ();
+			QList <BaseParamWidget *> :: const_iterator j;
+
+			for (j = children_p -> constBegin (); j != children_p -> constEnd (); ++ j)
+				{
+					BaseParamWidget *widget_p = *j;
+
+					if (! (widget_p -> StoreParameterValue (refresh_flag)))
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set parameter value for %s", widget_p -> GetParameterName ());
+							return nullptr;
+						}
+
+					repeated_widgets.insert (widget_p, widget_p);
+
+				}
+
+		}
 
 	for (int i = widgets.size () - 1; i >= 0; -- i)
 		{
 			BaseParamWidget *widget_p = widgets.at (i);
 
-			if (! (widget_p -> StoreParameterValue (refresh_flag)))
+			if (!repeated_widgets.contains (widget_p))
 				{
-					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set parameter value for %s", widget_p -> GetParameterName ());
-					return nullptr;
+					if (! (widget_p -> StoreParameterValue (refresh_flag)))
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set parameter value for %s", widget_p -> GetParameterName ());
+							return nullptr;
+						}
 				}
 		}
 

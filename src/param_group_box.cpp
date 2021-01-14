@@ -56,6 +56,12 @@ ParamGroupBox :: ~ParamGroupBox ()
 
 }
 
+const QList <BaseParamWidget *> *ParamGroupBox :: GetChildren ()
+{
+	return &pgb_children;
+}
+
+
 void ParamGroupBox :: init (bool add_params_flag)
 {
 	qDebug () << "ParamGroupBox :: init for " << pgb_parameter_group_p -> pg_name_s << Qt :: endl;

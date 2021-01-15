@@ -113,6 +113,12 @@ QWidget *BaseParamWidget :: GetLabel () const
 }
 
 
+const Parameter *BaseParamWidget :: GetParameter () const
+{
+	return bpw_param_p;
+}
+
+
 bool BaseParamWidget :: MeetsLevel (const ParameterLevel ui_level) const
 {
 	return CompareParameterLevels (bpw_param_p -> pa_level, ui_level);

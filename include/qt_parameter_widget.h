@@ -85,6 +85,7 @@ public:
 
 	bool SetParamValuesFromJSON (const json_t *param_set_json_p);
 
+	json_t *GetServiceParamsAsJSON (bool full_flag, const ParameterLevel level) const;
 
 	const struct QTClientData *GetClientData () const;
 

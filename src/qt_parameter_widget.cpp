@@ -59,6 +59,10 @@
 const int QTParameterWidget :: QPW_NUM_COLUMNS = 2;
 
 
+static bool AddNonRepeatedParams(const Parameter *param_p, void *data_p);
+
+
+
 QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const description_s, const char * const uri_s, const json_t *provider_p, ParameterSet *parameters_p, ServiceMetadata *metadata_p, const ServicePrefsWidget * const prefs_widget_p, const ParameterLevel initial_level, const QTClientData *client_data_p)
 :	qpw_params_p (parameters_p),
 	qpw_parent_prefs_widget_p (prefs_widget_p),
@@ -477,14 +481,14 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 				{
 					RepeatableParamGroupBox *box_p = new RepeatableParamGroupBox (group_p, this, false, false);
 
-					box_p -> init (false);
+					box_p -> Init (false);
 					qpw_repeatable_groupings.insert (group_p -> pg_name_s, box_p);
 				}
 			else
 				{
 					ParamGroupBox *box_p = new ParamGroupBox (group_p, this, false, false);
 
-					box_p -> init (false);
+					box_p -> Init (false);
 					qpw_groupings.insert (group_p -> pg_name_s, box_p);
 				}
 
@@ -493,7 +497,6 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 			QWidget *box_p = container_p -> GetWidget ();
 			qpw_layout_p -> addRow (box_p);
-			qpw_groupings.insert (group_p -> pg_name_s, container_p);
 
 			param_group_node_p = reinterpret_cast <ParameterGroupNode *> (param_group_node_p -> pgn_node.ln_next_p);
 		}
@@ -700,19 +703,22 @@ void QTParameterWidget :: RefreshService ()
 	if (qpw_refresh_active)
 		{
 			qpw_refresh_active = false;
-			ParameterSet *params_p = GetParameterSet (true);
+			json_t *params_json_p = GetServiceParamsAsJSON (false, qpw_params_p -> ps_current_level);
 
-			if (params_p)
+			if (params_json_p)
 				{
+					bool params_json_added_flag = false;
 					json_t *req_p = json_array ();
 
 					if (req_p)
 						{
 							const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
-							json_t *service_req_p = GetServiceRefreshRequest (qpw_parent_prefs_widget_p -> GetServiceName (), params_p, sv_p, true, PL_ALL);
+							json_t *service_req_p = GetServiceRefreshRequestFromJSON (qpw_parent_prefs_widget_p -> GetServiceName (), params_json_p, sv_p, true, PL_ALL);
 
 							if (service_req_p)
 								{
+									params_json_added_flag  = true;
+
 									if (json_array_append_new (req_p, service_req_p) == 0)
 										{
 											if (qpw_client_data_p->qcd_verbose_flag)
@@ -784,6 +790,10 @@ void QTParameterWidget :: RefreshService ()
 
 						}
 
+					if (!params_json_added_flag)
+						{
+							json_decref (params_json_p);
+						}
 				}
 
 			qpw_refresh_active = true;
@@ -803,10 +813,17 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 			widget_p -> CheckLevelDisplay (level, parent_widget_p);
 		}
 
-	QList <ParameterWidgetContainer *> groupings = qpw_groupings.values ();
-	for (int i = qpw_groupings.count () - 1; i >= 0; -- i)
+	QList <ParamGroupBox *> groupings = qpw_groupings.values ();
+	for (int i = groupings.count () - 1; i >= 0; -- i)
 		{
-			ParameterWidgetContainer *container_p = groupings.at (i);
+			ParamGroupBox *container_p = groupings.at (i);
+			container_p -> CheckVisibility (level);
+		}
+
+	QList <RepeatableParamGroupBox *> repeatable_groupings = qpw_repeatable_groupings.values ();
+	for (int i = repeatable_groupings.count () - 1; i >= 0; -- i)
+		{
+			ParamGroupBox *container_p = repeatable_groupings.at (i);
 			container_p -> CheckVisibility (level);
 		}
 
@@ -961,20 +978,24 @@ json_t *QTParameterWidget :: GetServiceParamsAsJSON (bool full_flag, const Param
 	const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
 	const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName();
 
-	ParameterSet *params_p = spw_params_widget_p -> GetParameterSet (false);
+	ParameterSet *params_p = GetParameterSet (false);
+	json_t *params_json_p = nullptr;
 
-	if (params_p)
+	if (params_json_p)
 		{
-			res_p = GetServiceRunRequest (service_name_s, params_p, sv_p, true, level);
+			res_p = GetServiceRunRequestFromJSON (service_name_s, params_json_p, sv_p, true, level);
 		}
 
 	return res_p;
 }
 
 
+
+
+
 ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
 {
-	QHash <BaseParamWidget *, BaseParamWidget *> repeated_widgets;
+	QHash <const Parameter *, BaseParamWidget *> repeated_widgets;
 
 	/* make sure that all of the parameter values are up to date */
 	QList <BaseParamWidget *> widgets = qpw_widgets_map.values ();
@@ -999,7 +1020,7 @@ ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
 							return nullptr;
 						}
 
-					repeated_widgets.insert (widget_p, widget_p);
+					repeated_widgets.insert (widget_p -> GetParameter (), widget_p);
 
 				}
 
@@ -1009,7 +1030,7 @@ ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
 		{
 			BaseParamWidget *widget_p = widgets.at (i);
 
-			if (!repeated_widgets.contains (widget_p))
+			if (!repeated_widgets.contains (widget_p -> GetParameter ()))
 				{
 					if (! (widget_p -> StoreParameterValue (refresh_flag)))
 						{
@@ -1019,9 +1040,28 @@ ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
 				}
 		}
 
+	const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
+
+	json_t *params_json_p = GetParameterSetSelectionAsJSON (qpw_params_p, sv_p, false, &repeated_widgets, AddNonRepeatedParams);
+
+
+
 	return qpw_params_p;
 }
 
+struct RepeatableParamsData
+{
+	QHash <BaseParamWidget *, BaseParamWidget *> *rpd_repeated_widgets_p;
+
+};
+
+
+static bool AddNonRepeatedParams(const Parameter *param_p, void *data_p)
+{
+	QHash <const Parameter *, BaseParamWidget *> *repeated_widgets_p = reinterpret_cast <QHash <const Parameter *, BaseParamWidget *> *> (data_p);
+
+	return (repeated_widgets_p -> contains (param_p));
+}
 
 
 json_t *QTParameterWidget :: GetParameterValuesAsJSON () const

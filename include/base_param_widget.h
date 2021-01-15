@@ -74,6 +74,8 @@ public:
 	void SetErrorFlag (const bool error_flag);
 	bool GetErrorFlag () const;
 
+	const Parameter *GetParameter () const;
+
 protected:
 	Parameter * const bpw_param_p;
 	QTParameterWidget * const bpw_parent_p;

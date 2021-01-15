@@ -18,7 +18,9 @@ public:
 
 	virtual ~RepeatableParamGroupBox ();
 
-	virtual void init (bool add_params_flag);
+	virtual void Init (bool add_params_flag);
+
+	json_t *GetAsJSON ();
 
 protected:
 

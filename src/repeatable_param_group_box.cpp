@@ -30,7 +30,7 @@ RepeatableParamGroupBox :: ~RepeatableParamGroupBox ()
 
 
 
-void RepeatableParamGroupBox :: init (bool add_params_flag)
+void RepeatableParamGroupBox :: Init (bool add_params_flag)
 {
 	QVBoxLayout *layout_p = new QVBoxLayout ();
 
@@ -57,6 +57,13 @@ void RepeatableParamGroupBox :: init (bool add_params_flag)
 
 	setLayout (layout_p);
 }
+
+
+json_t *RepeatableParamGroupBox :: GetAsJSON ()
+{
+
+}
+
 
 
 

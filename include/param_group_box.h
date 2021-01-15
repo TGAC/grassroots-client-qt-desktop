@@ -54,7 +54,7 @@ public:
 
 	void AddParamGroupWidgets (bool add_params_flag);
 
-	virtual void init (bool add_params_flag);
+	virtual void Init (bool add_params_flag);
 
 	const QList <BaseParamWidget *> *GetChildren ();
 

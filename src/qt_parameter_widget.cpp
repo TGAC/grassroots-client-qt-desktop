@@ -1044,6 +1044,11 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 
 	json_t *params_json_p = GetParameterSetSelectionAsJSON (qpw_params_p, sv_p, false, &repeated_widgets, AddNonRepeatedParams);
 
+	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, params_json_p, "*** BEGIN Non-repeated");
+	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END Non-repeated");
+
+
+
 	if (params_json_p)
 		{
 			/* Now add the repeated groups */
@@ -1068,6 +1073,11 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 
 		}		/* if (params_json_p) */
 
+	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, params_json_p, "*** BEGIN repeated");
+	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END repeated");
+
+
+
 	return params_json_p;
 }
 
@@ -1083,7 +1093,7 @@ static bool AddNonRepeatedParams(const Parameter *param_p, void *data_p)
 {
 	QHash <const Parameter *, BaseParamWidget *> *repeated_widgets_p = reinterpret_cast <QHash <const Parameter *, BaseParamWidget *> *> (data_p);
 
-	return (repeated_widgets_p -> contains (param_p));
+	return (!repeated_widgets_p -> contains (param_p));
 }
 
 

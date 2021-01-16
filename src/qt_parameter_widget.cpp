@@ -1049,23 +1049,18 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 			for (i = qpw_repeatable_groupings.constBegin (); i != qpw_repeatable_groupings.constEnd (); ++ i)
 				{
 					RepeatableParamGroupBox *box_p = i.value ();
-					const QList <BaseParamWidget *> *children_p = box_p -> GetChildren ();
-					QList <BaseParamWidget *> :: const_iterator j;
 
-					for (j = children_p -> constBegin (); j != children_p -> constEnd (); ++ j)
+					json_t *group_json_p = box_p -> GetParametersAsJSON ();
+
+					if (group_json_p)
 						{
-							BaseParamWidget *widget_p = *j;
+							const char *group_s = box_p -> GetGroupName ();
 
-							if (! (widget_p -> StoreParameterValue (refresh_flag)))
+							if (json_object_set_new (params_json_p, group_s, group_json_p) != 0)
 								{
-									PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set parameter value for %s", widget_p -> GetParameterName ());
-									return nullptr;
+									json_decref (group_json_p);
 								}
-
-							repeated_widgets.insert (widget_p -> GetParameter (), widget_p);
-
 						}
-
 				}
 
 

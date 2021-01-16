@@ -978,8 +978,8 @@ json_t *QTParameterWidget :: GetServiceParamsAsJSON (bool full_flag, const Param
 	const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
 	const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName();
 
-	ParameterSet *params_p = GetParameterSet (false);
-	json_t *params_json_p = nullptr;
+	//ParameterSet *params_p = GetParameterSet (false);
+	json_t *params_json_p = GetParameterSetAsJSON (false);
 
 	if (params_json_p)
 		{
@@ -992,8 +992,7 @@ json_t *QTParameterWidget :: GetServiceParamsAsJSON (bool full_flag, const Param
 
 
 
-
-ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
+json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 {
 	QHash <const Parameter *, BaseParamWidget *> repeated_widgets;
 
@@ -1044,10 +1043,38 @@ ParameterSet *QTParameterWidget :: GetParameterSet (bool refresh_flag) const
 
 	json_t *params_json_p = GetParameterSetSelectionAsJSON (qpw_params_p, sv_p, false, &repeated_widgets, AddNonRepeatedParams);
 
+	if (params_json_p)
+		{
+			/* Now add the repeated groups */
+			for (i = qpw_repeatable_groupings.constBegin (); i != qpw_repeatable_groupings.constEnd (); ++ i)
+				{
+					RepeatableParamGroupBox *box_p = i.value ();
+					const QList <BaseParamWidget *> *children_p = box_p -> GetChildren ();
+					QList <BaseParamWidget *> :: const_iterator j;
+
+					for (j = children_p -> constBegin (); j != children_p -> constEnd (); ++ j)
+						{
+							BaseParamWidget *widget_p = *j;
+
+							if (! (widget_p -> StoreParameterValue (refresh_flag)))
+								{
+									PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set parameter value for %s", widget_p -> GetParameterName ());
+									return nullptr;
+								}
+
+							repeated_widgets.insert (widget_p -> GetParameter (), widget_p);
+
+						}
+
+				}
 
 
-	return qpw_params_p;
+
+		}		/* if (params_json_p) */
+
+	return params_json_p;
 }
+
 
 struct RepeatableParamsData
 {
@@ -1066,5 +1093,5 @@ static bool AddNonRepeatedParams(const Parameter *param_p, void *data_p)
 
 json_t *QTParameterWidget :: GetParameterValuesAsJSON () const
 {
-	return GetParameterSetAsJSON (qpw_params_p, qpw_client_data_p -> qcd_base_data.cd_schema_p, false);
+	return GetParameterSetAsJSON (false);
 }

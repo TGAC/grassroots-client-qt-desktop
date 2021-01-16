@@ -137,6 +137,9 @@ private:
 
 	bool AddLabelForSchemaTerm (const SchemaTerm *term_p, const char * const key_s, QFormLayout *layout_p);
 
+	json_t *GetParameterSetAsJSON (bool refresh_flag) const;
+
+
 	static const int QPW_NUM_COLUMNS;
 };
 

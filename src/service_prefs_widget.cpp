@@ -128,13 +128,18 @@ json_t *ServicePrefsWidget :: GetServiceParamsAsJSON (bool full_flag, const Para
 
 	if (GetRunFlag ())
 		{
-			ParameterSet *params_p = spw_params_widget_p -> GetParameterSet (false);
+			json_t *params_json_p  = spw_params_widget_p -> GetParameterValuesAsJSON ();
 
-			if (params_p)
+			if (params_json_p)
 				{
 					const SchemaVersion *sv_p = spw_client_data_p -> qcd_base_data.cd_schema_p;
 
-					res_p = GetServiceRunRequest (spw_service_name_s, params_p, sv_p, true, level);
+					res_p = GetServiceRunRequestFromJSON (spw_service_name_s, params_json_p, sv_p, true, level);
+
+					if (!res_p)
+						{
+							json_decref (params_json_p);
+						}
 				}
 		}
 

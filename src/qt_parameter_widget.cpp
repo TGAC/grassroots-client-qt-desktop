@@ -474,8 +474,9 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 	while (param_group_node_p)
 		{
+			QWidget *widget_p = nullptr;
+
 			ParameterGroup *group_p = param_group_node_p -> pgn_param_group_p;
-			ParameterWidgetContainer *container_p = nullptr;
 
 			if (group_p -> pg_repeatable_flag)
 				{
@@ -483,6 +484,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 					box_p -> Init (false);
 					qpw_repeatable_groupings.insert (group_p -> pg_name_s, box_p);
+					widget_p = box_p -> GetWidget ();
 				}
 			else
 				{
@@ -490,13 +492,12 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 					box_p -> Init (false);
 					qpw_groupings.insert (group_p -> pg_name_s, box_p);
+					widget_p = box_p -> GetWidget ();
 				}
 
 
 			int row = qpw_layout_p -> rowCount ();
-
-			QWidget *box_p = container_p -> GetWidget ();
-			qpw_layout_p -> addRow (box_p);
+			qpw_layout_p -> addRow (widget_p);
 
 			param_group_node_p = reinterpret_cast <ParameterGroupNode *> (param_group_node_p -> pgn_node.ln_next_p);
 		}

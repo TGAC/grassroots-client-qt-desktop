@@ -14,6 +14,9 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
 	rpgb_entries_p = new QListWidget (this);
 	rpgb_entries_p -> setSelectionMode (QAbstractItemView :: SingleSelection);
 
+	rpgb_remove_entry_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
+	connect (rpgb_remove_entry_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: RemoveEntry);
+
 	rpgb_label_param_p = nullptr;
 
 	if (group_p -> pg_repeatable_param_p)
@@ -26,6 +29,7 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
 
 RepeatableParamGroupBox :: ~RepeatableParamGroupBox ()
 {
+
 }
 
 
@@ -44,8 +48,6 @@ void RepeatableParamGroupBox :: Init (bool add_params_flag)
 	connect (row_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: AddEntry);
 	buttons_layout_p -> addWidget (row_button_p);
 
-	rpgb_remove_entry_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
-	connect (rpgb_remove_entry_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: RemoveEntry);
 	buttons_layout_p -> addWidget (rpgb_remove_entry_button_p);
 
 	layout_p -> addItem (buttons_layout_p);
@@ -59,9 +61,54 @@ void RepeatableParamGroupBox :: Init (bool add_params_flag)
 }
 
 
-json_t *RepeatableParamGroupBox :: GetAsJSON ()
+json_t *RepeatableParamGroupBox :: GetParametersAsJSON ()
 {
+	json_t *res_p = json_array ();
 
+	if (res_p)
+		{
+			const int num_entries = rpgb_entries_p -> count ();
+
+			for (int i = 0; i < num_entries; ++ i)
+				{
+					QListWidgetItem *item_p = rpgb_entries_p -> item (i);
+					QVariant v = item_p -> data (Qt :: UserRole);
+					QString s = v.toString ();
+					QByteArray ba = s.toLocal8Bit ();
+
+					const char *json_s = ba.data ();
+
+					if (json_s)
+						{
+							json_error_t err;
+							json_t *entry_json_p = json_loads (json_s, 0, &err);
+
+							qDebug () << "getting " << i << ": " << json_s << Qt :: endl;
+
+							if (entry_json_p)
+								{
+									if (json_array_append_new (res_p, entry_json_p) != 0)
+										{
+											json_decref (entry_json_p);
+										}
+								}
+							else
+								{
+									qDebug () << "failed to convert " << i << ": " << json_s << " to json " << Qt :: endl;
+								}
+						}
+					else
+						{
+							qDebug () << "no data for " << i << Qt :: endl;
+						}
+
+				}
+
+
+		}		/* if (res_p) */
+
+
+	return res_p;
 }
 
 

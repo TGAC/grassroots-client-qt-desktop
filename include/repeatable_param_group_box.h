@@ -20,7 +20,7 @@ public:
 
 	virtual void Init (bool add_params_flag);
 
-	json_t *GetAsJSON ();
+	json_t *GetParametersAsJSON ();
 
 protected:
 

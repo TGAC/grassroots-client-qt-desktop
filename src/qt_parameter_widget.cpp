@@ -1042,57 +1042,47 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 
 	const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
 
-	json_t *params_json_p = GetParameterSetSelectionAsJSON (qpw_params_p, sv_p, false, &repeated_widgets, AddNonRepeatedParams);
+	json_t *param_set_json_p = GetParameterSetSelectionAsJSON (qpw_params_p, sv_p, false, &repeated_widgets, AddNonRepeatedParams);
 
-	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, params_json_p, "*** BEGIN Non-repeated");
+	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN Non-repeated");
 	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END Non-repeated");
 
 
 
-	if (params_json_p)
+	if (param_set_json_p)
 		{
-			json_t *repeated_groups_json_p = json_object ();
+			json_t *params_array_p = json_object_get (param_set_json_p, PARAM_SET_PARAMS_S);
 
-			if (repeated_groups_json_p)
+			if (params_array_p)
 				{
-					if (json_object_set_new (params_json_p, PARAM_REPEATED_GROUPS_S, repeated_groups_json_p) == 0)
+					/* Now add the repeated groups */
+					for (i = qpw_repeatable_groupings.constBegin (); i != qpw_repeatable_groupings.constEnd (); ++ i)
 						{
-							/* Now add the repeated groups */
-							for (i = qpw_repeatable_groupings.constBegin (); i != qpw_repeatable_groupings.constEnd (); ++ i)
+							RepeatableParamGroupBox *box_p = i.value ();
+							json_t *group_json_p = box_p -> GetParametersAsJSON ();
+
+							if (group_json_p)
 								{
-									RepeatableParamGroupBox *box_p = i.value ();
-
-									json_t *group_json_p = box_p -> GetParametersAsJSON ();
-
-									if (group_json_p)
+									if (json_array_extend (params_array_p, group_json_p) != 0)
 										{
-											const char *group_s = box_p -> GetGroupName ();
-
-											if (json_object_set_new (repeated_groups_json_p, group_s, group_json_p) != 0)
-												{
-													json_decref (group_json_p);
-												}
+											PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, group_json_p, "Failed to add repeated group json for %s", box_p -> GetGroupName ());
 										}
+
+									json_decref (group_json_p);
 								}
-
-						}
-					else
-						{
-							json_decref (repeated_groups_json_p);
 						}
 
-				}
-
+				}		/* if (params_array_p) */
 
 
 		}		/* if (params_json_p) */
 
-	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, params_json_p, "*** BEGIN repeated");
+	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN repeated");
 	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END repeated");
 
 
 
-	return params_json_p;
+	return param_set_json_p;
 }
 
 

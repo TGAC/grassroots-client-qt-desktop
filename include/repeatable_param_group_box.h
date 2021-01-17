@@ -22,6 +22,8 @@ public:
 
 	json_t *GetParametersAsJSON ();
 
+	json_t *GetParametersAsGroupJSON ();
+
 protected:
 
 private:

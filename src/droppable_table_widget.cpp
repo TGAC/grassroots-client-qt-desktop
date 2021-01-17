@@ -471,6 +471,42 @@ json_t *DroppableTableWidget :: GetValueAsJSON (bool *success_flag_p)
 
 					if (success_flag)
 						{
+							size_t num_rows = json_array_size (rows_p);
+
+							/* remove any trailing empty rows */
+							if (num_rows > 0)
+								{
+									size_t i = num_rows;
+									bool loop_flag = true;
+
+									while (loop_flag)
+										{
+											json_t *row_p = json_array_get (rows_p, i);
+
+											if (json_object_size (row_p) > 0)
+												{
+													loop_flag = false;
+												}
+											else
+												{
+													json_array_remove (rows_p, i);
+													json_decref (row_p);
+
+													if (i == 0)
+														{
+															loop_flag = false;
+														}
+													else
+														{
+															-- i;
+														}
+												}
+
+										}
+
+
+								}		/* if (num_rows > 0) */
+
 							return rows_p;
 						}
 

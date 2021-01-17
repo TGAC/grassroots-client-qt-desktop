@@ -1051,22 +1051,36 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 
 	if (params_json_p)
 		{
-			/* Now add the repeated groups */
-			for (i = qpw_repeatable_groupings.constBegin (); i != qpw_repeatable_groupings.constEnd (); ++ i)
+			json_t *repeated_groups_json_p = json_object ();
+
+			if (repeated_groups_json_p)
 				{
-					RepeatableParamGroupBox *box_p = i.value ();
-
-					json_t *group_json_p = box_p -> GetParametersAsJSON ();
-
-					if (group_json_p)
+					if (json_object_set_new (params_json_p, PARAM_REPEATED_GROUPS_S, repeated_groups_json_p) == 0)
 						{
-							const char *group_s = box_p -> GetGroupName ();
-
-							if (json_object_set_new (params_json_p, group_s, group_json_p) != 0)
+							/* Now add the repeated groups */
+							for (i = qpw_repeatable_groupings.constBegin (); i != qpw_repeatable_groupings.constEnd (); ++ i)
 								{
-									json_decref (group_json_p);
+									RepeatableParamGroupBox *box_p = i.value ();
+
+									json_t *group_json_p = box_p -> GetParametersAsJSON ();
+
+									if (group_json_p)
+										{
+											const char *group_s = box_p -> GetGroupName ();
+
+											if (json_object_set_new (repeated_groups_json_p, group_s, group_json_p) != 0)
+												{
+													json_decref (group_json_p);
+												}
+										}
 								}
+
 						}
+					else
+						{
+							json_decref (repeated_groups_json_p);
+						}
+
 				}
 
 

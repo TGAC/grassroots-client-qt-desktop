@@ -70,7 +70,7 @@ bool UnsignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 	bool b = false;
 
 	if (uipsb_spin_box_p -> IsValueSet ())
-		{
+		{			
 			const uint32 value = uipsb_spin_box_p -> GetValue ();
 			b = SetUnsignedIntParameterCurrentValue (uips_param_p, &value);
 
@@ -79,7 +79,7 @@ bool UnsignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 	else
 		{
 			qDebug () << "UnsignedIntParamSpinBox :: StoreParameterValue: Setting " << bpw_param_p -> pa_name_s << "to NULL value";
-			b = true;
+			b = SetUnsignedIntParameterCurrentValue (uips_param_p, NULL);
 		}
 
 

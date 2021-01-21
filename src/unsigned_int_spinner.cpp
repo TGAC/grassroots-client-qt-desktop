@@ -60,8 +60,6 @@ bool UnsignedIntSpinner :: ClearValue (	)
 
 	if (!uis_required_flag)
 		{
-			uis_null_flag = true;
-
 			setValue (UIS_SPECIAL_VALUE);
 		}
 
@@ -168,7 +166,14 @@ void UnsignedIntSpinner :: setValue (int i)
 {
 //	qDebug () << "setting spinner to " << i << Qt :: endl;
 
-	uis_null_flag = false;
+	if (i == UIS_SPECIAL_VALUE)
+		{
+			uis_null_flag = true;
+		}
+	else
+		{
+			uis_null_flag = false;
+		}
 
 	QSpinBox :: setValue (i);
 }

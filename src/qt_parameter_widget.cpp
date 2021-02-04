@@ -660,6 +660,9 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 						{
 							const char *param_name_s = GetJSONString (param_p, PARAM_NAME_S);
 
+							PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_p, "Values for %s\n", param_name_s);
+
+
 							if (param_name_s)
 								{
 									BaseParamWidget *widget_p = GetWidgetForParameter (param_name_s);
@@ -980,11 +983,11 @@ json_t *QTParameterWidget :: GetServiceParamsAsJSON (bool full_flag, const Param
 	const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName();
 
 	//ParameterSet *params_p = GetParameterSet (false);
-	json_t *params_json_p = GetParameterSetAsJSON (false);
+	json_t *params_json_p = GetParameterSetAsJSON (true);
 
 	if (params_json_p)
 		{
-			res_p = GetServiceRunRequestFromJSON (service_name_s, params_json_p, sv_p, true, level);
+			res_p = params_json_p; //GetServiceRunRequestFromJSON (service_name_s, params_json_p, sv_p, true, level);
 		}
 
 	return res_p;

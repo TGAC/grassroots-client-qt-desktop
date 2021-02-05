@@ -239,6 +239,13 @@ json_t *RepeatableParamGroupBox :: GetParametersAsJSON ()
 }
 
 
+bool RepeatableParamGroupBox :: SetParametersFromJSON (json_t *params_json_p)
+{
+
+
+}
+
+
 json_t *RepeatableParamGroupBox :: GetParametersAsGroupJSON ()
 {
 	json_t *res_p = json_array ();

@@ -26,6 +26,7 @@
 #include <QLineEdit>
 
 #include "string_parameter.h"
+#include "string_array_parameter.h"
 
 #include "base_param_widget.h"
 
@@ -41,7 +42,8 @@ private slots:
 
 public:
 	ParamLineEdit (StringParameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo = QLineEdit :: Normal);
-  virtual ~ParamLineEdit ();
+	ParamLineEdit (StringArrayParameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo = QLineEdit :: Normal);
+	virtual ~ParamLineEdit ();
 
   virtual void RemoveConnection ();
 

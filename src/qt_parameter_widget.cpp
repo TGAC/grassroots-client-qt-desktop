@@ -38,6 +38,7 @@
 #include "param_json_editor.h"
 #include "json_table_widget.h"
 
+#include "string_array_parameter.h"
 
 #include "double_combo_box.h"
 #include "signed_int_combo_box.h"
@@ -669,7 +670,9 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 									if (widget_p)
 										{
-											if (! (widget_p -> SetValueFromJSON (param_p)))
+											json_t *current_value_p = json_object_get (param_p, PARAM_CURRENT_VALUE_S);
+
+											if (! (widget_p -> SetValueFromJSON (current_value_p)))
 												{
 													success_flag = false;
 													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
@@ -886,26 +889,35 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 		}
 	else if (IsStringParameter (param_p))
 		{
-			StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
+			ParameterGroup *group_p = NULL; // param_p -> pa_group_p;
 
-			if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
+			if ((group_p) && (group_p -> pg_repeatable_flag))
 				{
-					if (param_p -> pa_options_p)
-						{
-							widget_p = new StringComboBox (string_param_p, this);
-						}
-					else
-						{
-							widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
-						}
+					StringArrayParameter *string_array_param_p = reinterpret_cast <StringArrayParameter *> (param_p);
 				}
-			else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
+			else
 				{
-					widget_p = new ParamTextBox (string_param_p, this);
-				}
-			else if (param_p -> pa_type == PT_TABLE)
-				{
-					widget_p = new StringTableWidget (string_param_p, this);
+					StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
+
+					if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
+						{
+							if (param_p -> pa_options_p)
+								{
+									widget_p = new StringComboBox (string_param_p, this);
+								}
+							else
+								{
+									widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
+								}
+						}
+					else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
+						{
+							widget_p = new ParamTextBox (string_param_p, this);
+						}
+					else if (param_p -> pa_type == PT_TABLE)
+						{
+							widget_p = new StringTableWidget (string_param_p, this);
+						}
 				}
 		}
 	else if (IsJSONParameter (param_p))

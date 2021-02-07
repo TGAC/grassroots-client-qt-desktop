@@ -24,6 +24,9 @@ public:
 
 	json_t *GetParametersAsGroupJSON ();
 
+	bool SetParametersFromJSON (json_t *params_json_p);
+
+
 protected:
 
 private:

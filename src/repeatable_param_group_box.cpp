@@ -242,7 +242,7 @@ json_t *RepeatableParamGroupBox :: GetParametersAsJSON ()
 bool RepeatableParamGroupBox :: SetParametersFromJSON (json_t *params_json_p)
 {
 
-
+	return false;
 }
 
 

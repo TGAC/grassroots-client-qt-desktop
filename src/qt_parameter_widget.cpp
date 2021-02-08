@@ -663,7 +663,6 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 							PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_p, "Values for %s\n", param_name_s);
 
-
 							if (param_name_s)
 								{
 									BaseParamWidget *widget_p = GetWidgetForParameter (param_name_s);

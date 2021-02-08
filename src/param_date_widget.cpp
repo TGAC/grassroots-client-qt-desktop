@@ -153,7 +153,12 @@ bool ParamDateWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (json_is_string (value_p))
+	if ((!value_p) || (json_is_null (value_p)))
+		{
+			pdw_checkbox_p -> setChecked (false);
+			success_flag = true;
+		}
+	else if (json_is_string (value_p))
 		{
 			success_flag = SetValueFromText (json_string_value (value_p));
 		}

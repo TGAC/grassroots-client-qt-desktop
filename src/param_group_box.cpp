@@ -86,7 +86,7 @@ void ParamGroupBox :: AddParamGroupWidgets (bool add_params_flag)
 			while (node_p)
 				{
 					Parameter *param_p = node_p -> pn_parameter_p;
-					BaseParamWidget *widget_p = pgb_parent_p -> CreateWidgetForParameter (param_p, add_params_flag);
+					BaseParamWidget *widget_p = pgb_parent_p -> CreateWidgetForParameter (param_p, this, add_params_flag);
 
 					if (widget_p)
 						{

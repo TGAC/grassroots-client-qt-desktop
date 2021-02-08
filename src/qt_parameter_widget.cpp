@@ -528,7 +528,7 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidgetContainer *container_p, bool add_params_flag)
 {
-	BaseParamWidget *child_p = CreateWidgetForParameter (param_p, add_params_flag);
+	BaseParamWidget *child_p = CreateWidgetForParameter (param_p, container_p, add_params_flag);
 
 	if (child_p)
 		{
@@ -652,16 +652,14 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 		{
 			if (json_is_array (params_json_p))
 				{
-					json_t *param_p;
+					json_t *param_json_p;
 					size_t i;
 
 					success_flag = true;
 
-					json_array_foreach (params_json_p, i, param_p)
+					json_array_foreach (params_json_p, i, param_json_p)
 						{
-							const char *param_name_s = GetJSONString (param_p, PARAM_NAME_S);
-
-							PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_p, "Values for %s\n", param_name_s);
+							const char *param_name_s = GetJSONString (param_json_p, PARAM_NAME_S);
 
 							if (param_name_s)
 								{
@@ -669,23 +667,58 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 									if (widget_p)
 										{
-											json_t *current_value_p = json_object_get (param_p, PARAM_CURRENT_VALUE_S);
+											json_t *current_value_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
+											const Parameter *param_p = widget_p -> GetParameter ();
+
+											if (param_p -> pa_group_p)
+												{
+													/*
+													 * Is widget part of repeatable group?
+													 */
+													RepeatableParamGroupBox *box_p = qpw_repeatable_groupings.value (param_p -> pa_group_p -> pg_name_s);
+
+													if (box_p)
+														{
+															/*
+															 * If the value is an array, get the first entry
+															 */
+
+															PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "%s is in a repeartable group\n", param_name_s);
+
+															if (json_is_array (current_value_p))
+																{
+																	json_t *temp_p = json_array_get (current_value_p, 0);
+
+																	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, current_value_p, "Setting from first element of array");
+																	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, temp_p, ":");
+
+																	current_value_p = temp_p;
+																}
+														}
+													else
+														{
+															PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "%s is not in a repeartable group\n", param_name_s);
+														}
+
+
+
+												}
 
 											if (! (widget_p -> SetValueFromJSON (current_value_p)))
 												{
 													success_flag = false;
-													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
+													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
 												}
 										}		/* if (widget_p) */
 									else
 										{
-											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get widget for %s -> %s from json\n", service_name_s, param_name_s);
+											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get widget for %s -> %s from json\n", service_name_s, param_name_s);
 										}
 
 								}		/* if (param_name_s) */
 							else
 								{
-									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_p, "Failed to get parameter name %s -> %s from json\n", service_name_s, PARAM_NAME_S);
+									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get parameter name %s -> %s from json\n", service_name_s, PARAM_NAME_S);
 								}
 
 						}		/* json_array_foreach (params_json_p, i, param_p) */
@@ -837,7 +870,7 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 }
 
 
-BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * const param_p, bool add_param_flag)
+BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * const param_p,  ParameterWidgetContainer *container_p, bool add_param_flag)
 {
 	BaseParamWidget *widget_p = nullptr;
 
@@ -888,35 +921,26 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 		}
 	else if (IsStringParameter (param_p))
 		{
-			ParameterGroup *group_p = NULL; // param_p -> pa_group_p;
+			StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
 
-			if ((group_p) && (group_p -> pg_repeatable_flag))
+			if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
 				{
-					StringArrayParameter *string_array_param_p = reinterpret_cast <StringArrayParameter *> (param_p);
+					if (param_p -> pa_options_p)
+						{
+							widget_p = new StringComboBox (string_param_p, this);
+						}
+					else
+						{
+							widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
+						}
 				}
-			else
+			else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
 				{
-					StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
-
-					if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
-						{
-							if (param_p -> pa_options_p)
-								{
-									widget_p = new StringComboBox (string_param_p, this);
-								}
-							else
-								{
-									widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
-								}
-						}
-					else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
-						{
-							widget_p = new ParamTextBox (string_param_p, this);
-						}
-					else if (param_p -> pa_type == PT_TABLE)
-						{
-							widget_p = new StringTableWidget (string_param_p, this);
-						}
+					widget_p = new ParamTextBox (string_param_p, this);
+				}
+			else if (param_p -> pa_type == PT_TABLE)
+				{
+					widget_p = new StringTableWidget (string_param_p, this);
 				}
 		}
 	else if (IsJSONParameter (param_p))
@@ -953,7 +977,10 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 
 			widget_p = new FileChooserWidget (resource_param_p, this, mode);
 		}
+	else if (IsStringArrayParameter (param_p))
+		{
 
+		}
 
 	if (widget_p)
 		{

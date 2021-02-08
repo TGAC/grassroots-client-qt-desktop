@@ -40,8 +40,6 @@ class BaseParamWidget : public QObject
 public:
 	BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p);
 
-	BaseParamWidget *Clone (ParameterGroup *group_p) const;
-
 
 	virtual ~BaseParamWidget ();
 

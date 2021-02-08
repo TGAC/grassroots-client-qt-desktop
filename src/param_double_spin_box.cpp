@@ -118,6 +118,7 @@ bool ParamDoubleSpinBox :: SetValueFromJSON (const json_t * const value_p)
 	if ((!value_p) || (json_is_null (value_p)))
 		{
 			pdsb_spinner_p -> ClearValue ();
+			success_flag = true;
 		}
 	else if (json_is_number (value_p))
 		{

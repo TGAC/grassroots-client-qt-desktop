@@ -116,12 +116,42 @@ bool SignedIntParamSpinBox :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (json_is_integer (value_p))
-		{
-			const int d = json_integer_value (value_p);
+	const json_t *param_value_p = json_object_get (value_p, PARAM_CURRENT_VALUE_S);
 
-			sipsb_spin_box_p -> setValue (d);
-			success_flag = true;
+	if (param_value_p)
+		{
+			qDebug () << "SignedIntParamSpinBox :: SetValueFromJSON  " << bpw_param_p -> pa_name_s << Qt :: endl;
+
+			if ((!param_value_p) || (json_is_null (param_value_p)))
+				{
+					sipsb_spin_box_p -> ClearValue ();
+					success_flag = true;
+
+					qDebug () << "SignedIntParamSpinBox :: SetValueFromJSON  clearing " << bpw_param_p -> pa_name_s << Qt :: endl;
+				}
+			else
+				{
+					if (json_is_integer (param_value_p))
+						{
+							const int d = json_integer_value (param_value_p);
+
+							qDebug () << "SignedIntParamSpinBox :: SetValueFromJSON d:  " << d << Qt :: endl;
+
+							sipsb_spin_box_p -> setValue (d);
+							success_flag = true;
+
+							PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "value %d for %s\n", d, bpw_param_name_s);
+						}
+					else
+						{
+							PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, param_value_p, "JSON is not integer for %s\n", bpw_param_name_s);
+						}
+				}
+
+		}
+	else
+		{
+			PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, value_p, "Failed to get %s\n", PARAM_CURRENT_VALUE_S);
 		}
 
 	return success_flag;

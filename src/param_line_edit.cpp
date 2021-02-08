@@ -98,6 +98,10 @@ bool ParamLineEdit :: SetValueFromJSON (const json_t * const value_p)
 			ple_text_box_p -> setText (nullptr);
 			success_flag = true;
 		}
+	else
+		{
+			PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, value_p, "Failed to set value for ParamLineEdit %s", bpw_param_name_s);
+		}
 
 	return success_flag;
 }

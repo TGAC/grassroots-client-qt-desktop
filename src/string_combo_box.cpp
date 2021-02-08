@@ -64,7 +64,7 @@ bool StringComboBox :: SetValueFromText (const char *value_s)
 			success_flag  = true;
 		}
 
-	return false;
+	return success_flag;
 }
 
 

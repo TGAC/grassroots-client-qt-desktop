@@ -79,7 +79,7 @@ public:
 	 * This is for when you have repeatable parameters.
 	 * @return The widget or 0 upon error.
 	 */
-	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p, bool add_param_flag);
+	BaseParamWidget *CreateWidgetForParameter (Parameter * const param_p,  ParameterWidgetContainer *container_p, bool add_param_flag);
 
 	void ParameterWidgetAdded (Parameter *param_p, BaseParamWidget *widget_p);
 

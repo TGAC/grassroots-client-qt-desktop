@@ -60,6 +60,8 @@ public:
 
 	const char *GetGroupName () const;
 
+	const ParameterGroup *GetParameterGroup () const;
+
 protected:
 	QList <BaseParamWidget *> pgb_children;
 	QFormLayout *pgb_layout_p;

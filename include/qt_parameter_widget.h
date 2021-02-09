@@ -67,6 +67,9 @@ public:
 
 	BaseParamWidget *GetWidgetForParameter (const char * const param_name_s) const;
 
+	bool SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const json_t *, const json_t *> *repeatable_param_names_p);
+
+
 	void ClearErrors ();
 
 	/**
@@ -139,6 +142,7 @@ private:
 
 	json_t *GetParameterSetAsJSON (bool refresh_flag) const;
 
+	bool SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const char *, const char *> *repeatable_param_names_p);
 
 	static const int QPW_NUM_COLUMNS;
 };

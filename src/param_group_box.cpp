@@ -77,6 +77,12 @@ const char *ParamGroupBox :: GetGroupName () const
 }
 
 
+const ParameterGroup *ParamGroupBox :: GetParameterGroup () const
+{
+	return pgb_parameter_group_p;
+}
+
+
 void ParamGroupBox :: AddParamGroupWidgets (bool add_params_flag)
 {
 	if (pgb_parameter_group_p -> pg_params_p)

@@ -642,6 +642,189 @@ void QTParameterWidget :: ResetToDefaults ()
 
 
 
+bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const json_t *, const json_t *> *repeatable_param_names_p)
+{
+	bool success_flag = false;
+	QHashIterator <const char *, RepeatableParamGroupBox *> groups_itr (qpw_repeatable_groupings);
+
+	while (groups_itr.hasNext ())
+		{
+			groups_itr.next ();
+
+			const char *group_name_s = groups_itr.key ();
+			RepeatableParamGroupBox *box_p = groups_itr.value ();
+
+			/*
+			 * Get all of the Paramaters in this group
+			 */
+			QHash <const json_t *, Parameter *> grouped_params;
+			const json_t *param_json_p;
+			size_t j;
+			size_t num_params;
+
+			json_array_foreach (params_array_json_p, j, param_json_p)
+				{
+					const char *param_group_s = GetJSONString (param_json_p, PARAM_GROUP_S);
+
+					if (param_group_s && (strcmp (group_name_s, param_group_s) == 0))
+						{
+							const char *param_name_s = GetJSONString (param_json_p, PARAM_NAME_S);
+
+							if (param_name_s)
+								{
+									Parameter *param_p = GetParameterFromParameterSetByName (qpw_params_p, param_name_s);
+
+									if (param_p)
+										{
+											grouped_params.insert (param_json_p, param_p);
+
+											repeatable_param_names_p -> insert (param_json_p, param_json_p);
+										}
+								}
+						}
+				}
+
+			if ((num_params = grouped_params.size ()) > 0)
+				{
+					size_t num_values = 0;
+
+					/*
+					 * Get the maxium length
+					 */
+					QHashIterator <const json_t *, Parameter *> params_itr (grouped_params);
+
+					while (params_itr.hasNext ())
+						{
+							params_itr.next ();
+
+							param_json_p = params_itr.key ();
+							const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
+
+							if (current_values_p)
+								{
+									if (json_is_array (current_values_p))
+										{
+											const size_t t = json_array_size (current_values_p);
+
+											if (num_values < t)
+												{
+													num_values = t;
+												}
+										}
+									else
+										{
+											if (num_values < 1)
+												{
+													num_values = 1;
+												}
+
+										}
+
+								}		/* if (current_values_p) */
+
+						}		/* while (params_itr.hasNext ()) */
+
+
+					/*
+					 * Build and add the entries to the lists
+					 */
+					for (size_t i = 0; i < num_values; ++ i)
+						{
+							QHashIterator <const json_t *, Parameter *> params_itr (grouped_params);
+							size_t k = 0;
+							bool success_flag = true;
+							const char *label_s = NULL;
+							const char *repeatable_name_s = NULL;
+
+							const ParameterGroup *group_p = box_p -> GetParameterGroup ();
+
+							if (group_p -> pg_repeatable_param_p)
+								{
+									repeatable_name_s = group_p -> pg_repeatable_param_p -> pa_name_s;
+								}
+
+
+							while (params_itr.hasNext ())
+								{
+									params_itr.next ();
+
+									param_json_p = params_itr.key ();
+									Parameter *param_p = params_itr.value ();
+									const json_t *entry_p = NULL;
+									const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
+
+
+									if (current_values_p)
+										{
+											if (json_is_array (current_values_p))
+												{
+													if (k < json_array_size (current_values_p))
+														{
+															entry_p = json_array_get (current_values_p, k);
+
+															if (repeatable_name_s)
+																{
+																	const char *name_s = GetJSONString (param_json_p, PARAM_NAME_S);
+
+																	if (name_s)
+																		{
+																			if (strcmp (repeatable_name_s, name_s) == 0)
+																				{
+																					label_s = json_string_value (entry_p);
+																				}
+																		}
+																}
+
+
+														}
+
+												}
+											else if ((k == 0) && (! (json_is_null (current_values_p))))
+												{
+													entry_p = current_values_p;
+												}
+
+										}		/* if (current_values_p) */
+
+
+									if (entry_p)
+										{
+											success_flag = SetParameterCurrentValueFromJSON (param_p, entry_p);
+										}
+									else
+										{
+											success_flag = SetParameterCurrentValueFromJSON (param_p, json_null ());
+										}
+
+									++ k;
+								}		/* while (params_itr.hasNext ()) */
+
+							if (success_flag)
+								{
+									const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
+
+									json_t *group_json_p = GetParameterGroupAsJSON (box_p -> GetParameterGroup (), true, false, sv_p);
+
+									if (group_json_p)
+										{
+											box_p -> AddListEntry (label_s, group_json_p);
+											json_decref (group_json_p);
+										}
+								}
+
+						}		/* for (size_t l = 0; l < num_values; ++ l) */
+
+
+
+				}		/* if ((num_params = params.size ()) > 0) */
+
+		}		/* while (i.hasNext ()) */
+
+
+	return success_flag;
+}
+
+
 bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p)
 {
 	bool success_flag = false;
@@ -651,7 +834,7 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 	if (params_json_p)
 		{
 			if (json_is_array (params_json_p))
-				{
+				{					
 					json_t *param_json_p;
 					size_t i;
 
@@ -699,7 +882,6 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 														{
 															PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "%s is not in a repeartable group\n", param_name_s);
 														}
-
 
 
 												}

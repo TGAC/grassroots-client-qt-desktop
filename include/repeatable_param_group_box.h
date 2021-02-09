@@ -26,6 +26,7 @@ public:
 
 	bool SetParametersFromJSON (json_t *params_json_p);
 
+	void AddListEntry (const char *label_s, json_t *group_json_p);
 
 protected:
 
@@ -33,6 +34,7 @@ private:
 	QListWidget *rpgb_entries_p;
 	Parameter *rpgb_label_param_p;
 	QPushButton *rpgb_remove_entry_button_p;
+
 
 private slots:
 	void AddEntry ();

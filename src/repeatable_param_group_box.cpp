@@ -296,6 +296,34 @@ json_t *RepeatableParamGroupBox :: GetParametersAsGroupJSON ()
 }
 
 
+void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group_json_p)
+{
+	QString label;
+
+	if (label_s)
+		{
+			label = label_s;
+		}
+	else
+		{
+			int i = rpgb_entries_p -> count ();
+			label = QString :: number (i);
+		}
+
+	QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);
+
+	char *value_s = json_dumps (group_json_p, 0);
+	if (value_s)
+		{
+			item_p -> setData (Qt :: UserRole, value_s);
+			free (value_s);
+		}
+
+	qDebug () << "adding " << label << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+
+	rpgb_entries_p -> addItem (item_p);
+
+}
 
 
 void RepeatableParamGroupBox :: AddEntry ()
@@ -307,50 +335,25 @@ void RepeatableParamGroupBox :: AddEntry ()
 
 	if (group_json_p)
 		{
-			QString label;
-			bool set_label_flag = false;
 			Parameter *param_p = pgb_parameter_group_p -> pg_repeatable_param_p;
 
 			if (param_p)
 				{
 					bool alloc_flag = false;
-					char *value_s = GetParameterValueAsString (param_p, &alloc_flag);
+					char *label_s = GetParameterValueAsString (param_p, &alloc_flag);
 
-					if (value_s)
-						{
-							label = value_s;
-							set_label_flag = true;
-						}
+					AddListEntry (label_s, group_json_p);
 
 					if (alloc_flag)
 						{
-							FreeCopiedString (value_s);
+							FreeCopiedString (label_s);
 						}
 				}
 
-			if (!set_label_flag)
-				{
-					int i = rpgb_entries_p -> count ();
-					label = QString :: number (i);
-				}
-
-			QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);
-
-			char *value_s = json_dumps (group_json_p, 0);
-			if (value_s)
-				{
-					item_p -> setData (Qt :: UserRole, value_s);
-					free (value_s);
-				}
-
-			qDebug () << "adding " << label << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
-
-			rpgb_entries_p -> addItem (item_p);
-
 			json_decref (group_json_p);
 		}
-
 }
+
 
 void RepeatableParamGroupBox :: RemoveEntry ()
 {

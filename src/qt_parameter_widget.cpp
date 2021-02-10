@@ -642,6 +642,50 @@ void QTParameterWidget :: ResetToDefaults ()
 
 
 
+size_t QTParameterWidget :: GetNumberOfRepeatedValues (QHash <const json_t *, Parameter *> *grouped_params_p)
+{
+	size_t num_values = 0;
+
+	/*
+	 * Get the maximum length
+	 */
+	QHashIterator <const json_t *, Parameter *> params_itr (*grouped_params_p);
+
+	while (params_itr.hasNext ())
+		{
+			params_itr.next ();
+
+			const json_t *param_json_p = params_itr.key ();
+			const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
+
+			if (current_values_p)
+				{
+					if (json_is_array (current_values_p))
+						{
+							const size_t t = json_array_size (current_values_p);
+
+							if (num_values < t)
+								{
+									num_values = t;
+								}
+						}
+					else
+						{
+							if (num_values < 1)
+								{
+									num_values = 1;
+								}
+
+						}
+
+				}		/* if (current_values_p) */
+
+		}		/* while (params_itr.hasNext ()) */
+
+	return num_values;
+}
+
+
 bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const json_t *, const json_t *> *repeatable_param_names_p)
 {
 	bool success_flag = false;
@@ -659,10 +703,10 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 			 */
 			QHash <const json_t *, Parameter *> grouped_params;
 			const json_t *param_json_p;
-			size_t j;
+			size_t i;
 			size_t num_params;
 
-			json_array_foreach (params_array_json_p, j, param_json_p)
+			json_array_foreach (params_array_json_p, i, param_json_p)
 				{
 					const char *param_group_s = GetJSONString (param_json_p, PARAM_GROUP_S);
 
@@ -681,57 +725,20 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 											repeatable_param_names_p -> insert (param_json_p, param_json_p);
 										}
 								}
-						}
-				}
+						}		/* if (param_group_s && (strcmp (group_name_s, param_group_s) == 0)) */
+
+				}		/* json_array_foreach (params_array_json_p, j, param_json_p) */
 
 			if ((num_params = grouped_params.size ()) > 0)
 				{
-					size_t num_values = 0;
-
-					/*
-					 * Get the maxium length
-					 */
-					QHashIterator <const json_t *, Parameter *> params_itr (grouped_params);
-
-					while (params_itr.hasNext ())
-						{
-							params_itr.next ();
-
-							param_json_p = params_itr.key ();
-							const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
-
-							if (current_values_p)
-								{
-									if (json_is_array (current_values_p))
-										{
-											const size_t t = json_array_size (current_values_p);
-
-											if (num_values < t)
-												{
-													num_values = t;
-												}
-										}
-									else
-										{
-											if (num_values < 1)
-												{
-													num_values = 1;
-												}
-
-										}
-
-								}		/* if (current_values_p) */
-
-						}		/* while (params_itr.hasNext ()) */
-
+					size_t num_values = GetNumberOfRepeatedValues (&grouped_params);
 
 					/*
 					 * Build and add the entries to the lists
 					 */
-					for (size_t i = 0; i < num_values; ++ i)
+					for (i = 0; i < num_values; ++ i)
 						{
 							QHashIterator <const json_t *, Parameter *> params_itr (grouped_params);
-							size_t k = 0;
 							bool success_flag = true;
 							const char *label_s = NULL;
 							const char *repeatable_name_s = NULL;
@@ -750,17 +757,16 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 
 									param_json_p = params_itr.key ();
 									Parameter *param_p = params_itr.value ();
-									const json_t *entry_p = NULL;
 									const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
-
+									const json_t *entry_p = NULL;
 
 									if (current_values_p)
 										{
 											if (json_is_array (current_values_p))
 												{
-													if (k < json_array_size (current_values_p))
+													if (i < json_array_size (current_values_p))
 														{
-															entry_p = json_array_get (current_values_p, k);
+															entry_p = json_array_get (current_values_p, i);
 
 															if (repeatable_name_s)
 																{
@@ -779,13 +785,23 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 														}
 
 												}
-											else if ((k == 0) && (! (json_is_null (current_values_p))))
+											else if ((i == 0) && (! (json_is_null (current_values_p))))
 												{
 													entry_p = current_values_p;
 												}
 
 										}		/* if (current_values_p) */
 
+									PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, current_values_p, ">>>> param \"%s\" values\n", param_p -> pa_name_s);
+
+									if (entry_p)
+										{
+											PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, entry_p, "param \"%s\" entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
+										}
+									else
+										{
+											PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "param \"%s\" NULL entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
+										}
 
 									if (entry_p)
 										{
@@ -796,7 +812,6 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 											success_flag = SetParameterCurrentValueFromJSON (param_p, json_null ());
 										}
 
-									++ k;
 								}		/* while (params_itr.hasNext ()) */
 
 							if (success_flag)
@@ -807,6 +822,7 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 
 									if (group_json_p)
 										{
+											PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list\n", label_s);
 											box_p -> AddListEntry (label_s, group_json_p);
 											json_decref (group_json_p);
 										}
@@ -837,8 +853,11 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 				{					
 					json_t *param_json_p;
 					size_t i;
-
+					QHash <const json_t *, const json_t *> repeatable_param_names;
 					success_flag = true;
+
+					SetRepeatableGroupParamValuesFromJSON (params_json_p, &repeatable_param_names);
+
 
 					json_array_foreach (params_json_p, i, param_json_p)
 						{
@@ -853,38 +872,6 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 											json_t *current_value_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
 											const Parameter *param_p = widget_p -> GetParameter ();
 
-											if (param_p -> pa_group_p)
-												{
-													/*
-													 * Is widget part of repeatable group?
-													 */
-													RepeatableParamGroupBox *box_p = qpw_repeatable_groupings.value (param_p -> pa_group_p -> pg_name_s);
-
-													if (box_p)
-														{
-															/*
-															 * If the value is an array, get the first entry
-															 */
-
-															PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "%s is in a repeartable group\n", param_name_s);
-
-															if (json_is_array (current_value_p))
-																{
-																	json_t *temp_p = json_array_get (current_value_p, 0);
-
-																	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, current_value_p, "Setting from first element of array");
-																	PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, temp_p, ":");
-
-																	current_value_p = temp_p;
-																}
-														}
-													else
-														{
-															PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "%s is not in a repeartable group\n", param_name_s);
-														}
-
-
-												}
 
 											if (! (widget_p -> SetValueFromJSON (current_value_p)))
 												{

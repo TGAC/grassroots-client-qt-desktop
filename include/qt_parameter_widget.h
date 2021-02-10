@@ -144,6 +144,9 @@ private:
 
 	bool SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const char *, const char *> *repeatable_param_names_p);
 
+	size_t GetNumberOfRepeatedValues (QHash <const json_t *, Parameter *> *grouped_params_p);
+
+
 	static const int QPW_NUM_COLUMNS;
 };
 

@@ -381,6 +381,58 @@ void RepeatableParamGroupBox :: SelectedListEntryChanged ()
 		{
 			QListWidgetItem *item_p = l.at (0);
 			qDebug () << "selected " << item_p -> text () << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+
+			QByteArray ba = item_p -> data (Qt :: UserRole).toByteArray();
+			const char *group_json_s = ba.constData ();
+			json_error_t err;
+
+			json_t *group_json_p = json_loads (group_json_s, 0, &err);
+
+			if (group_json_p)
+				{
+					json_t *params_json_p = json_object_get (group_json_p, PARAM_GROUP_PARAMS_S);
+
+					if (params_json_p)
+						{
+							if (json_is_array (params_json_p))
+								{
+									size_t i;
+									json_t *param_json_p;
+
+									json_array_foreach (params_json_p, i, param_json_p)
+										{
+											const char *param_name_s = GetJSONString (param_json_p, PARAM_NAME_S);
+
+											if (param_name_s)
+												{
+													json_t *value_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
+
+													BaseParamWidget *widget_p = pgb_parent_p -> GetWidgetForParameter (param_name_s);
+
+													if (widget_p)
+														{
+															PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, value_p, "Calling SetValueFromJSON on widget \"%s\" for \"%s\"\n", widget_p -> GetParameterName (),  param_name_s);
+															widget_p -> SetValueFromJSON (value_p);
+														}
+													else
+														{
+															PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, param_json_p, "Failed to get widget for \"%s\"\n", param_name_s);
+														}
+												}
+											else
+												{
+													PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, param_json_p, "Failed to get param name\n");
+												}
+
+										}		/* json_array_foreach (params_json_p, i, param_json_p) */
+
+								}		/* if (json_is_array (params_json_p)) */
+
+						}		/* if (params_json_p) */
+
+					json_decref (group_json_p);
+				}		/* if (group_json_p) */
+
 		}
 
 	if (count > 0)

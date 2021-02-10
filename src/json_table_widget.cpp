@@ -52,6 +52,9 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
+	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, value_p, "JSONTableWidget :: SetValueFromJSON on widget \"%s\"\n", GetParameterName ());
+
+
 	ClearTable ();
 
 	if (json_is_array (value_p))
@@ -167,10 +170,14 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 											case PT_PASSWORD:
 											case PT_KEYWORD:
 											case PT_FASTA:
+											case PT_COMPLETABLE_STRING:
 												if (json_is_string (json_value_p))
 													{
 														v_p = new QVariant (json_string_value (json_value_p));
 													}
+												break;
+
+											case PT_STRING_ARRAY:
 												break;
 
 											case PT_JSON:

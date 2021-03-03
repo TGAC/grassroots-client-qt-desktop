@@ -361,7 +361,15 @@ void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_
 
 					if (req_p)
 						{
-							json_t *results_json_p = MakeRemoteJsonCall (req_p, connection_p);
+							json_t *results_json_p = NULL;
+
+							if (pw_data_p -> qcd_verbose_flag)
+								{
+									PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, req_p, "req:");
+								}
+
+
+							results_json_p = MakeRemoteJsonCall (req_p, connection_p);
 
 							if (results_json_p)
 								{

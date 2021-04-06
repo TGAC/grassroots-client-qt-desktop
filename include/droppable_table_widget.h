@@ -56,6 +56,9 @@ protected:
 
 	virtual bool dropMimeData (int row, int column, const QMimeData * data, Qt::DropAction action);
 
+	bool SetColumnHeadersFromFirstRow ();
+
+
 private:
 	BaseTableWidget *dtw_param_table_widget_p;
 	char dtw_row_delimiter;

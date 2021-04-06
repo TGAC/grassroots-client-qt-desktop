@@ -110,6 +110,43 @@ char DroppableTableWidget :: GetRowDelimiter () const
 
 
 
+bool DroppableTableWidget :: SetColumnHeadersFromFirstRow ()
+{
+	bool success_flag = false;
+	const int num_columns = columnCount ();
+
+	for (int i = 0; i < num_columns; ++ i)
+		{
+			QTableWidgetItem *item_p = item (0, i);
+			QString entry = item_p -> text ();
+			QByteArray entry_ba = entry.toLocal8Bit ();
+			const char *entry_s = entry_ba.constData ();
+
+			if (entry_s)
+				{
+					QTableWidgetItem *header_p = horizontalHeaderItem (i);
+
+					if (header_p)
+						{
+							header_p -> setText (entry_s);
+						}
+					else
+						{
+							header_p = new QTableWidgetItem (entry_s);
+							setHorizontalHeaderItem (i, header_p);
+						}
+
+				}
+
+		}
+
+	removeRow (0);
+
+	return success_flag;
+}
+
+
+
 
 void DroppableTableWidget :: dropEvent (QDropEvent *event_p)
 {
@@ -165,6 +202,10 @@ void DroppableTableWidget :: ShowPopupMenu (const QPoint &p)
 		{
 			action_p = new QAction (tr ("Add Column"), this);
 			connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: AddColumn);
+			menu_p -> addAction (action_p);
+
+			action_p = new QAction (tr ("Set Columns From First Row"), this);
+			connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: SetColumnHeadersFromFirstRow);
 			menu_p -> addAction (action_p);
 		}
 

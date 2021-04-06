@@ -217,6 +217,7 @@ bool BaseTableWidget :: SetColumnHeader (int col, const char * const name_s, con
 }
 
 
+
 bool BaseTableWidget :: SetColumnHeaders (Parameter *param_p)
 {
 	bool success_flag = false;

@@ -118,26 +118,32 @@ bool DroppableTableWidget :: SetColumnHeadersFromFirstRow ()
 	for (int i = 0; i < num_columns; ++ i)
 		{
 			QTableWidgetItem *item_p = item (0, i);
-			QString entry = item_p -> text ();
-			QByteArray entry_ba = entry.toLocal8Bit ();
-			const char *entry_s = entry_ba.constData ();
+			QString entry;
 
-			if (entry_s)
+			if (item_p)
 				{
-					QTableWidgetItem *header_p = horizontalHeaderItem (i);
-
-					if (header_p)
-						{
-							header_p -> setText (entry_s);
-						}
-					else
-						{
-							header_p = new QTableWidgetItem (entry_s);
-							setHorizontalHeaderItem (i, header_p);
-						}
-
+					entry = item_p -> text ();
 				}
 
+
+			if ((entry.isNull ()) || (entry.isEmpty ()))
+				{
+					entry = "";
+				}
+
+			QTableWidgetItem *header_p = horizontalHeaderItem (i);
+
+			if (header_p)
+				{
+					header_p -> setText (entry);
+				}
+			else
+				{
+					header_p = new QTableWidgetItem (entry);
+					setHorizontalHeaderItem (i, header_p);
+				}
+
+			qDebug () << "Set col " << i << " header to \"" << entry << "\"" << Qt :: endl;
 		}
 
 	removeRow (0);

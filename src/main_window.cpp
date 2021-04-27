@@ -251,10 +251,10 @@ void MainWindow :: ProcessResults (json_t *results_json_p)
 										}
 									else
 										{
-											int i;
+											json_int_t i;
 											/* Get the job status */
 
-											if (GetJSONInteger(job_p, SERVICE_STATUS_VALUE_S, &i))
+											if (GetJSONInteger (job_p, SERVICE_STATUS_VALUE_S, &i))
 												{
 													if ((i > OS_LOWER_LIMIT) && (i < OS_UPPER_LIMIT))
 														{

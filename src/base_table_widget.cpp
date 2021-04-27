@@ -303,7 +303,7 @@ void BaseTableWidget :: SetErrors (const json_t *errors_p)
 
 					json_array_foreach (errors_p, i, value_p)
 					{
-						int row;
+						json_int_t row;
 
 						if (GetJSONInteger (value_p, TABLE_PARAM_ROW_S, &row))
 							{

@@ -400,7 +400,7 @@ void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_
 													}
 												else
 													{
-														int k;
+														json_int_t k;
 														/* Get the job status */
 
 														if (GetJSONInteger(job_p, SERVICE_STATUS_VALUE_S, &k))

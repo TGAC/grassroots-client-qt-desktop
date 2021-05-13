@@ -27,7 +27,7 @@
 #include <QMovie>
 #include <QPushButton>
 
-#include "uuid/uuid.h"
+#include "uuid_defs.h"
 
 #include "jansson.h"
 

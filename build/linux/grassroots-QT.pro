@@ -119,7 +119,7 @@ GRASSROOTS_BSON_LIB_NAME = bson-1.0
 DIR_IRODS_LIBS = $$DIR_IRODS_HOME/usr/lib
 
 
-DEFINES += "UNIX" "_DEBUG" # "QT_NO_DEBUG_OUTPUT"
+DEFINES += "UNIX" "_DEBUG" "SHARED_LIBRARY" # "QT_NO_DEBUG_OUTPUT"
 
 INCLUDEPATH += \
     $$DIR_GRASSROOTS_QT_SRC/include \
@@ -181,6 +181,7 @@ SOURCES += \
 		$$DIR_GRASSROOTS_QT_SRC/src/double_spinner.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/signed_int_param_spin_box.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/unsigned_int_param_spin_box.cpp \
+  ../../src/alloc_failure.cpp \
 	../../src/base_combo_box.cpp \
   ../../src/base_table_widget.cpp \
 	../../src/double_combo_box.cpp \
@@ -239,6 +240,7 @@ HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/double_spinner.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/signed_int_param_spin_box.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/unsigned_int_param_spin_box.h \
+  ../../include/alloc_failure.hpp \
 	../../include/base_combo_box.h \
   ../../include/base_table_widget.h \
 	../../include/double_combo_box.h \

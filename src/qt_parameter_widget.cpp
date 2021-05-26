@@ -332,7 +332,11 @@ void QTParameterWidget :: AddProvider (const json_t *provider_p, const size_t i,
 				{
 					if (SetUriForCurlTool (curl_tool_p, provider_logo_s))
 						{
-							CURLcode res = RunCurlTool (curl_tool_p);
+							CURLcode res;
+
+							SetCurlToolTimeout (curl_tool_p, 5L);
+
+							res = RunCurlTool (curl_tool_p);
 
 							if (res == CURLE_OK)
 								{

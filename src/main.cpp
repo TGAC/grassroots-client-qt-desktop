@@ -209,7 +209,7 @@ int main (int argc, char *argv [])
 
 			if (c == 0)
 				{
-					connection_p = AllocateWebServerConnection (hostname_s);
+					connection_p = AllocateWebServerConnection (hostname_s, CM_FILE);
 				}
 			else
 				{

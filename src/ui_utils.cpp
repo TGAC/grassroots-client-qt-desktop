@@ -14,7 +14,8 @@
 ** limitations under the License.
 */
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
 
 #include "ui_utils.h"
 #include "curl_tools.h"
@@ -33,8 +34,8 @@ void UIUtils :: CentreWidget (QWidget *parent_p, QWidget *child_p)
 	int i;
 
 	/* Get our current screen dimensions */
-	QDesktopWidget *desktop_p  = QApplication :: desktop ();
-	QRect screen_frame = desktop_p -> screenGeometry (desktop_p -> screenNumber (parent_p));
+    QScreen *screen_p = QGuiApplication :: primaryScreen ();
+    QRect screen_frame = screen_p -> availableGeometry ();
 
 	/*
 	 * If the child widget would partially lie outside of the screen, adjust x and y until it isn't

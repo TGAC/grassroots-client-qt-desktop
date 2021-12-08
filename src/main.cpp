@@ -219,59 +219,65 @@ int main (int argc, char *argv [])
 
 			if (connection_p)
 				{
-					Client *client_p = GetClient (connection_p);
-
-					if (client_p)
+					if (InitDefaultOutputStream ())
 						{
-							QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
-							SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
-							UserDetails *user_p = NULL;
+							Client *client_p = GetClient (connection_p);
 
-							if (username_s && password_s)
+							if (client_p)
 								{
-									if (!SetConnectionCredentials (connection_p, username_s, password_s))
+									QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
+									SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
+									UserDetails *user_p = NULL;
+
+									if (username_s && password_s)
 										{
-											PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set credentials");
+											if (!SetConnectionCredentials (connection_p, username_s, password_s))
+												{
+													PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set credentials");
+												}
 										}
-								}
 
-							SetClientSchema (client_p, sv_p);
+									SetClientSchema (client_p, sv_p);
 
-							qt_data_p -> qcd_verbose_flag = verbose_flag;
+									qt_data_p -> qcd_verbose_flag = verbose_flag;
 
-							switch (op)
-								{
-									case OP_LIST_ALL_SERVICES:
+									switch (op)
 										{
-											GetAllServicesInClient (client_p, user_p);
-										}
-										break;
+											case OP_LIST_ALL_SERVICES:
+												{
+													GetAllServicesInClient (client_p, user_p);
+												}
+												break;
 
-									case OP_LIST_INTERESTED_SERVICES:
-										{
-											GetInterestedServicesInClient (client_p, protocol_s, query_s, user_p);
-										}
-										break;
+											case OP_LIST_INTERESTED_SERVICES:
+												{
+													GetInterestedServicesInClient (client_p, protocol_s, query_s, user_p);
+												}
+												break;
 
-									case OP_GET_NAMED_SERVICES:
-										{
-											GetNamedServicesInClient (client_p, keyword_s, user_p);
-										}
-										break;
+											case OP_GET_NAMED_SERVICES:
+												{
+													GetNamedServicesInClient (client_p, keyword_s, user_p);
+												}
+												break;
 
 
-									case OP_GET_SERVICE_INFO:
-										{
-											GetNamedServicesIndexingDataInClient (client_p, keyword_s, user_p);
-										}
-										break;
+											case OP_GET_SERVICE_INFO:
+												{
+													GetNamedServicesIndexingDataInClient (client_p, keyword_s, user_p);
+												}
+												break;
 
-									default:
-										break;
-								}		/* switch (api_id) */
+											default:
+												break;
+										}		/* switch (api_id) */
 
-							ReleaseClient (client_p);
-						}		/* if (client_p) */
+									ReleaseClient (client_p);
+								}		/* if (client_p) */
+
+
+							FreeDefaultOutputStream ();
+						}
 
 					FreeConnection (connection_p);
 

@@ -15,8 +15,8 @@ DroppableTextBox :: DroppableTextBox (QTParameterWidget *parent_p)
 
 	/* Set tab width to 2 spaces */
 	QFontMetrics metrics (font ());
-	int space_width = metrics.width (' ');
-	setTabStopWidth (2 * space_width);
+    int space_width = metrics.horizontalAdvance (' ');
+    setTabStopDistance (2 * space_width);
 }
 
 

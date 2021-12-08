@@ -20,6 +20,7 @@
 #include <QJsonDocument>
 #include <QDebug>
 #include <QAction>
+#include <QActionGroup>
 #include <QFontDatabase>
 #include <QMenuBar>
 #include <QTabWidget>
@@ -238,7 +239,7 @@ QTreeWidgetItem *JSONViewer :: InsertData (QTreeWidgetItem *parent_p, const char
 							const char *service_name_s = GetJSONString (child_json_p, SERVICE_NAME_S);
 
 							#if JSON_VIEWER_DEBUG >= STM_LEVEL_FINE
-							qDebug () << "service name \"" << service_name_s << "\"" << endl;
+                            qDebug () << "service name \"" << service_name_s << "\"" << Qt :: endl;
 							#endif
 
 							QTreeWidgetItem *item_p = InsertData (child_node_p, service_name_s, child_json_p);

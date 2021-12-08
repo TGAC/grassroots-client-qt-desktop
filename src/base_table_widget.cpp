@@ -172,7 +172,7 @@ bool BaseTableWidget :: SetColumnHeader (int col, const char * const name_s, con
 
 	if (verbose_flag)
 		{
-			qDebug () << "name_s: " << name_s << endl;
+            qDebug () << "name_s: " << name_s << Qt :: endl;
 		}
 
 	if (column_header_p)
@@ -202,7 +202,7 @@ bool BaseTableWidget :: SetColumnHeader (int col, const char * const name_s, con
 
 			if (verbose_flag)
 				{
-					qDebug () << "setting header " <<  column_header_p -> text () << " for column " << col << " with data " << type_s << " = " << column_header_p -> data (Qt :: UserRole) <<  endl;
+                    qDebug () << "setting header " <<  column_header_p -> text () << " for column " << col << " with data " << type_s << " = " << column_header_p -> data (Qt :: UserRole) <<  Qt :: endl;
 				}
 
 			ptw_table_p -> setHorizontalHeaderItem (col, column_header_p);
@@ -210,7 +210,7 @@ bool BaseTableWidget :: SetColumnHeader (int col, const char * const name_s, con
 		}
 	else
 		{
-			qDebug () << "failed to create column header for header_s: " << name_s << endl;
+            qDebug () << "failed to create column header for header_s: " << name_s << Qt :: endl;
 		}
 
 	return success_flag;
@@ -269,7 +269,7 @@ bool BaseTableWidget :: SetColumnHeaders (Parameter *param_p)
 		}		/* if (value_s) */
 	else
 		{
-			qDebug () << "no headers: " << endl;
+            qDebug () << "no headers: " << Qt :: endl;
 		}
 
 	return success_flag;

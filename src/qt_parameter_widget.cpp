@@ -1144,7 +1144,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 				}
 			if (param_p -> pa_type == PT_DIRECTORY)
 				{
-					mode = QFileDialog :: FileMode :: DirectoryOnly;
+                    mode = QFileDialog :: FileMode :: Directory;
 				}
 
 

@@ -84,8 +84,9 @@ bool ReleaseClient (Client *client_p)
 {
 	QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
 
+	//FreeClient (client_p);
 	FreeQTClientData (qt_data_p);
-	FreeClient (client_p);
+
 
 	return true;
 }
@@ -163,6 +164,8 @@ static QTClientData *AllocateQTClientData (Connection *connection_p)
 static void FreeQTClientData (QTClientData *qt_data_p)
 {
 	delete (qt_data_p -> qcd_window_p);
+
+
 	FreeCopiedString (qt_data_p -> qcd_dummy_arg_s);
 
 	while (! (qt_data_p -> qcd_viewer_widgets_p -> isEmpty ()))
@@ -190,6 +193,7 @@ static void FreeQTClientData (QTClientData *qt_data_p)
 	delete (qt_data_p -> qcd_app_p);
 
 	FreeMemory (qt_data_p);
+
 }
 
 

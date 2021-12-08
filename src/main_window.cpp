@@ -14,8 +14,8 @@
 ** limitations under the License.
 */
 #include <QAction>
+#include <QActionGroup>
 #include <QDockWidget>
-#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QKeySequence>
@@ -25,10 +25,11 @@
 #include <QPushButton>
 #include <QPluginLoader>
 #include <QTextStream>
-
+#include <QGuiApplication>
 #include <QUrl>
 #include <QTabWidget>
 #include <QToolBar>
+#include <QScreen>
 #include <QWidget>
 
 #include "string_utils.h"
@@ -70,7 +71,8 @@ MainWindow :: MainWindow (QTClientData *data_p)
 
 	AddActions ();
 
-	QSize screen_size = QDesktopWidget ().availableGeometry (this).size ();
+    QScreen *screen_p = QGuiApplication :: primaryScreen ();
+    QSize screen_size = screen_p -> availableGeometry ().size ();
 	resize (screen_size * 0.5);
 	move (static_cast <int> (screen_size.width () * 0.25), static_cast <int> (screen_size.height () * 0.25));
 }

@@ -289,24 +289,24 @@ LIBS += -L$$DIR_GRASSROOTS_LIBS \
 # -L$$DIR_GRASSROOTS_LIBUUID_LIB -l$$GRASSROOTS_LIBUUID_LIB_NAME
 
 
-#message ("DIR_IRODS_HOME _$$DIR_IRODS_HOME"_)
-#!isEqual (DIR_IRODS_HOME, "") {
-# LIBS += -l$$GRASSROOTS_IRODS_LIB_NAME \
-#    -L$$DIR_IRODS_LIBS \
-#    -lirods_common \
-#    -lirods_client \
-#    -lirods_plugin_dependencies \
-#    $$BOOST_DEPS
-#}#
+message ("DIR_IRODS_HOME _$$DIR_IRODS_HOME"_)
+!isEqual (DIR_IRODS_HOME, "") {
+ LIBS += -l$$GRASSROOTS_IRODS_LIB_NAME \
+    -L$$DIR_IRODS_LIBS \
+    -lirods_common \
+    -lirods_client \
+    -lirods_plugin_dependencies \
+    $$BOOST_DEPS
+}
+
 #
- #
-#message ("GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)
-#!isEqual(GRASSROOTS_DRMAA_LIB_NAME,"") {
-#    message ("added GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)
-#    LIBS += -l$$GRASSROOTS_DRMAA_LIB_NAME \
-#    -L$$DIR_DRMAA_LIB -ldrmaa \
-#    # $$DRMAA_DEPS
-#}
+message ("GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)
+!isEqual(GRASSROOTS_DRMAA_LIB_NAME,"") {
+    message ("added GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)
+    LIBS += -l$$GRASSROOTS_DRMAA_LIB_NAME \
+    -L$$DIR_DRMAA_LIB -ldrmaa \
+    # $$DRMAA_DEPS
+}
 
 target.path = $$DIR_GRASSROOTS_INSTALL_ROOT
 INSTALLS += target

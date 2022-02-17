@@ -24,6 +24,9 @@
 #include "qt_client_data.h"
 
 
+#define RESULTS_WIDGET_DEBUG (STM_LEVEL_FINER)
+
+
 const char *ResultsWidget :: RW_SERVICES_TAB_TITLE_S = "Applications";
 
 
@@ -102,7 +105,7 @@ bool ResultsWidget :: AddResultsPageFromJSON (const json_t *json_p, const char *
 	json_t *metadata_json_p = json_object_get (json_p, JOB_METADATA_S);
 
 	#if RESULTS_WIDGET_DEBUG >= STM_LEVEL_FINER
-	PrintJSONToLog (json_p, "result: ", STM_LEVEL_FINER, __FILE__, __LINE__);
+	PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, json_p, "result: ");
 	#endif
 
 	if (results_json_p)

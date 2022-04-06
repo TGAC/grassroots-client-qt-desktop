@@ -92,7 +92,7 @@ void ResultsWindow :: ClearData ()
 
 	if (rw_data_p)
 		{
-			WipeJSON (rw_data_p);
+			json_decref (rw_data_p);
 		}
 }
 

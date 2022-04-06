@@ -494,7 +494,7 @@ void MainWindow :: SaveConfiguration ()
 
 						}
 
-					WipeJSON (res_p);
+					json_decref (res_p);
 				}
 
 		}		/* if (! (filename.isNull () || filename.isEmpty ())) */

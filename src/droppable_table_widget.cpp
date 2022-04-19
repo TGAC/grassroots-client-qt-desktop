@@ -209,11 +209,11 @@ void DroppableTableWidget :: ShowPopupMenu (const QPoint &p)
 			action_p = new QAction (tr ("Add Column"), this);
 			connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: AddColumn);
 			menu_p -> addAction (action_p);
-
-			action_p = new QAction (tr ("Set Columns From First Row"), this);
-			connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: SetColumnHeadersFromFirstRow);
-			menu_p -> addAction (action_p);
 		}
+
+	action_p = new QAction (tr ("Set Columns From First Row"), this);
+	connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: SetColumnHeadersFromFirstRow);
+	menu_p -> addAction (action_p);
 
 	menu_p->exec (mapToGlobal (p));
 }

@@ -295,9 +295,8 @@ message ("DIR_IRODS_HOME _$$DIR_IRODS_HOME"_)
     -L$$DIR_IRODS_LIBS \
     -lirods_common \
     -lirods_client \
-    -lirods_plugin_dependencies \
-    $$BOOST_DEPS
-}
+    -lirods_plugin_dependencies
+ }
 
 #
 message ("GRASSROOTS_DRMAA_LIB_NAME _$$GRASSROOTS_DRMAA_LIB_NAME"_)

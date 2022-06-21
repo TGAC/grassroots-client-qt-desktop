@@ -349,10 +349,10 @@ void MainWindow :: RunService (json_t *service_p)
 {
 	if (service_p)
 		{
-			if (mw_client_data_p -> qcd_verbose_flag)
-				{
-					PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, service_p, "Client sending: ");
-				}
+            //if (mw_client_data_p -> qcd_verbose_flag)
+            //	{
+            //		PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, service_p, "Client sending: ");
+            //	}
 
 			setCursor (Qt :: BusyCursor);
 			json_t *services_json_p = CallServices (service_p, nullptr, mw_client_data_p -> qcd_base_data.cd_connection_p);

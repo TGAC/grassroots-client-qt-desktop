@@ -3,6 +3,7 @@
 #include <QMimeData>
 #include <QDebug>
 #include <QInputDialog>
+#include <QMessageBox>
 
 #include "droppable_table_widget.h"
 #include "string_utils.h"
@@ -215,6 +216,13 @@ void DroppableTableWidget :: ShowPopupMenu (const QPoint &p)
 	connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: SetColumnHeadersFromFirstRow);
 	menu_p -> addAction (action_p);
 
+
+	action_p = new QAction (tr ("Set Columns Delmiter"), this);
+	connect (action_p, &QAction :: triggered, this, &DroppableTableWidget :: EditColumnDelimiter);
+	menu_p -> addAction (action_p);
+
+
+
 	menu_p->exec (mapToGlobal (p));
 }
 
@@ -241,6 +249,35 @@ void DroppableTableWidget :: AddColumn (bool triggered_flag)
 		}
 }
 
+
+
+void DroppableTableWidget :: EditColumnDelimiter (bool triggered_flag)
+{
+
+	/*
+	 * Get column name to add
+	 */
+	bool ok_flag;
+	QString inp = QInputDialog::getText (this, tr ("Set Delimiter"), tr ("Token:"), QLineEdit :: Normal, "", &ok_flag);
+
+	if (ok_flag && (!inp.isEmpty ()))
+		{
+			QByteArray ba = inp.toLocal8Bit ();
+			const char * const inp_s = ba.constData ();
+
+			if (inp_s)
+				{
+					if (strlen (inp_s) == 1)
+						{
+							SetColumnDelimiter (*inp_s);
+						}
+					else
+						{
+							QMessageBox :: warning (this, "Error refreshing service", "Failed to get updated service values");
+						}
+				}
+		}
+}
 
 
 char *DroppableTableWidget :: GetEntry (const char *start_s, const char *end_s)
@@ -323,6 +360,7 @@ void DroppableTableWidget :: SetRow (const int row, const char *data_s)
 	const char *next_token_s;
 	int col = 0;
 	bool loop_flag = true;
+	bool in_quotes_flag = false;
 
 	if (row >= rowCount ())
 		{

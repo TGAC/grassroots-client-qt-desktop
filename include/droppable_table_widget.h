@@ -58,6 +58,7 @@ protected:
 
 	bool SetColumnHeadersFromFirstRow ();
 
+	void EditColumnDelimiter (bool triggered_flag);
 
 private:
 	BaseTableWidget *dtw_param_table_widget_p;

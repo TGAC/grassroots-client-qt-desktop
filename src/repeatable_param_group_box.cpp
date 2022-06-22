@@ -411,7 +411,10 @@ void RepeatableParamGroupBox :: SelectedListEntryChanged ()
 
 													if (widget_p)
 														{
-															PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, value_p, "Calling SetValueFromJSON on widget \"%s\" for \"%s\"\n", widget_p -> GetParameterName (),  param_name_s);
+															if (pgb_parent_p -> GetClientData () -> qcd_verbose_flag)
+																{
+																	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, value_p, "Calling SetValueFromJSON on widget \"%s\" for \"%s\"\n", widget_p -> GetParameterName (),  param_name_s);
+																}
 															widget_p -> SetValueFromJSON (value_p);
 														}
 													else

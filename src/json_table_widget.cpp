@@ -3,6 +3,9 @@
 #include "json_table_widget.h"
 
 
+#include "qt_parameter_widget.h"
+#include "qt_client_data.h"
+
 
 JSONTableWidget :: JSONTableWidget (JSONParameter * const param_p, QTParameterWidget * const parent_p)
 	: BaseTableWidget (& (param_p -> jp_base_param), parent_p)
@@ -52,8 +55,10 @@ bool JSONTableWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, value_p, "JSONTableWidget :: SetValueFromJSON on widget \"%s\"\n", GetParameterName ());
-
+	if (bpw_parent_p -> GetClientData () -> qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, value_p, "JSONTableWidget :: SetValueFromJSON on widget \"%s\"\n", GetParameterName ());
+		}
 
 	ClearTable ();
 

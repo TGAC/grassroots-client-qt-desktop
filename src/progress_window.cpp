@@ -185,7 +185,10 @@ void ProgressWindow :: UpdateStatuses ()
 						{
 							json_t *services_json_p = json_object_get (statuses_json_p, SERVICES_NAME_S);
 
-							PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, statuses_json_p, "results");
+							if (pw_data_p -> qcd_verbose_flag)
+								{
+									PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, statuses_json_p, "results");
+								}
 
 							if (services_json_p)
 								{
@@ -373,8 +376,10 @@ void ProgressWindow :: RefreshStatuses (ProgressWidget **widgets_pp, const size_
 
 							if (results_json_p)
 								{
-									PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, results_json_p, "results");
-
+									if (pw_data_p -> qcd_verbose_flag)
+										{
+											PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, results_json_p, "results");
+										}
 
 									if (json_is_array (results_json_p))
 										{

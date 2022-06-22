@@ -796,15 +796,24 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 
 										}		/* if (current_values_p) */
 
-									PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, current_values_p, ">>>> param \"%s\" values\n", param_p -> pa_name_s);
+									if (qpw_client_data_p -> qcd_verbose_flag)
+										{
+											PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, current_values_p, ">>>> param \"%s\" values\n", param_p -> pa_name_s);
+										}
 
 									if (entry_p)
 										{
-											PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, entry_p, "param \"%s\" entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
+											if (qpw_client_data_p -> qcd_verbose_flag)
+												{
+													PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, entry_p, "param \"%s\" entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
+												}
 										}
 									else
 										{
-											PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "param \"%s\" NULL entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
+											if (qpw_client_data_p -> qcd_verbose_flag)
+												{
+													PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "param \"%s\" NULL entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
+												}
 										}
 
 									if (entry_p)
@@ -826,7 +835,11 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 
 									if (group_json_p)
 										{
-											PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list\n", label_s);
+											if (qpw_client_data_p -> qcd_verbose_flag)
+												{
+													PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list\n", label_s);
+												}
+
 											box_p -> AddListEntry (label_s, group_json_p);
 											json_decref (group_json_p);
 										}
@@ -1258,10 +1271,11 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 
 	json_t *param_set_json_p = GetParameterSetSelectionAsJSON (qpw_params_p, sv_p, false, &repeated_widgets, AddNonRepeatedParams);
 
-	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN Non-repeated");
-	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END Non-repeated");
-
-
+  if (qpw_client_data_p->qcd_verbose_flag)
+    {
+      PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN Non-repeated");
+      PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END Non-repeated");
+    }
 
 	if (param_set_json_p)
 		{
@@ -1291,9 +1305,12 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 
 		}		/* if (params_json_p) */
 
-	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN repeated");
-	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END repeated");
 
+  if (qpw_client_data_p->qcd_verbose_flag)
+    {
+      PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN repeated");
+      PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END repeated");
+    }
 
 
 	return param_set_json_p;

@@ -177,16 +177,25 @@ bool ParamJSONEditor :: SetValueFromText (const char *value_s)
 bool ParamJSONEditor :: SetValueFromJSON (const json_t * const param_value_p)
 {
 	bool success_flag = false;
-//	const json_t *param_value_p = json_object_get (value_p, PARAM_CURRENT_VALUE_S);
+	bool verbose_flag = bpw_parent_p -> GetClientData () -> qcd_verbose_flag;
+
+	//	const json_t *param_value_p = json_object_get (value_p, PARAM_CURRENT_VALUE_S);
 
 	if ((!param_value_p) || (json_is_null (param_value_p)))
 		{
-			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "ParamJSONEditor :: SetValueFromJSON on widget \"%s\" with NULL\n", GetParameterName ());
+			if (verbose_flag)
+				{
+					PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "ParamJSONEditor :: SetValueFromJSON on widget \"%s\" with NULL\n", GetParameterName ());
+				}
+
 			success_flag = (static_cast <DroppableJSONBox *> (pje_text_box_p)) -> SetFromJSON (json_null ());
 		}
 	else
 		{
-			PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_value_p, "ParamJSONEditor :: SetValueFromJSON on widget \"%s\"\n", GetParameterName ());
+			if (verbose_flag)
+				{
+					PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_value_p, "ParamJSONEditor :: SetValueFromJSON on widget \"%s\"\n", GetParameterName ());
+				}
 
 			success_flag = (static_cast <DroppableJSONBox *> (pje_text_box_p)) -> SetFromJSON (param_value_p);
 		}

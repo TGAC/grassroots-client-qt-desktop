@@ -104,9 +104,10 @@ bool ResultsWidget :: AddResultsPageFromJSON (const json_t *json_p, const char *
 	json_t *results_json_p = json_object_get (json_p, SERVICE_RESULTS_S);
 	json_t *metadata_json_p = json_object_get (json_p, JOB_METADATA_S);
 
-	#if RESULTS_WIDGET_DEBUG >= STM_LEVEL_FINER
-	PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, json_p, "result: ");
-	#endif
+	if (rw_client_data_p -> qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_FINER, __FILE__, __LINE__, json_p, "result: ");
+		}
 
 	if (results_json_p)
 		{

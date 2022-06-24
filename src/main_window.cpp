@@ -360,6 +360,11 @@ void MainWindow :: RunService (json_t *service_p)
 
 			if (services_json_p)
 				{
+					if (mw_client_data_p -> qcd_verbose_flag)
+						{
+							PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, service_p, "Client received: ");
+						}
+
 					ProcessResults (services_json_p);
 					json_decref (services_json_p);
 				}		/* if (services_json_p) */

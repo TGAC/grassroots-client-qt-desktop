@@ -326,7 +326,7 @@ void QTParameterWidget :: AddProvider (const json_t *provider_p, const size_t i,
 
 	if (provider_logo_s)
 		{
-			CurlTool *curl_tool_p = AllocateCurlTool (CM_MEMORY);
+			CurlTool *curl_tool_p = AllocateMemoryCurlTool (0);
 
 			if (curl_tool_p)
 				{

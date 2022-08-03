@@ -77,7 +77,7 @@ void UIUtils :: CentreWidget (QWidget *parent_p, QWidget *child_p)
 QIcon *UIUtils :: GetRemoteIconImage (const char * const icon_path_s)
 {
 	QIcon *icon_p = 0;
-	CurlTool *curl_tool_p = AllocateCurlTool (CM_MEMORY);
+	CurlTool *curl_tool_p = AllocateMemoryCurlTool (0);
 
 	if (curl_tool_p)
 		{

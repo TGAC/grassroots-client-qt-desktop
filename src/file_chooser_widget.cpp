@@ -86,7 +86,7 @@ bool FileChooserWidget :: SetValueFromJSON (const json_t * const value_p)
 
 void FileChooserWidget :: SetDefaultValue ()
 	{
-	const Resource *resource_p = GetResourceParameterDefaultValue (fcw_param_p);
+	const DataResource *resource_p = GetResourceParameterDefaultValue (fcw_param_p);
 
 	if (resource_p)
 		{

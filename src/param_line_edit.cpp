@@ -31,7 +31,7 @@ ParamLineEdit :: ParamLineEdit (StringParameter * const param_p, QTParameterWidg
 
 	if (bpw_param_p -> pa_refresh_service_flag)
 		{
-			QObject ::  connect (ple_text_box_p,  &QLineEdit :: textChanged, parent_p, &QTParameterWidget :: RefreshService);
+			QObject ::  connect (ple_text_box_p,  &QLineEdit :: returnPressed, parent_p, &QTParameterWidget :: RefreshService);
 		}
 
 }

@@ -15,6 +15,7 @@
 */
 #include <QDebug>
 #include <QHBoxLayout>
+#include <QDateTime>
 
 #include "param_date_widget.h"
 
@@ -29,7 +30,7 @@ ParamDateWidget :: ParamDateWidget (TimeParameter * const param_p, QTParameterWi
 : BaseParamWidget (& (param_p -> tp_base_param), parent_p)
 {
 	pdw_checkbox_p = new QCheckBox (parent_p);
-	pdw_calendar_p = new QCalendarWidget (parent_p);
+	pdw_calendar_p = new QDateTimeEdit (QDateTime :: currentDateTime (), parent_p);
 	pdw_param_p = param_p;
 
 	QHBoxLayout *layout_p = new QHBoxLayout;
@@ -47,7 +48,7 @@ ParamDateWidget :: ParamDateWidget (TimeParameter * const param_p, QTParameterWi
 
 	if (bpw_param_p -> pa_refresh_service_flag)
 		{
-			QObject ::  connect (pdw_calendar_p,  &QCalendarWidget :: selectionChanged, parent_p, &QTParameterWidget :: RefreshService);
+			QObject ::  connect (pdw_calendar_p,  &QDateTimeEdit :: dateTimeChanged, parent_p, &QTParameterWidget :: RefreshService);
 		}
 
 }
@@ -66,7 +67,7 @@ bool ParamDateWidget :: StoreParameterValue (bool refresh_flag)
 
 	if (pdw_checkbox_p -> isChecked ())
 		{
-			QDate d = pdw_calendar_p -> selectedDate ();
+			QDateTime dt = pdw_calendar_p -> dateTime ();
 			struct tm *time_p = AllocateTime ();
 
 			if (time_p)
@@ -75,9 +76,16 @@ bool ParamDateWidget :: StoreParameterValue (bool refresh_flag)
 
 					if (pdw_checkbox_p -> isChecked ())
 						{
-							time_p -> tm_year = d.year () - 1900;
-							time_p -> tm_mon = d.month () - 1;
-							time_p -> tm_mday = d.day ();
+						  QDate d = dt.date ();
+						  QTime t = dt.time ();
+
+						  time_p -> tm_year = d.year () - 1900;
+						  time_p -> tm_mon = d.month () - 1;
+						  time_p -> tm_mday = d.day ();
+
+						  time_p -> tm_hour = t.hour ();
+						  time_p -> tm_min = t.minute ();
+						  time_p -> tm_sec = t.second ();
 						}
 
 					success_flag = SetTimeParameterCurrentValue (pdw_param_p, time_p);
@@ -105,7 +113,7 @@ void ParamDateWidget :: SetDefaultValue ()
 				{
 					QDate d (1900 + (time_p -> tm_year), 1 + (time_p -> tm_mon), time_p -> tm_mday);
 
-					pdw_calendar_p -> setSelectedDate (d);
+					pdw_calendar_p -> setDate (d);
 				}
 		}
 	else
@@ -131,7 +139,7 @@ bool ParamDateWidget :: SetValueFromText (const char *value_s)
 				{
 					QDate d (1900 + (time_val.tm_year), 1 + (time_val.tm_mon), time_val.tm_mday);
 
-					pdw_calendar_p -> setSelectedDate (d);
+					pdw_calendar_p -> setDate (d);
 
 
 					pdw_checkbox_p -> setChecked (true);

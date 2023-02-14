@@ -3,7 +3,7 @@
 
 
 #include <QWidget>
-#include <QCalendarWidget>
+#include <QDateTimeEdit>
 #include <QCheckBox>
 
 #include "parameter.h"
@@ -38,7 +38,7 @@ protected:
 private:
 	TimeParameter *pdw_param_p;
 	QWidget *pdw_root_widget_p;
-	QCalendarWidget  *pdw_calendar_p;
+	QDateTimeEdit  *pdw_calendar_p;
 	QCheckBox *pdw_checkbox_p;
 };
 

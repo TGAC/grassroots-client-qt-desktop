@@ -6,6 +6,7 @@
 #include "string_utils.h"
 #include "qt_parameter_widget.h"
 #include "qt_client_data.h"
+#include "streams.h"
 
 
 RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p,  bool removable_flag, bool add_params_flag)
@@ -241,6 +242,10 @@ json_t *RepeatableParamGroupBox :: GetParametersAsJSON ()
 
 bool RepeatableParamGroupBox :: SetParametersFromJSON (json_t *params_json_p)
 {
+	if (pgb_parent_p -> GetClientData () -> qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, params_json_p, "RepeatableParamGroupBox :: SetParametersFromJSON () for \"%s\"", GetGroupName ());
+		}
 
 	return false;
 }
@@ -300,6 +305,7 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 {
 	QString label;
 
+
 	if (label_s)
 		{
 			label = label_s;
@@ -308,6 +314,12 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 		{
 			int i = rpgb_entries_p -> count ();
 			label = QString :: number (i);
+		}
+
+
+	if (pgb_parent_p -> GetClientData () -> qcd_verbose_flag)
+		{
+			PrintJSONToErrors (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\"", label_s);
 		}
 
 	QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);

@@ -703,7 +703,7 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 			RepeatableParamGroupBox *box_p = groups_itr.value ();
 
 			/*
-			 * Get all of the Paramaters in this group
+			 * Get all of the Parameters in this group
 			 */
 			QHash <const json_t *, Parameter *> grouped_params;
 			const json_t *param_json_p;

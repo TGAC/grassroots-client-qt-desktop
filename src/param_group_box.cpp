@@ -99,13 +99,15 @@ void ParamGroupBox :: AddParamGroupWidgets (bool add_params_flag)
 							AddParameterWidget (widget_p);
 							pgb_parent_p -> ParameterWidgetAdded (param_p, widget_p);
 
-							node_p = (ParameterNode *) (node_p -> pn_node.ln_next_p);
 						}
 					else
 						{
 							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to add widget for \"%s\"", param_p -> pa_name_s);
 						}
-				}
+
+				    node_p = (ParameterNode *) (node_p -> pn_node.ln_next_p);
+
+			  }
 		}
 }
 

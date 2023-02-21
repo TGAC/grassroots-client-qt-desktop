@@ -509,7 +509,6 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 
 	while (node_p)
 		{
-			
 			Parameter * const param_p = node_p -> pn_parameter_p;
 
 			if (!qpw_widgets_map.contains (param_p))
@@ -1157,7 +1156,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 				}
 			if (param_p -> pa_type == PT_DIRECTORY)
 				{
-                    mode = QFileDialog :: FileMode :: Directory;
+					mode = QFileDialog :: FileMode :: Directory;
 				}
 
 

@@ -38,6 +38,7 @@
 #include "param_group_box.h"
 #include "parameter_widget_container.h"
 #include "repeatable_param_group_box.h"
+#include "byte_buffer.h"
 
 
 // forward class declaration
@@ -144,8 +145,10 @@ private:
 
 	bool SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const char *, const char *> *repeatable_param_names_p);
 
-	size_t GetNumberOfRepeatedValues (QHash <const json_t *, Parameter *> *grouped_params_p);
+	size_t GetNumberOfRepeatedValues (QHash <Parameter *, const json_t *> *grouped_params_p);
 
+
+	bool SetGroupedParameterValue (Parameter *param_p, const json_t *param_json_p, const size_t index, ByteBuffer *label_buffer_p);
 
 	static const int QPW_NUM_COLUMNS;
 };

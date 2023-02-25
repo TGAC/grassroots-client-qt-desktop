@@ -645,20 +645,20 @@ void QTParameterWidget :: ResetToDefaults ()
 
 
 
-size_t QTParameterWidget :: GetNumberOfRepeatedValues (QHash <const json_t *, Parameter *> *grouped_params_p)
+size_t QTParameterWidget :: GetNumberOfRepeatedValues (QHash <Parameter *, const json_t *> *grouped_params_p)
 {
 	size_t num_values = 0;
 
 	/*
 	 * Get the maximum length
 	 */
-	QHashIterator <const json_t *, Parameter *> params_itr (*grouped_params_p);
+	QHashIterator <Parameter *, const json_t *> params_itr (*grouped_params_p);
 
 	while (params_itr.hasNext ())
 		{
 			params_itr.next ();
 
-			const json_t *param_json_p = params_itr.key ();
+			const json_t *param_json_p = params_itr.value ();
 			const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
 
 			if (current_values_p)
@@ -700,11 +700,13 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 
 			const char *group_name_s = groups_itr.key ();
 			RepeatableParamGroupBox *box_p = groups_itr.value ();
+			const ParameterGroup *group_p = box_p -> GetParameterGroup ();
 
 			/*
 			 * Get all of the Parameters in this group
 			 */
-			QHash <const json_t *, Parameter *> grouped_params;
+			QHash <Parameter *, const json_t *> grouped_params;
+			QHash <Parameter *, Parameter *> non_label_params;
 			const json_t *param_json_p;
 			size_t i;
 			size_t num_params;
@@ -723,7 +725,8 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 
 									if (param_p)
 										{
-											grouped_params.insert (param_json_p, param_p);
+											grouped_params.insert (param_p, param_json_p);
+											non_label_params.insert (param_p, param_p);
 
 											repeatable_param_names_p -> insert (param_json_p, param_json_p);
 										}
@@ -732,126 +735,158 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 
 				}		/* json_array_foreach (params_array_json_p, j, param_json_p) */
 
+			/*
+			 * Now remove the non label params from non_label_params
+			 */
+
+			ParameterNode *param_node_p = (ParameterNode *) (group_p -> pg_repeatable_label_params_p -> ll_head_p);
+
+			while (param_node_p)
+				{
+					non_label_params.remove (param_node_p -> pn_parameter_p);
+					param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+				}
+
+
+
+			size_t num_values = GetNumberOfRepeatedValues (&grouped_params);
+
 			if ((num_params = grouped_params.size ()) > 0)
 				{
-					size_t num_values = GetNumberOfRepeatedValues (&grouped_params);
+					box_p -> ClearList ();
 
-					/*
+						/*
 					 * Build and add the entries to the lists
 					 */
-					for (i = 0; i < num_values; ++ i)
+
+					/*
+					 * Build the label
+					 */
+					ByteBuffer *buffer_p = AllocateByteBuffer (1024);
+
+					if (buffer_p)
 						{
-							QHashIterator <const json_t *, Parameter *> params_itr (grouped_params);
-							bool success_flag = true;
-							const char *label_s = NULL;
-							const char *repeatable_name_s = NULL;
 
-							const ParameterGroup *group_p = box_p -> GetParameterGroup ();
-
-							if (group_p -> pg_repeatable_param_p)
+							for (i = 0; i < num_values; ++ i)
 								{
-									repeatable_name_s = group_p -> pg_repeatable_param_p -> pa_name_s;
-								}
+									QHashIterator <Parameter *, const json_t *> params_itr (grouped_params);
+									bool success_flag = true;
+									char *label_s = NULL;
+									const ParameterGroup *group_p = box_p -> GetParameterGroup ();
+									ParameterNode *param_node_p = (ParameterNode *) (group_p -> pg_repeatable_label_params_p -> ll_head_p);
 
-
-							while (params_itr.hasNext ())
-								{
-									params_itr.next ();
-
-									param_json_p = params_itr.key ();
-									Parameter *param_p = params_itr.value ();
-									const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
-									const json_t *entry_p = NULL;
-
-									if (current_values_p)
+									/* do the label params first */
+									while (param_node_p)
 										{
-											if (json_is_array (current_values_p))
+											Parameter *param_p = param_node_p -> pn_parameter_p;
+											const json_t *param_json_p = grouped_params.value (param_p);
+
+											SetGroupedParameterValue (param_p, param_json_p, i, buffer_p);
+
+											param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+										}		/* while (param_node_p) */
+
+									/* now do the other params */
+									QHash <Parameter *, Parameter *> :: iterator itr;
+									for (itr = non_label_params.begin (); itr != non_label_params.end (); ++ itr)
+										{
+											Parameter *param_p = itr.key ();
+											const json_t *param_json_p = grouped_params.value (param_p);
+
+											SetGroupedParameterValue (param_p, param_json_p, i, nullptr);
+										}
+
+									if (success_flag)
+										{
+											const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
+
+											json_t *group_json_p = GetParameterGroupAsJSON (box_p -> GetParameterGroup (), true, false, sv_p);
+
+											if (group_json_p)
 												{
-													if (i < json_array_size (current_values_p))
+													if (qpw_client_data_p -> qcd_verbose_flag)
 														{
-															entry_p = json_array_get (current_values_p, i);
-
-															if (repeatable_name_s)
-																{
-																	const char *name_s = GetJSONString (param_json_p, PARAM_NAME_S);
-
-																	if (name_s)
-																		{
-																			if (strcmp (repeatable_name_s, name_s) == 0)
-																				{
-																					label_s = json_string_value (entry_p);
-																				}
-																		}
-																}
-
-
+															PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list\n", label_s);
 														}
 
-												}
-											else if ((i == 0) && (! (json_is_null (current_values_p))))
-												{
-													entry_p = current_values_p;
-												}
-
-										}		/* if (current_values_p) */
-
-									if (qpw_client_data_p -> qcd_verbose_flag)
-										{
-											PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, current_values_p, ">>>> param \"%s\" values\n", param_p -> pa_name_s);
-										}
-
-									if (entry_p)
-										{
-											if (qpw_client_data_p -> qcd_verbose_flag)
-												{
-													PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, entry_p, "param \"%s\" entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
-												}
-										}
-									else
-										{
-											if (qpw_client_data_p -> qcd_verbose_flag)
-												{
-													PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "param \"%s\" NULL entry " SIZET_FMT "\n", param_p -> pa_name_s, i);
+													box_p -> AddListEntry (GetByteBufferData (buffer_p), group_json_p);
+													json_decref (group_json_p);
 												}
 										}
 
-									if (entry_p)
-										{
-											success_flag = SetParameterCurrentValueFromJSON (param_p, entry_p);
-										}
-									else
-										{
-											success_flag = SetParameterCurrentValueFromJSON (param_p, json_null ());
-										}
-
-								}		/* while (params_itr.hasNext ()) */
-
-							if (success_flag)
-								{
-									const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
-
-									json_t *group_json_p = GetParameterGroupAsJSON (box_p -> GetParameterGroup (), true, false, sv_p);
-
-									if (group_json_p)
-										{
-											if (qpw_client_data_p -> qcd_verbose_flag)
-												{
-													PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list\n", label_s);
-												}
-
-											box_p -> AddListEntry (label_s, group_json_p);
-											json_decref (group_json_p);
-										}
-								}
-
-						}		/* for (size_t l = 0; l < num_values; ++ l) */
+									ResetByteBuffer (buffer_p);
 
 
+
+								}		/* for (i = 0; i < num_values; ++ i) */
+
+							FreeByteBuffer (buffer_p);
+						}		/* if (buffer_p) */
 
 				}		/* if ((num_params = params.size ()) > 0) */
 
 		}		/* while (i.hasNext ()) */
 
+
+	return success_flag;
+}
+
+
+bool QTParameterWidget :: SetGroupedParameterValue (Parameter *param_p, const json_t *param_json_p , const size_t index, ByteBuffer *label_buffer_p)
+{
+	bool success_flag = true;
+
+	if (param_json_p)
+		{
+			const json_t *current_values_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
+			const json_t *entry_p = NULL;
+
+			if (current_values_p)
+				{
+					if (json_is_array (current_values_p))
+						{
+							if (index < json_array_size (current_values_p))
+								{
+									entry_p = json_array_get (current_values_p, index);
+								}
+
+						}
+					else if ((index == 0) && (! (json_is_null (current_values_p))))
+						{
+							entry_p = current_values_p;
+						}
+
+					if (entry_p)
+						{
+							if (json_is_string (entry_p))
+								{
+									if (label_buffer_p)
+										{
+											const char *value_s = json_string_value (entry_p);
+											AppendStringsToByteBuffer (label_buffer_p, value_s, " ", NULL);
+										}
+								}
+
+							if (qpw_client_data_p -> qcd_verbose_flag)
+								{
+									PrintJSONToLog (STM_LEVEL_FINE, __FILE__, __LINE__, entry_p, "param \"%s\" entry " SIZET_FMT "\n", param_p -> pa_name_s, index);
+								}
+
+							success_flag = SetParameterCurrentValueFromJSON (param_p, entry_p);
+						}
+					else
+						{
+							if (qpw_client_data_p -> qcd_verbose_flag)
+								{
+									PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "param \"%s\" NULL entry " SIZET_FMT "\n", param_p -> pa_name_s, index);
+								}
+
+							success_flag = SetParameterCurrentValueFromJSON (param_p, json_null ());
+						}
+
+				}		/* if (current_values_p) */
+
+		}		/* if (param_json_p) */
 
 	return success_flag;
 }

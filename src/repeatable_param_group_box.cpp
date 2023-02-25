@@ -18,12 +18,8 @@ RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTP
 	rpgb_remove_entry_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
 	connect (rpgb_remove_entry_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: RemoveEntry);
 
-	rpgb_label_param_p = nullptr;
+//	rpgb_label_param_p = nullptr;
 
-	if (group_p -> pg_repeatable_param_p)
-		{
-			rpgb_label_param_p = group_p -> pg_repeatable_param_p;
-		}
 
 }
 
@@ -338,6 +334,46 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 }
 
 
+void RepeatableParamGroupBox :: ClearList ()
+{
+	rpgb_entries_p -> clear ();
+}
+
+
+char *RepeatableParamGroupBox :: GetRepeatableLabel ()
+{
+	char *label_s = NULL;
+	ByteBuffer *buffer_p = AllocateByteBuffer (1024);
+
+	if (buffer_p)
+		{
+			if (pgb_parameter_group_p -> pg_repeatable_label_params_p)
+				{
+					ParameterNode *node_p = (ParameterNode *) (pgb_parameter_group_p -> pg_repeatable_label_params_p -> ll_head_p);
+
+					while (node_p)
+						{
+							bool alloc_flag = false;
+							char *value_s = GetParameterValueAsString (node_p -> pn_parameter_p, &alloc_flag);
+
+							AppendStringsToByteBuffer(buffer_p, value_s, " ", NULL);
+
+							if (alloc_flag)
+									{
+										FreeCopiedString (value_s);
+									}
+
+							node_p = (ParameterNode *) (node_p -> pn_node.ln_next_p);
+						}
+				}
+
+			label_s = DetachByteBufferData (buffer_p);
+
+		}
+
+	return label_s;
+}
+
 void RepeatableParamGroupBox :: AddEntry ()
 {
 	StoreValues ();
@@ -347,19 +383,33 @@ void RepeatableParamGroupBox :: AddEntry ()
 
 	if (group_json_p)
 		{
-			Parameter *param_p = pgb_parameter_group_p -> pg_repeatable_param_p;
+			ByteBuffer *buffer_p = AllocateByteBuffer (1024);
 
-			if (param_p)
+			if (buffer_p)
 				{
-					bool alloc_flag = false;
-					char *label_s = GetParameterValueAsString (param_p, &alloc_flag);
-
-					AddListEntry (label_s, group_json_p);
-
-					if (alloc_flag)
+					if (pgb_parameter_group_p -> pg_repeatable_label_params_p)
 						{
-							FreeCopiedString (label_s);
+							ParameterNode *node_p = (ParameterNode *) (pgb_parameter_group_p -> pg_repeatable_label_params_p -> ll_head_p);
+
+							while (node_p)
+								{
+									bool alloc_flag = false;
+									char *label_s = GetParameterValueAsString (node_p -> pn_parameter_p, &alloc_flag);
+
+									AppendStringsToByteBuffer(buffer_p, label_s, " ", NULL);
+
+									if (alloc_flag)
+											{
+												FreeCopiedString (label_s);
+											}
+
+
+									node_p = (ParameterNode *) (node_p -> pn_node.ln_next_p);
+								}
 						}
+
+					AddListEntry (GetByteBufferData (buffer_p), group_json_p);
+
 				}
 
 			json_decref (group_json_p);

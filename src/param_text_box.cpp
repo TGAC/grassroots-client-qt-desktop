@@ -91,7 +91,7 @@ bool ParamTextBox :: StoreParameterValue (bool refresh_flag)
 		{
 			if (GetErrorFlag ())
 				{
-					SetErrorMessage (false);
+                    SetErrorFlag (false);
 				}
 
 			success_flag = SetStringParameterCurrentValue (ptb_param_p, value_s);

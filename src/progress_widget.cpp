@@ -55,7 +55,7 @@ ProgressWidget :: ProgressWidget (const json_t *json_p, const char *service_name
 		{
 			uuid_t id;
 
-			if (uuid_parse (uuid_s, id) == 0)
+            if (uuid_parse (const_cast <char *> (uuid_s), id) == 0)
 				{
 					if (GetStatusFromJSON (json_p, &pw_current_status))
 						{

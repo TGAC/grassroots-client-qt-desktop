@@ -209,7 +209,7 @@ void ProgressWindow :: UpdateStatuses ()
 																const char *uuid_s = json_string_value (uuid_json_p);
 																uuid_t uuid;
 
-																if (uuid_parse (uuid_s, uuid) == 0)
+                                                                if (uuid_parse (const_cast <char *> (uuid_s), uuid) == 0)
 																	{
 																		size_t j = i;
 																		ProgressWidget *progress_widget_p = 0;
@@ -302,7 +302,7 @@ ProgressWidget *FindProgressWidgetByUUID (ProgressWidget **widgets_pp, const siz
 					const char *uuid_s = json_string_value (uuid_json_p);
 					uuid_t uuid;
 
-					if (uuid_parse (uuid_s, uuid) == 0)
+                    if (uuid_parse (const_cast <char *> (uuid_s), uuid) == 0)
 						{
 							for (size_t i = 0; i < num_widgets; ++ i)
 								{

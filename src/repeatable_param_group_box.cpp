@@ -323,7 +323,8 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 	char *value_s = json_dumps (group_json_p, 0);
 	if (value_s)
 		{
-			item_p -> setData (Qt :: UserRole, value_s);
+            QVariant v (value_s);
+            item_p -> setData (Qt :: UserRole, v);
 			free (value_s);
 		}
 

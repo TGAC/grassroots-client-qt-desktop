@@ -16,15 +16,22 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+
+#undef _CRTDBG_MAP_ALLOC
+
+#ifdef LINUX
 #include <unistd.h>
-#include <errno.h>
-#include <string.h>
 #include <netdb.h>
-#include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 
 #include <arpa/inet.h>
+#endif
+
+#include <errno.h>
+#include <string.h>
+#include <sys/types.h>
 
 
 #include "json_tools.h"

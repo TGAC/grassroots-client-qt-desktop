@@ -13,6 +13,7 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
+#undef _CRTDBG_MAP_ALLOC
 #include "base_param_widget.h"
 #include "qt_parameter_widget.h"
 

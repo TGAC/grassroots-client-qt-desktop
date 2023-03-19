@@ -115,11 +115,17 @@ bool ParamLineEdit :: StoreParameterValue (bool refresh_flag)
 	QByteArray ba = s.toLocal8Bit ();
 	const char *value_s = ba.constData ();
 
+
 	if ((!(bpw_param_p -> pa_required_flag)) || refresh_flag || (!IsStringEmpty (value_s)))
 		{
 			if (GetErrorFlag ())
 				{
 					SetErrorMessage (nullptr);
+				}
+
+			if (IsStringEmpty (value_s))
+				{
+					value_s = nullptr;
 				}
 
 			success_flag = UpdateConfigValue (value_s);

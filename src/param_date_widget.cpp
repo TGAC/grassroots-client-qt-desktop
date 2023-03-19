@@ -89,6 +89,8 @@ bool ParamDateWidget :: StoreParameterValue (bool refresh_flag)
 						}
 
 					success_flag = SetTimeParameterCurrentValue (pdw_param_p, time_p);
+					qDebug () << "Setting " << pdw_param_p -> tp_base_param.pa_name_s << " to "
+							<< time_p -> tm_mday <<  " " << time_p -> tm_mon <<  " "<< time_p -> tm_year;
 
 					FreeTime (time_p);
 				}
@@ -96,6 +98,8 @@ bool ParamDateWidget :: StoreParameterValue (bool refresh_flag)
 	else
 		{
 			success_flag = SetTimeParameterCurrentValue (pdw_param_p, nullptr);
+			qDebug () << "Setting " << pdw_param_p -> tp_base_param.pa_name_s << " to null";
+
 		}
 
 	return success_flag;

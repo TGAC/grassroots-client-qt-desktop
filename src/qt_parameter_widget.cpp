@@ -1098,18 +1098,19 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 	/*
 	 * Is the parameter in a repeatable group?
 	 */
-	if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag))
-		{
-			if (IsStringArrayParameter (param_p))
-				{
-					widget_p = new ParamLineEdit (reinterpret_cast <StringArrayParameter *> (param_p), this, QLineEdit :: Normal);
-				}
-			else if (IsTimeArrayParameter (param_p))
-				{
-					widget_p = new ParamDateWidget (reinterpret_cast <TimeArrayParameter *> (param_p), this);
-				}
-		}		/* if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag)) */
-	else
+//	if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag))
+//		{
+//			if (IsStringArrayParameter (param_p))
+//				{
+//					widget_p = new ParamLineEdit (reinterpret_cast <StringArrayParameter *> (param_p), this, QLineEdit :: Normal);
+//				}
+//			else if (IsTimeArrayParameter (param_p))
+//				{
+//					widget_p = new ParamDateWidget (reinterpret_cast <TimeArrayParameter *> (param_p), this);
+//				}
+//		}		/* if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag)) */
+//	else
+
 		{
 			if (IsBooleanParameter (param_p))
 				{

@@ -36,7 +36,7 @@
 
 
 class MainWindow;
-class QTClientData;
+struct QTClientData;
 class ServicePrefsWidget;
 
 /**
@@ -91,7 +91,7 @@ private:
 	ParameterLevel pw_level;
 	ServiceUI *pw_services_ui_p;
 	QList <ServicePrefsWidget *> pw_service_widgets;
-	QTClientData *pw_data_p;
+	struct QTClientData *pw_data_p;
 };
 
 

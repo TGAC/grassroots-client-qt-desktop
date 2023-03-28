@@ -9,7 +9,7 @@
 #include "parameter.h"
 #include "base_param_widget.h"
 #include "time_parameter.h"
-
+#include "time_array_parameter.h"
 
 class ParamDateWidget : public BaseParamWidget
 {
@@ -21,6 +21,8 @@ private slots:
 
 public:
 	ParamDateWidget (TimeParameter * const param_p, QTParameterWidget * const parent_p0);
+	ParamDateWidget (TimeArrayParameter * const param_p, QTParameterWidget * const parent_p0);
+
 	virtual ~ParamDateWidget ();
 
 	virtual void SetDefaultValue ();

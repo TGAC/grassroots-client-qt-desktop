@@ -29,7 +29,7 @@
 #include "progress_widget.h"
 #include "jansson.h"
 
-class QTClientData;
+struct QTClientData;
 
 class ProgressWindow : public QWidget
 {

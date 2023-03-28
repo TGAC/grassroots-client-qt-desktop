@@ -12,14 +12,13 @@
 RepeatableParamGroupBox :: RepeatableParamGroupBox (ParameterGroup *group_p, QTParameterWidget *qt_param_widget_p,  bool removable_flag, bool add_params_flag)
  : ParamGroupBox (group_p, qt_param_widget_p, removable_flag, add_params_flag)
 {
-	rpgb_entries_p = new QListWidget (this);
-	rpgb_entries_p -> setSelectionMode (QAbstractItemView :: SingleSelection);
+  rpgb_entries_p = new QListWidget (this);
+  rpgb_entries_p -> setSelectionMode (QAbstractItemView :: SingleSelection);
 
-	rpgb_remove_entry_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
-	connect (rpgb_remove_entry_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: RemoveEntry);
+  rpgb_remove_entry_button_p = new QPushButton (QIcon ("images/remove"), "Remove", this);
+  connect (rpgb_remove_entry_button_p, &QPushButton :: clicked, this, &RepeatableParamGroupBox :: RemoveEntry);
 
-//	rpgb_label_param_p = nullptr;
-
+  //	rpgb_label_param_p = nullptr;
 
 }
 
@@ -33,7 +32,7 @@ RepeatableParamGroupBox :: ~RepeatableParamGroupBox ()
 
 void RepeatableParamGroupBox :: Init (bool add_params_flag)
 {
-	QVBoxLayout *layout_p = new QVBoxLayout ();
+  QVBoxLayout *layout_p = new QVBoxLayout ();
 
 	qDebug () << "RepeatableParamGroupBox :: init for " << pgb_parameter_group_p -> pg_name_s << Qt :: endl;
 
@@ -65,7 +64,12 @@ json_t *RepeatableParamGroupBox :: GetParametersAsJSON ()
 	if (res_p)
 		{
 			/*
-			 * Add the initial parameter names to this array
+			 * Add the initial parameter names to this array so that we have
+			 *
+			 * [
+			 * 	 { "param_0_name": [ ] },
+			 * 	 { "param_1_name": [ ] }
+			 * ]
 			 */
 			bool success_flag = true;
 			ParameterNode *param_node_p = reinterpret_cast <ParameterNode *> (pgb_parameter_group_p -> pg_params_p -> ll_head_p);
@@ -118,107 +122,95 @@ json_t *RepeatableParamGroupBox :: GetParametersAsJSON ()
 
 			if (success_flag)
 				{
+					/*
+					 * Now we iterate over the entries and add them into the json array
+					 * that we created above
+					 */
 					const int num_entries = rpgb_entries_p -> count ();
 					const size_t num_params = json_array_size (res_p);
 
 					for (int i = 0; i < num_entries; ++ i)
 						{
 							QListWidgetItem *item_p = rpgb_entries_p -> item (i);
-							QVariant v = item_p -> data (Qt :: UserRole);
-							QString s = v.toString ();
-							QByteArray ba = s.toLocal8Bit ();
+							json_t *entry_json_p = GetListItemDataAsJSON (item_p);
 
-							const char *json_s = ba.data ();
-
-							if (json_s)
+							if (entry_json_p)
 								{
-									json_error_t err;
-									json_t *entry_json_p = json_loads (json_s, 0, &err);
+									json_t *entry_parameters_json_p = json_object_get (entry_json_p, PARAM_SET_PARAMS_S);
 
-									qDebug () << "getting " << i << ": " << json_s << Qt :: endl;
-
-									if (entry_json_p)
+									if (entry_parameters_json_p)
 										{
-											json_t *entry_parameters_json_p = json_object_get (entry_json_p, PARAM_SET_PARAMS_S);
+											const size_t num_entry_params = json_array_size (entry_parameters_json_p);
 
-											if (entry_parameters_json_p)
+											for (size_t j = 0; j < num_entry_params; ++ j)
 												{
-													const size_t num_entry_params = json_array_size (entry_parameters_json_p);
+													json_t *entry_param_p = json_array_get (entry_parameters_json_p, j);
 
-													for (size_t j = 0; j < num_entry_params; ++ j)
+													const char *param_s = GetJSONString (entry_param_p, PARAM_NAME_S);
+
+													if (param_s)
 														{
-															json_t *entry_param_p = json_array_get (entry_parameters_json_p, j);
+															/*
+															 * Find the matching parameter json in our
+															 * results array
+															 */
+															json_t *param_p = nullptr;
 
-															const char *param_s = GetJSONString (entry_param_p, PARAM_NAME_S);
-
-															if (param_s)
+															for (size_t k = 0; k < num_params; ++ k)
 																{
-																	/*
-																	 * Find the matching parameter json in our
-																	 * results array
-																	 */
-																	json_t *param_p = nullptr;
+																	json_t *tmp_p = json_array_get (res_p, k);
+																	const char *tmp_name_s = GetJSONString (tmp_p, PARAM_NAME_S);
 
-																	for (size_t k = 0; k < num_params; ++ k)
+																	if (strcmp (tmp_name_s, param_s) == 0)
 																		{
-																			json_t *tmp_p = json_array_get (res_p, k);
-																			const char *tmp_name_s = GetJSONString (tmp_p, PARAM_NAME_S);
-
-																			if (strcmp (tmp_name_s, param_s) == 0)
-																				{
-																					param_p = tmp_p;
-																					k = num_params;		/* force exit from loop */
-																				}
-
+																			param_p = tmp_p;
+																			k = num_params;		/* force exit from loop */
 																		}
 
-																	if (param_p)
+																}
+
+															if (param_p)
+																{
+																	json_t *value_p = json_object_get (entry_param_p, PARAM_CURRENT_VALUE_S);
+
+																	if (value_p)
 																		{
-																			json_t *value_p = json_object_get (entry_param_p, PARAM_CURRENT_VALUE_S);
+																			json_t *param_values_p = json_object_get (param_p, PARAM_CURRENT_VALUE_S);
 
-																			if (value_p)
+																			if (param_values_p)
 																				{
-																					json_t *param_values_p = json_object_get (param_p, PARAM_CURRENT_VALUE_S);
-
-																					if (param_values_p)
+																					if (json_array_append (param_values_p, value_p) == 0)
 																						{
-																							if (json_array_append (param_values_p, value_p) == 0)
-																								{
 
-																								}
-																							else
-																								{
+																						}
+																					else
+																						{
 
-																								}
 																						}
 																				}
 																		}
-
-
-																}		/* if (param_s) */
-															else
-																{
-																	PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, entry_json_p, "Failed to get %s\n", PARAM_SET_PARAMS_S);
 																}
 
 
-														}		/* for (size_t j = 0; j < num_entry_params; ++ j) */
+														}		/* if (param_s) */
+													else
+														{
+															PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, entry_json_p, "Failed to get %s\n", PARAM_SET_PARAMS_S);
+														}
+
+
+												}		/* for (size_t j = 0; j < num_entry_params; ++ j) */
 
 
 
 
-												}		/* if (entry_parameters_json_p)*/
-											else
-												{
-													PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, entry_json_p, "Failed to get %s\n", PARAM_SET_PARAMS_S);
-												}
-
-										}		/* if (entry_json_p) */
+										}		/* if (entry_parameters_json_p)*/
 									else
 										{
-											qDebug () << "failed to convert " << i << ": " << json_s << " to json " << Qt :: endl;
+											PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, entry_json_p, "Failed to get %s\n", PARAM_SET_PARAMS_S);
 										}
-								}
+
+								}		/* if (entry_json_p) */
 							else
 								{
 									qDebug () << "no data for " << i << Qt :: endl;
@@ -258,36 +250,19 @@ json_t *RepeatableParamGroupBox :: GetParametersAsGroupJSON ()
 			for (int i = 0; i < num_entries; ++ i)
 				{
 					QListWidgetItem *item_p = rpgb_entries_p -> item (i);
-					QVariant v = item_p -> data (Qt :: UserRole);
-					QString s = v.toString ();
-					QByteArray ba = s.toLocal8Bit ();
+					json_t *entry_json_p = GetListItemDataAsJSON (item_p);
 
-					const char *json_s = ba.data ();
-
-					if (json_s)
+					if (entry_json_p)
 						{
-							json_error_t err;
-							json_t *entry_json_p = json_loads (json_s, 0, &err);
-
-							qDebug () << "getting " << i << ": " << json_s << Qt :: endl;
-
-							if (entry_json_p)
+							if (json_array_append_new (res_p, entry_json_p) != 0)
 								{
-									if (json_array_append_new (res_p, entry_json_p) != 0)
-										{
-											json_decref (entry_json_p);
-										}
-								}
-							else
-								{
-									qDebug () << "failed to convert " << i << ": " << json_s << " to json " << Qt :: endl;
+									json_decref (entry_json_p);
 								}
 						}
 					else
 						{
-							qDebug () << "no data for " << i << Qt :: endl;
+							qDebug () << "failed to convert " << i << " to json " << Qt :: endl;
 						}
-
 				}
 
 		}		/* if (res_p) */
@@ -295,6 +270,7 @@ json_t *RepeatableParamGroupBox :: GetParametersAsGroupJSON ()
 
 	return res_p;
 }
+
 
 
 void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group_json_p)
@@ -323,14 +299,18 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 	char *value_s = json_dumps (group_json_p, 0);
 	if (value_s)
 		{
-            QVariant v;
-
-            v.setValue (value_s);
-            item_p -> setData (Qt :: UserRole, v);
+			SetListItemData (item_p, value_s);
 			free (value_s);
+
+			qDebug () << "adding " << value_s << " for " << label << ": " << GetListItemDataAsJSON (item_p) << Qt :: endl;
+
+		}
+	else
+		{
+			PrintErrors (STM_LEVEL_INFO, __FILE__, __LINE__, "Failed to get group json");
 		}
 
-	qDebug () << "adding " << label << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+	qDebug () << "adding " << label << ": " << GetListItemDataAsJSON (item_p)  << Qt :: endl;
 
 	rpgb_entries_p -> addItem (item_p);
 
@@ -429,11 +409,43 @@ void RepeatableParamGroupBox :: RemoveEntry ()
 		{
 			QListWidgetItem *item_p = l.at (0);
 
-			qDebug () << "removing " << item_p -> text () << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
+			qDebug () << "removing " << item_p -> text () << ": " << GetListItemDataAsJSON (item_p) << Qt :: endl;
 
 			rpgb_entries_p -> removeItemWidget (item_p);
 			delete item_p;
 		}
+}
+
+void RepeatableParamGroupBox :: SetListItemData  (QListWidgetItem *item_p, const char *value_s)
+{
+	QString s (value_s);
+
+	QVariant v (s);
+	item_p -> setData (Qt :: UserRole, v);
+
+	qDebug () << "SetListItemData " << item_p -> text () << ": " << v.toString () << Qt :: endl;
+
+}
+
+
+json_t *RepeatableParamGroupBox :: GetListItemDataAsJSON  (QListWidgetItem *item_p)
+{
+	json_t *group_json_p = NULL;
+	QString s = item_p -> data (Qt :: UserRole).toString ();
+	QByteArray ba = s.toLocal8Bit ();
+	const char *group_json_s = ba.constData ();
+
+
+	if (group_json_s)
+		{
+			json_error_t err;
+
+			group_json_p = json_loads (group_json_s, 0, &err);
+		}
+
+	qDebug () << "GetListItemDataAsJSON " << item_p -> text () << ": " << group_json_s << Qt :: endl;
+
+	return group_json_p;
 }
 
 
@@ -445,13 +457,7 @@ void RepeatableParamGroupBox :: SelectedListEntryChanged ()
 	if (count == 1)
 		{
 			QListWidgetItem *item_p = l.at (0);
-			qDebug () << "selected " << item_p -> text () << ": " << item_p -> data (Qt :: UserRole) << Qt :: endl;
-
-			QByteArray ba = item_p -> data (Qt :: UserRole).toByteArray();
-			const char *group_json_s = ba.constData ();
-			json_error_t err;
-
-			json_t *group_json_p = json_loads (group_json_s, 0, &err);
+			json_t *group_json_p = GetListItemDataAsJSON (item_p);
 
 			if (group_json_p)
 				{

@@ -41,6 +41,12 @@ private:
 	QPushButton *rpgb_remove_entry_button_p;
 
 
+	void SetListItemData  (QListWidgetItem *item_p, const char *value_s);
+
+
+	json_t *GetListItemDataAsJSON  (QListWidgetItem *item_p);
+
+
 private slots:
 	void AddEntry ();
 	void RemoveEntry ();

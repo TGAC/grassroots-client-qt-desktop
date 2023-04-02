@@ -470,6 +470,8 @@ void QTParameterWidget :: AddRow (QWidget *first_p, QWidget *second_p, const int
 void QTParameterWidget :: ParameterWidgetAdded (Parameter *param_p, BaseParamWidget *widget_p)
 {
 	qpw_widgets_map.insert (param_p, widget_p);
+
+	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "Added \"%s\"", param_p -> pa_name_s);
 }
 
 
@@ -1236,7 +1238,7 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 						}
 				}
 
-			qpw_widgets_map.insert (param_p, widget_p);
+			ParameterWidgetAdded (param_p, widget_p);
 
 		}		/* if (widget_p) */
 

@@ -77,7 +77,7 @@ ResultsWindow :: ResultsWindow (MainWindow *parent_p, QTClientData *client_data_
 	s.append (client_data_p -> qcd_server_url_s);	
 
 	setWindowTitle (s);
-	setWindowIcon (QIcon ("images/document_multi"));
+    setWindowIcon (QIcon ("images/documentmulti"));
 	setLayout (layout_p);
 
 	setAcceptDrops (true);

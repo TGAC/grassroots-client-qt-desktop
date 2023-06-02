@@ -575,7 +575,6 @@ json_t *DroppableTableWidget :: GetValueAsJSON (bool *success_flag_p)
 											else
 												{
 													json_array_remove (rows_p, i);
-													json_decref (row_p);
 
 													if (i == 0)
 														{

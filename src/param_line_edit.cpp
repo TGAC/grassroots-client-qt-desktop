@@ -116,7 +116,7 @@ bool ParamLineEdit :: StoreParameterValue (bool refresh_flag)
 	const char *value_s = ba.constData ();
 
 
-	if ((!(bpw_param_p -> pa_required_flag)) || refresh_flag || (!IsStringEmpty (value_s)))
+        if ((!(IsRequired ())) || refresh_flag || (!IsStringEmpty (value_s)))
 		{
 			if (GetErrorFlag ())
 				{

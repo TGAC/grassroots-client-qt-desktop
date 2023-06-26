@@ -74,6 +74,8 @@ public:
 
 	const Parameter *GetParameter () const;
 
+
+
 protected:
 	Parameter * const bpw_param_p;
 	QTParameterWidget * const bpw_parent_p;
@@ -84,6 +86,7 @@ protected:
 
 	virtual QWidget *GetQWidget () = 0;
 
+    virtual bool IsRequired ();
 
 private:
 	bool bpw_error_flag;

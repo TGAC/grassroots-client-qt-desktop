@@ -77,6 +77,22 @@ void BaseParamWidget :: RemoveConnection ()
 }
 
 
+bool BaseParamWidget :: IsRequired ()
+{
+    bool required_flag = false;
+    ParameterGroup *group_p = bpw_param_p -> pa_group_p;
+
+    if (group_p)
+    {
+        if (! (group_p -> pg_repeatable_flag))
+            {
+                    required_flag = bpw_param_p -> pa_required_flag;
+            }
+    }
+
+    return required_flag;
+}
+
 
 QWidget *BaseParamWidget :: GetLabel () const
 {

@@ -77,6 +77,12 @@ void BaseParamWidget :: RemoveConnection ()
 }
 
 
+bool BaseParamWidget :: IsComboBoxWidget () const
+{
+	return false;
+}
+
+
 
 QWidget *BaseParamWidget :: GetLabel () const
 {

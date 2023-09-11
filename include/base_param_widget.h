@@ -40,7 +40,6 @@ class BaseParamWidget : public QObject
 public:
 	BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p);
 
-
 	virtual ~BaseParamWidget ();
 
 	QWidget *GetUIQWidget ();
@@ -68,6 +67,9 @@ public:
 	virtual void SetErrors (const json_t *errors_p);
 
 	virtual void SetErrorMessage (const char *message_s);
+
+	virtual bool IsComboBoxWidget () const;
+
 
 	void SetErrorFlag (const bool error_flag);
 	bool GetErrorFlag () const;

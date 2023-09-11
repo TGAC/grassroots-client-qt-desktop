@@ -24,3 +24,8 @@ QWidget *BaseComboBox :: GetQWidget ()
 	return bcb_combo_box_p;
 }
 
+
+bool BaseComboBox :: IsComboBoxWidget () const
+{
+	return true;
+}

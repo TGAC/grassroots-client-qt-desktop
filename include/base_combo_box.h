@@ -39,13 +39,14 @@ public:
   BaseComboBox (Parameter * const param_p, QTParameterWidget * const parent_p);
   virtual ~BaseComboBox ();
 
+	virtual bool IsComboBoxWidget () const;
+
+
 protected:
 	QComboBox *bcb_combo_box_p;
 
 	virtual QWidget *GetQWidget ();
 
-private:
-  QGroupBox *bcb_group_p;
 };
 
 

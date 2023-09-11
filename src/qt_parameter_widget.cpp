@@ -915,33 +915,82 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 					json_array_foreach (params_json_p, i, param_json_p)
 						{
-							const char *param_name_s = GetJSONString (param_json_p, PARAM_NAME_S);
+							Parameter *param_p = CreateParameterFromJSON (param_json_p, NULL, false);
 
-							if (param_name_s)
+							if (param_p)
 								{
-									BaseParamWidget *widget_p = GetWidgetForParameter (param_name_s);
+									BaseParamWidget *widget_p = GetWidgetForParameter (param_p -> pa_name_s);
 
 									if (widget_p)
 										{
 											json_t *current_value_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
-											const Parameter *param_p = widget_p -> GetParameter ();
+											const Parameter *existing_param_p = widget_p -> GetParameter ();
+											bool reuse_flag = false;
+											/*
+											 * Can we reuse the existing widget?
+											 */
+											if (existing_param_p -> pa_type == param_p -> pa_type)
+												{
+													if (widget_p -> IsComboBoxWidget ())
+														{
+															if (param_p -> pa_options_p)
+																{
+																	reuse_flag = true;
+																}
+														}
+													else
+														{
+															if (!param_p -> pa_options_p)
+																{
+																	reuse_flag = true;
+																}
+														}
+												}
 
+											if (!reuse_flag)
+												{
+													ParameterWidgetContainer *container_p = nullptr;
+
+													if (param_p -> pa_group_p)
+														{
+															container_p = qpw_groupings.value (param_p -> pa_group_p -> pg_name_s);
+														}
+
+													BaseParamWidget *new_widget_p = CreateWidgetForParameter (param_p, container_p, false);
+
+													if (new_widget_p)
+														{
+															int existing_row = -1;
+															QWidget *new_ui_widget_p = new_widget_p -> GetUIQWidget ();
+															QFormLayout :: ItemRole role;
+
+															qpw_layout_p -> getWidgetPosition (widget_p -> GetUIQWidget (), &existing_row, &role);
+
+															if (existing_row != -1)
+																{
+																	qpw_layout_p -> removeRow (existing_row);
+//																	qpw_layout_p -> insertRow (existing_row, widget_p -> GetLabel (), new_ui_widget_p) ;
+																}
+
+														}
+
+												}
 
 											if (! (widget_p -> SetValueFromJSON (current_value_p)))
 												{
-													success_flag = false;
-													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
+                                                    success_flag = false;
+                                                        PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to set %s -> %s from json\n", service_name_s, param_p -> pa_name_s);
 												}
 										}		/* if (widget_p) */
 									else
-										{
-											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get widget for %s -> %s from json\n", service_name_s, param_name_s);
+                                        {
+                                                PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get widget for %s -> %s from json\n", service_name_s, param_p -> pa_name_s);
 										}
 
-								}		/* if (param_name_s) */
+								}		/* if (param_p) */
 							else
 								{
-									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get parameter name %s -> %s from json\n", service_name_s, PARAM_NAME_S);
+									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to Create parameter %d from json for %s\n", i, service_name_s);
 								}
 
 						}		/* json_array_foreach (params_json_p, i, param_p) */

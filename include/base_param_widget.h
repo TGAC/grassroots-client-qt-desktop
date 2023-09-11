@@ -70,11 +70,16 @@ public:
 
 	virtual bool IsComboBoxWidget () const;
 
+	bool IsRequired ();
+
+
 
 	void SetErrorFlag (const bool error_flag);
 	bool GetErrorFlag () const;
 
 	const Parameter *GetParameter () const;
+
+
 
 protected:
 	Parameter * const bpw_param_p;
@@ -86,6 +91,7 @@ protected:
 
 	virtual QWidget *GetQWidget () = 0;
 
+    virtual bool IsRequired ();
 
 private:
 	bool bpw_error_flag;

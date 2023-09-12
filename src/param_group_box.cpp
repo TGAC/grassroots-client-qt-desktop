@@ -77,6 +77,36 @@ const char *ParamGroupBox :: GetGroupName () const
 }
 
 
+bool ParamGroupBox :: ReplaceWidget (QWidget *old_widget_p, BaseParamWidget *new_widget_p)
+{
+    bool success_flag = false;
+	int existing_row = -1;
+	QWidget *new_ui_widget_p = new_widget_p -> GetUIQWidget ();
+	QWidget *new_label_p = new_widget_p -> GetLabel ();
+	QFormLayout :: ItemRole role;
+	const char *name_s = new_widget_p -> GetParameterName ();
+	pgb_layout_p -> getWidgetPosition (old_widget_p, &existing_row, &role);
+
+
+	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "%s is at row %d", name_s, existing_row);
+
+	if (existing_row != -1)
+		{
+			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "removing %s at row %d", name_s, existing_row);
+			pgb_layout_p -> removeRow (existing_row);
+			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "inserting new row %s at row %d", name_s, existing_row);
+			pgb_layout_p -> insertRow (existing_row, new_label_p, new_ui_widget_p) ;
+			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "inserted new row %s at row %d", name_s, existing_row);
+            success_flag = true;
+		}
+	else
+		{
+			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__,  "Failed to get existng row for %s", name_s);
+		}
+
+        return success_flag;
+}
+
 const ParameterGroup *ParamGroupBox :: GetParameterGroup () const
 {
 	return pgb_parameter_group_p;

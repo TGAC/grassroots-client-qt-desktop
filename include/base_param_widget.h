@@ -70,7 +70,7 @@ public:
 
 	virtual bool IsComboBoxWidget () const;
 
-	bool IsRequired ();
+    virtual bool IsRequired ();
 
 
 
@@ -90,8 +90,6 @@ protected:
 	static const char * const BPW_REQUIRED_S;
 
 	virtual QWidget *GetQWidget () = 0;
-
-    virtual bool IsRequired ();
 
 private:
 	bool bpw_error_flag;

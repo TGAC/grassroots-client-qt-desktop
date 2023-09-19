@@ -31,6 +31,11 @@ LabelsWidget :: ~LabelsWidget ()
 
 }
 
+void LabelsWidget :: SetText (const char *text_s)
+{
+	lw_title_p -> setText (text_s);
+}
+
 
 void LabelsWidget :: SetError (const QString &message_r)
 {

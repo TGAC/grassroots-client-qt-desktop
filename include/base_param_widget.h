@@ -70,7 +70,7 @@ public:
 
 	virtual bool IsComboBoxWidget () const;
 
-    virtual bool IsRequired ();
+	virtual bool IsRequired ();
 
 
 
@@ -79,7 +79,7 @@ public:
 
 	const Parameter *GetParameter () const;
 
-
+	virtual bool SetParameter (Parameter *param_p);
 
 protected:
 	Parameter * const bpw_param_p;

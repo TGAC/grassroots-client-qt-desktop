@@ -1,18 +1,18 @@
 /*
-** Copyright 2014-2016 The Earlham Institute
-** 
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-** 
-**     http://www.apache.org/licenses/LICENSE-2.0
-** 
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ ** Copyright 2014-2016 The Earlham Institute
+ **
+ ** Licensed under the Apache License, Version 2.0 (the "License");
+ ** you may not use this file except in compliance with the License.
+ ** You may obtain a copy of the License at
+ **
+ **     http://www.apache.org/licenses/LICENSE-2.0
+ **
+ ** Unless required by applicable law or agreed to in writing, software
+ ** distributed under the License is distributed on an "AS IS" BASIS,
+ ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
 #include <QLabel>
 #include <QDesktopServices>
 
@@ -75,11 +75,11 @@ QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const d
 	QVBoxLayout *layout_p = new QVBoxLayout;
 	QVBoxLayout *info_layout_p = new QVBoxLayout;
 
-/*
+	/*
 	qpw_layout_p = new QGridLayout;
 	qpw_layout_p -> setColumnStretch (1, 100);
 	qpw_layout_p -> setAlignment (Qt :: AlignVCenter);
-*/
+	 */
 	qpw_layout_p = new QFormLayout;
 	qpw_layout_p -> setFieldGrowthPolicy(QFormLayout :: ExpandingFieldsGrow);
 	layout_p -> addLayout (info_layout_p);
@@ -130,9 +130,9 @@ QTParameterWidget :: QTParameterWidget (const char *name_s, const char * const d
 					json_t *item_p;
 
 					json_array_foreach (provider_p, i, item_p)
-						{
-							AddProvider (item_p, i, size - 1, info_layout_p);
-						}
+					{
+						AddProvider (item_p, i, size - 1, info_layout_p);
+					}
 				}		/* if (json_is_array (provider_p)) */
 			else if (json_is_object (provider_p))
 				{
@@ -350,7 +350,7 @@ void QTParameterWidget :: AddProvider (const json_t *provider_p, const size_t i,
 										{
 											logo_p = new QLabel;
 
-										//	logo_p -> setAlignment (Qt :: AlignRight);
+											//	logo_p -> setAlignment (Qt :: AlignRight);
 											logo_p -> setPixmap (pix);
 										}
 								}
@@ -551,10 +551,10 @@ void QTParameterWidget :: AddParameterWidget (Parameter *param_p, ParameterWidge
 			ParameterWidgetAdded (param_p, child_p);
 
 
-//			if (!CompareParameterLevels (param_p -> pa_level, qpw_level))
-//				{
-//					child_p -> SetVisible (false);
-//				}
+			//			if (!CompareParameterLevels (param_p -> pa_level, qpw_level))
+			//				{
+			//					child_p -> SetVisible (false);
+			//				}
 		}
 }
 
@@ -600,7 +600,7 @@ BaseParamWidget *QTParameterWidget :: GetWidgetForParameter (const char * const 
 					printf ("name \"%s\" label \"%s\"\n", param_p -> pa_name_s, label_s);
 				}
 
-			*/
+			 */
 		}
 
 	return widget_p;
@@ -619,7 +619,7 @@ QTParameterWidget :: ~QTParameterWidget ()
 
 			widget_p -> RemoveConnection ();
 			delete widget_p;
-	}
+		}
 
 	for (int i = qpw_browsers.size(); i > 0;-- i)
 		{
@@ -628,10 +628,10 @@ QTParameterWidget :: ~QTParameterWidget ()
 			delete browser_p;
 		}
 
-	 if (qpw_params_p)
-		 {
-			 FreeParameterSet (qpw_params_p);
-		 }
+	if (qpw_params_p)
+		{
+			FreeParameterSet (qpw_params_p);
+		}
 }
 
 
@@ -715,28 +715,28 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 			size_t num_params;
 
 			json_array_foreach (params_array_json_p, i, param_json_p)
-				{
-					const char *param_group_s = GetJSONString (param_json_p, PARAM_GROUP_S);
+			{
+				const char *param_group_s = GetJSONString (param_json_p, PARAM_GROUP_S);
 
-					if (param_group_s && (strcmp (group_name_s, param_group_s) == 0))
-						{
-							const char *param_name_s = GetJSONString (param_json_p, PARAM_NAME_S);
+				if (param_group_s && (strcmp (group_name_s, param_group_s) == 0))
+					{
+						const char *param_name_s = GetJSONString (param_json_p, PARAM_NAME_S);
 
-							if (param_name_s)
-								{
-									Parameter *param_p = GetParameterFromParameterSetByName (qpw_params_p, param_name_s);
+						if (param_name_s)
+							{
+								Parameter *param_p = GetParameterFromParameterSetByName (qpw_params_p, param_name_s);
 
-									if (param_p)
-										{
-											grouped_params.insert (param_p, param_json_p);
-											non_label_params.insert (param_p, param_p);
+								if (param_p)
+									{
+										grouped_params.insert (param_p, param_json_p);
+										non_label_params.insert (param_p, param_p);
 
-											repeatable_param_names_p -> insert (param_json_p, param_json_p);
-										}
-								}
-						}		/* if (param_group_s && (strcmp (group_name_s, param_group_s) == 0)) */
+										repeatable_param_names_p -> insert (param_json_p, param_json_p);
+									}
+							}
+					}		/* if (param_group_s && (strcmp (group_name_s, param_group_s) == 0)) */
 
-				}		/* json_array_foreach (params_array_json_p, j, param_json_p) */
+			}		/* json_array_foreach (params_array_json_p, j, param_json_p) */
 
 			/*
 			 * Now remove the non label params from non_label_params
@@ -758,7 +758,7 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 				{
 					box_p -> ClearList ();
 
-						/*
+					/*
 					 * Build and add the entries to the lists
 					 */
 
@@ -895,16 +895,76 @@ bool QTParameterWidget :: SetGroupedParameterValue (Parameter *param_p, const js
 }
 
 
+
+//bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p)
+//{
+//	bool success_flag = false;
+//	const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName ();
+//	ParameterSet *new_params_p = CreateParameterSetFromJSON (param_set_json_p, NULL, false);
+//
+//	if (new_params_p)
+//		{
+//			ParameterNode *param_node_p = (ParameterNode *) (new_params_p -> ps_params_p -> ll_head_p);
+//			Parameter *new_param_p = param_node_p -> pn_parameter_p;
+//			Parameter *existing_param_p = GetParameterFromParameterSetByName (qpw_params_p, new_param_p -> pa_name_s);
+//
+//			if (existing_param_p)
+//				{
+//					bool reuse_flag = false;
+//					BaseParamWidget *widget_p = GetWidgetForParameter (existing_param_p -> pa_name_s);
+//
+//					if (widget_p)
+//						{
+//							/*
+//							 * Can we reuse the existing widget?
+//							 */
+//							if (existing_param_p -> pa_type == new_param_p -> pa_type)
+//								{
+//									if (widget_p -> IsComboBoxWidget ())
+//										{
+//											if (new_param_p -> pa_options_p)
+//												{
+//													reuse_flag = true;
+//												}
+//										}
+//									else
+//										{
+//											if (! (new_param_p -> pa_options_p))
+//												{
+//													reuse_flag = true;
+//												}
+//										}
+//								}
+//
+//							if (reuse_flag)
+//								{
+//									SetParameter
+//								}
+//						}
+//
+//				}		/* if (existing_param_p) */
+//
+//			param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+//		}		/* if (new_params_p) */
+//
+//	return success_flag;
+//}
+
+
 bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p)
 {
 	bool success_flag = false;
 	const char *service_name_s = qpw_parent_prefs_widget_p -> GetServiceName ();
 	const json_t *params_json_p = json_object_get (param_set_json_p, PARAM_SET_PARAMS_S);
 
+	ParameterSet *new_params_p = CreateParameterSetFromJSON (param_set_json_p, NULL, false);
+
+
+
 	if (params_json_p)
 		{
 			if (json_is_array (params_json_p))
-				{					
+				{
 					json_t *param_json_p;
 					size_t i;
 					QHash <const json_t *, const json_t *> repeatable_param_names;
@@ -914,37 +974,112 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 
 					json_array_foreach (params_json_p, i, param_json_p)
-						{
-							const char *param_name_s = GetJSONString (param_json_p, PARAM_NAME_S);
+					{
+						Parameter *param_p = CreateParameterFromJSON (param_json_p, NULL, false);
 
-							if (param_name_s)
-								{
-									BaseParamWidget *widget_p = GetWidgetForParameter (param_name_s);
+						if (param_p)
+							{
+								BaseParamWidget *widget_p = GetWidgetForParameter (param_p -> pa_name_s);
 
-									if (widget_p)
-										{
-											json_t *current_value_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
-											const Parameter *param_p = widget_p -> GetParameter ();
+								if (widget_p)
+									{
+										json_t *current_value_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
+										const Parameter *existing_param_p = widget_p -> GetParameter ();
+										bool reuse_flag = false;
+										/*
+										 * Can we reuse the existing widget?
+										 */
+										if (existing_param_p -> pa_type == param_p -> pa_type)
+											{
+												if (widget_p -> IsComboBoxWidget ())
+													{
+														if (param_p -> pa_options_p)
+															{
+																reuse_flag = true;
+															}
+													}
+												else
+													{
+														if (!param_p -> pa_options_p)
+															{
+																reuse_flag = true;
+															}
+													}
+											}
+
+										if (!reuse_flag)
+											{
+												ParameterWidgetContainer *container_p = nullptr;
+
+												if (existing_param_p -> pa_group_p)
+													{
+
+														container_p = qpw_groupings.value (existing_param_p -> pa_group_p -> pg_name_s);
+													}
+
+												BaseParamWidget *new_widget_p = CreateWidgetForParameter (param_p, container_p, false);
+
+												PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "using new widget for %s is at row %d", param_p -> pa_name_s);
+
+												if (new_widget_p)
+													{
+														if (container_p)
+															{
+																QWidget *old_ui_widget_p = widget_p -> GetUIQWidget ();
+
+																if (container_p -> ReplaceWidget (old_ui_widget_p, new_widget_p))
+																	{
+																		widget_p = new_widget_p;
+																	}
+															}
+														else
+															{
+																int existing_row = -1;
+																QWidget *new_ui_widget_p = new_widget_p -> GetUIQWidget ();
+																QFormLayout :: ItemRole role;
+
+																qpw_layout_p -> getWidgetPosition (widget_p -> GetLabel (), &existing_row, &role);
 
 
-											if (! (widget_p -> SetValueFromJSON (current_value_p)))
-												{
-													success_flag = false;
-													PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to set %s -> %s from json\n", service_name_s, param_name_s);
-												}
-										}		/* if (widget_p) */
-									else
-										{
-											PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get widget for %s -> %s from json\n", service_name_s, param_name_s);
-										}
+																PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "%s is at row %d", param_p -> pa_name_s, existing_row);
 
-								}		/* if (param_name_s) */
-							else
-								{
-									PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get parameter name %s -> %s from json\n", service_name_s, PARAM_NAME_S);
-								}
+																if (existing_row != -1)
+																	{
+																		PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "removing %s at row %d", param_p -> pa_name_s, existing_row);
+																		qpw_layout_p -> removeRow (existing_row);
+																		PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "inserting new row %s at row %d", param_p -> pa_name_s, existing_row);
+																		qpw_layout_p -> insertRow (existing_row, widget_p -> GetLabel (), new_ui_widget_p) ;
+																		PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "inserted new row %s at row %d", param_p -> pa_name_s, existing_row);
+																		widget_p = new_widget_p;
 
-						}		/* json_array_foreach (params_json_p, i, param_p) */
+																	}
+																else
+																	{
+																		PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__,  "Failed to get existng row for %s", param_p -> pa_name_s);
+																	}
+															}
+													}
+
+											}
+
+										if (! (widget_p -> SetValueFromJSON (current_value_p)))
+											{
+												success_flag = false;
+												PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to set %s -> %s from json\n", service_name_s, param_p -> pa_name_s);
+											}
+									}		/* if (widget_p) */
+								else
+									{
+										PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to get widget for %s -> %s from json\n", service_name_s, param_p -> pa_name_s);
+									}
+
+							}		/* if (param_p) */
+						else
+							{
+								PrintJSONToErrors (STM_LEVEL_WARNING, __FILE__, __LINE__, param_json_p, "Failed to Create parameter %d from json for %s\n", i, service_name_s);
+							}
+
+					}		/* json_array_foreach (params_json_p, i, param_p) */
 
 				}		/* if (json_is_array (params_json_p)) */
 
@@ -1100,128 +1235,128 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 	/*
 	 * Is the parameter in a repeatable group?
 	 */
-//	if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag))
-//		{
-//			if (IsStringArrayParameter (param_p))
-//				{
-//					widget_p = new ParamLineEdit (reinterpret_cast <StringArrayParameter *> (param_p), this, QLineEdit :: Normal);
-//				}
-//			else if (IsTimeArrayParameter (param_p))
-//				{
-//					widget_p = new ParamDateWidget (reinterpret_cast <TimeArrayParameter *> (param_p), this);
-//				}
-//		}		/* if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag)) */
-//	else
+	//	if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag))
+	//		{
+	//			if (IsStringArrayParameter (param_p))
+	//				{
+	//					widget_p = new ParamLineEdit (reinterpret_cast <StringArrayParameter *> (param_p), this, QLineEdit :: Normal);
+	//				}
+	//			else if (IsTimeArrayParameter (param_p))
+	//				{
+	//					widget_p = new ParamDateWidget (reinterpret_cast <TimeArrayParameter *> (param_p), this);
+	//				}
+	//		}		/* if ((param_p -> pa_group_p) && (param_p -> pa_group_p -> pg_repeatable_flag)) */
+	//	else
 
-		{
-			if (IsBooleanParameter (param_p))
-				{
-					widget_p = new ParamCheckBox (reinterpret_cast <BooleanParameter *> (param_p), this);
-				}
-			else if (IsCharParameter (param_p))
-				{
-					widget_p = new ParamCharEdit (reinterpret_cast <CharParameter *> (param_p), this, QLineEdit :: Normal);
-				}
-			else if (IsDoubleParameter (param_p))
-				{
-					if (param_p -> pa_options_p)
-						{
-							widget_p = new DoubleComboBox (reinterpret_cast <DoubleParameter *> (param_p), this);
-						}
-					else
-						{
-							widget_p = new ParamDoubleSpinBox (reinterpret_cast <DoubleParameter *> (param_p), this);
-						}
-				}
-			else if (IsSignedIntParameter (param_p))
-				{
-					if (param_p -> pa_options_p)
-						{
-							widget_p = new SignedIntComboBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
-						}
-					else
-						{
-							widget_p = new SignedIntParamSpinBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
-						}
-				}
-			else if (IsUnsignedIntParameter (param_p))
-				{
-					if (param_p -> pa_options_p)
-						{
-							widget_p = new UnsignedIntComboBox (reinterpret_cast <UnsignedIntParameter *> (param_p), this);
-						}
-					else
-						{
-							widget_p = new UnsignedIntParamSpinBox (reinterpret_cast <UnsignedIntParameter *> (param_p), this);
-						}
-				}
-			else if (IsTimeParameter (param_p))
-				{
-					widget_p = new ParamDateWidget (reinterpret_cast <TimeParameter *> (param_p), this);
-				}
-			else if (IsStringParameter (param_p))
-				{
-					StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
+	{
+		if (IsBooleanParameter (param_p))
+			{
+				widget_p = new ParamCheckBox (reinterpret_cast <BooleanParameter *> (param_p), this);
+			}
+		else if (IsCharParameter (param_p))
+			{
+				widget_p = new ParamCharEdit (reinterpret_cast <CharParameter *> (param_p), this, QLineEdit :: Normal);
+			}
+		else if (IsDoubleParameter (param_p))
+			{
+				if (param_p -> pa_options_p)
+					{
+						widget_p = new DoubleComboBox (reinterpret_cast <DoubleParameter *> (param_p), this);
+					}
+				else
+					{
+						widget_p = new ParamDoubleSpinBox (reinterpret_cast <DoubleParameter *> (param_p), this);
+					}
+			}
+		else if (IsSignedIntParameter (param_p))
+			{
+				if (param_p -> pa_options_p)
+					{
+						widget_p = new SignedIntComboBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
+					}
+				else
+					{
+						widget_p = new SignedIntParamSpinBox (reinterpret_cast <SignedIntParameter *> (param_p), this);
+					}
+			}
+		else if (IsUnsignedIntParameter (param_p))
+			{
+				if (param_p -> pa_options_p)
+					{
+						widget_p = new UnsignedIntComboBox (reinterpret_cast <UnsignedIntParameter *> (param_p), this);
+					}
+				else
+					{
+						widget_p = new UnsignedIntParamSpinBox (reinterpret_cast <UnsignedIntParameter *> (param_p), this);
+					}
+			}
+		else if (IsTimeParameter (param_p))
+			{
+				widget_p = new ParamDateWidget (reinterpret_cast <TimeParameter *> (param_p), this);
+			}
+		else if (IsStringParameter (param_p))
+			{
+				StringParameter *string_param_p = reinterpret_cast <StringParameter *> (param_p);
 
-					if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
-						{
-							if (param_p -> pa_options_p)
-								{
-									widget_p = new StringComboBox (string_param_p, this);
-								}
-							else
-								{
-									widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
-								}
-						}
-					else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
-						{
-							widget_p = new ParamTextBox (string_param_p, this);
-						}
-					else if (param_p -> pa_type == PT_TABLE)
-						{
-							widget_p = new StringTableWidget (string_param_p, this);
-						}
-				}
-			else if (IsJSONParameter (param_p))
-				{
-					JSONParameter *json_param_p = reinterpret_cast <JSONParameter *> (param_p);
+				if ((param_p -> pa_type == PT_STRING) || (param_p -> pa_type == PT_KEYWORD))
+					{
+						if (param_p -> pa_options_p)
+							{
+								widget_p = new StringComboBox (string_param_p, this);
+							}
+						else
+							{
+								widget_p = new ParamLineEdit (string_param_p, this, QLineEdit :: Normal);
+							}
+					}
+				else if ((param_p -> pa_type == PT_LARGE_STRING) || (param_p -> pa_type == PT_FASTA))
+					{
+						widget_p = new ParamTextBox (string_param_p, this);
+					}
+				else if (param_p -> pa_type == PT_TABLE)
+					{
+						widget_p = new StringTableWidget (string_param_p, this);
+					}
+			}
+		else if (IsJSONParameter (param_p))
+			{
+				JSONParameter *json_param_p = reinterpret_cast <JSONParameter *> (param_p);
 
-					if (param_p -> pa_type == PT_JSON)
-						{
-							widget_p = new ParamJSONEditor (json_param_p, this);
-						}
-					else if (param_p -> pa_type == PT_JSON_TABLE)
-						{
-							widget_p = new JSONTableWidget (json_param_p, this);
-						}
-				}
-			else if (IsResourceParameter (param_p))
-				{
-					ResourceParameter *resource_param_p = reinterpret_cast <ResourceParameter *> (param_p);
-					QFileDialog :: FileMode mode = QFileDialog :: FileMode :: AnyFile;
+				if (param_p -> pa_type == PT_JSON)
+					{
+						widget_p = new ParamJSONEditor (json_param_p, this);
+					}
+				else if (param_p -> pa_type == PT_JSON_TABLE)
+					{
+						widget_p = new JSONTableWidget (json_param_p, this);
+					}
+			}
+		else if (IsResourceParameter (param_p))
+			{
+				ResourceParameter *resource_param_p = reinterpret_cast <ResourceParameter *> (param_p);
+				QFileDialog :: FileMode mode = QFileDialog :: FileMode :: AnyFile;
 
-					if (param_p -> pa_type == PT_FILE_TO_READ)
-						{
-							mode = QFileDialog :: FileMode :: ExistingFile;
-						}
-					else if (param_p -> pa_type == PT_FILE_TO_WRITE)
-						{
-							mode = QFileDialog :: FileMode :: AnyFile;
-						}
-					if (param_p -> pa_type == PT_DIRECTORY)
-						{
-							mode = QFileDialog :: FileMode :: Directory;
-						}
+				if (param_p -> pa_type == PT_FILE_TO_READ)
+					{
+						mode = QFileDialog :: FileMode :: ExistingFile;
+					}
+				else if (param_p -> pa_type == PT_FILE_TO_WRITE)
+					{
+						mode = QFileDialog :: FileMode :: AnyFile;
+					}
+				if (param_p -> pa_type == PT_DIRECTORY)
+					{
+						mode = QFileDialog :: FileMode :: Directory;
+					}
 
 
-					widget_p = new FileChooserWidget (resource_param_p, this, mode);
-				}
-			else if (IsStringArrayParameter (param_p))
-				{
-				}
+				widget_p = new FileChooserWidget (resource_param_p, this, mode);
+			}
+		else if (IsStringArrayParameter (param_p))
+			{
+			}
 
-		}
+	}
 
 
 	if (widget_p)
@@ -1327,11 +1462,11 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 
 	json_t *param_set_json_p = GetParameterSetSelectionAsJSON (qpw_params_p, sv_p, false, &repeated_widgets, AddNonRepeatedParams);
 
-  if (qpw_client_data_p->qcd_verbose_flag)
-    {
-      PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN Non-repeated");
-      PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END Non-repeated");
-    }
+	if (qpw_client_data_p->qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN Non-repeated");
+			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END Non-repeated");
+		}
 
 	if (param_set_json_p)
 		{
@@ -1362,11 +1497,11 @@ json_t *QTParameterWidget :: GetParameterSetAsJSON (bool refresh_flag) const
 		}		/* if (params_json_p) */
 
 
-  if (qpw_client_data_p->qcd_verbose_flag)
-    {
-      PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN repeated");
-      PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END repeated");
-    }
+	if (qpw_client_data_p->qcd_verbose_flag)
+		{
+			PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, param_set_json_p, "*** BEGIN repeated");
+			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "*** END repeated");
+		}
 
 
 	return param_set_json_p;

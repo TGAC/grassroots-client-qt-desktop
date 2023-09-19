@@ -62,6 +62,8 @@ public:
 
 	const ParameterGroup *GetParameterGroup () const;
 
+    virtual bool ReplaceWidget (QWidget *old_widget_p, BaseParamWidget *new_widget_p);
+
 protected:
 	QList <BaseParamWidget *> pgb_children;
 	QFormLayout *pgb_layout_p;

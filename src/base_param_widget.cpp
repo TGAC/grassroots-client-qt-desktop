@@ -1,18 +1,18 @@
 /*
-** Copyright 2014-2016 The Earlham Institute
-** 
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-** 
-**     http://www.apache.org/licenses/LICENSE-2.0
-** 
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ ** Copyright 2014-2016 The Earlham Institute
+ **
+ ** Licensed under the Apache License, Version 2.0 (the "License");
+ ** you may not use this file except in compliance with the License.
+ ** You may obtain a copy of the License at
+ **
+ **     http://www.apache.org/licenses/LICENSE-2.0
+ **
+ ** Unless required by applicable law or agreed to in writing, software
+ ** distributed under the License is distributed on an "AS IS" BASIS,
+ ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
 #undef _CRTDBG_MAP_ALLOC
 #include "base_param_widget.h"
 #include "qt_parameter_widget.h"
@@ -26,9 +26,9 @@ const char * const BaseParamWidget ::  BPW_REQUIRED_S = "This field is required"
 
 
 BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
-	: bpw_param_p (param_p),
-		bpw_parent_p (parent_p),
-		bpw_error_flag (false)
+: bpw_param_p (param_p),
+	bpw_parent_p (parent_p),
+	bpw_error_flag (false)
 {
 	bpw_param_name_s = EasyCopyToNewString (param_p -> pa_name_s);
 	const char *label_s = GetUIName (param_p);
@@ -77,20 +77,26 @@ void BaseParamWidget :: RemoveConnection ()
 }
 
 
+bool BaseParamWidget :: IsComboBoxWidget () const
+{
+	return false;
+}
+
+
 bool BaseParamWidget :: IsRequired ()
 {
-    bool required_flag = false;
-    ParameterGroup *group_p = bpw_param_p -> pa_group_p;
+	bool required_flag = false;
+	ParameterGroup *group_p = bpw_param_p -> pa_group_p;
 
-    if (group_p)
-    {
-        if (! (group_p -> pg_repeatable_flag))
-            {
-                    required_flag = bpw_param_p -> pa_required_flag;
-            }
-    }
+	if (group_p)
+		{
+			if (! (group_p -> pg_repeatable_flag))
+				{
+					required_flag = bpw_param_p -> pa_required_flag;
+				}
+		}
 
-    return required_flag;
+	return required_flag;
 }
 
 
@@ -167,24 +173,24 @@ void BaseParamWidget :: CheckLevelDisplay (const ParameterLevel ui_level, const 
 				{
 					//if (this_widget_p -> isVisibleTo (parent_widget_p))
 					//	{
-							this_widget_p -> hide ();
+					this_widget_p -> hide ();
 
-							if (bpw_label_p)
-								{
-									bpw_label_p -> hide ();
-								}
+					if (bpw_label_p)
+						{
+							bpw_label_p -> hide ();
+						}
 					//	}
 				}
 			else
 				{
 					//if (! (this_widget_p -> isVisibleTo (parent_widget_p)))
 					//	{
-							this_widget_p -> show ();
+					this_widget_p -> show ();
 
-							if (bpw_label_p)
-								{
-									bpw_label_p -> show ();
-								}
+					if (bpw_label_p)
+						{
+							bpw_label_p -> show ();
+						}
 					//	}
 				}
 		}
@@ -231,16 +237,16 @@ void BaseParamWidget :: SetErrors (const json_t *errors_p)
 
 	s.append ("<ul>");
 	json_array_foreach (errors_p, i, entry_p)
-		{
-			if (json_is_string (entry_p))
-				{
-					const char *value_s = json_string_value (entry_p);
+	{
+		if (json_is_string (entry_p))
+			{
+				const char *value_s = json_string_value (entry_p);
 
-					s.append ("<li>");
-					s.append (value_s);
-					s.append ("</li>");
-				}
-		}
+				s.append ("<li>");
+				s.append (value_s);
+				s.append ("</li>");
+			}
+	}
 
 	s.append ("</ul>");
 

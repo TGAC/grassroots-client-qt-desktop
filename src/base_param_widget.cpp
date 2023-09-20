@@ -59,11 +59,11 @@ bool BaseParamWidget :: SetParameter (Parameter *param_p)
 				{
 					if (bpw_label_p)
 						{
-							bpw_label_p -> SetText (title_s)
+							bpw_label_p -> SetText (title_s);
 						}
 					else
 						{
-							bpw_label_p = new LabelsWidget (title_s,  parent_p);
+							bpw_label_p = new LabelsWidget (title_s, bpw_parent_p);
 						}
 
 					FreeCopiedString (title_s);
@@ -73,13 +73,13 @@ bool BaseParamWidget :: SetParameter (Parameter *param_p)
 		{
 			if (bpw_label_p)
 				{
-					bpw_label_p -> SetText (label_s)
+					bpw_label_p -> SetText (label_s);
 				}
 			else
 				{
-					bpw_label_p = new LabelsWidget (label_s,  parent_p);
+					bpw_label_p = new LabelsWidget (label_s,  bpw_parent_p);
 				}
-`		}
+		}
 
 	if (param_p -> pa_description_s)
 		{

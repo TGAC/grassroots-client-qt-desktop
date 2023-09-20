@@ -49,6 +49,9 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetParameter (Parameter *param_p);
+
+
 protected:
 	virtual QWidget *GetQWidget ();
 

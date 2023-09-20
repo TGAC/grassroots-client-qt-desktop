@@ -39,6 +39,7 @@ bool StringComboBox :: SetParameter (Parameter *param_p)
 
 	if (BaseParamWidget :: SetParameter (param_p))
 		{
+			const char *current_value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
 			bcb_combo_box_p -> clear ();
 
 			success_flag = true;
@@ -59,6 +60,8 @@ bool StringComboBox :: SetParameter (Parameter *param_p)
 								}
 						}
 				}
+
+			success_flag = SetValueFromText (current_value_s);
 		}
 
 	return success_flag;

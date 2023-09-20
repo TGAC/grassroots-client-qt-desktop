@@ -43,6 +43,32 @@ ParamCheckBox ::	~ParamCheckBox ()
 }
 
 
+bool ParamCheckBox :: SetParameter (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsBooleanParameter (param_p))
+		{
+			if (BaseParamWidget :: SetParameter (param_p))
+				{
+					BooleanParameter *bool_param_p = (BooleanParameter *) param_p;
+					const bool *value_p = GetBooleanParameterCurrentValue (bool_param_p);
+
+					if (value_p)
+						{
+							pcb_check_box_p -> setChecked (*value_p);
+							pcb_param_p = bool_param_p;
+
+							success_flag = true;
+}
+				}
+		}
+
+	return success_flag;
+}
+
+
+
 
 bool ParamCheckBox :: StoreParameterValue (bool refresh_flag)
 {

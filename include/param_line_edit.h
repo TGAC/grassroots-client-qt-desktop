@@ -58,6 +58,9 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetParameter (Parameter *param_p);
+
+
 protected:
   QLineEdit *ple_text_box_p;
 	StringParameter *ple_param_p;

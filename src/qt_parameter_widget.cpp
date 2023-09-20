@@ -905,46 +905,60 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 	if (new_params_p)
 		{
 			ParameterNode *param_node_p = (ParameterNode *) (new_params_p -> ps_params_p -> ll_head_p);
-			Parameter *new_param_p = param_node_p -> pn_parameter_p;
-			Parameter *existing_param_p = GetParameterFromParameterSetByName (qpw_params_p, new_param_p -> pa_name_s);
 
-			if (existing_param_p)
+			while (param_node_p)
 				{
-					bool reuse_flag = false;
-					BaseParamWidget *widget_p = GetWidgetForParameter (existing_param_p -> pa_name_s);
+					Parameter *new_param_p = param_node_p -> pn_parameter_p;
+					Parameter *existing_param_p = GetParameterFromParameterSetByName (qpw_params_p, new_param_p -> pa_name_s);
 
-					if (widget_p)
+					if (existing_param_p)
 						{
-							/*
-							 * Can we reuse the existing widget?
-							 */
-							if (existing_param_p -> pa_type == new_param_p -> pa_type)
+							bool reuse_flag = false;
+							BaseParamWidget *widget_p = GetWidgetForParameter (existing_param_p -> pa_name_s);
+
+							if (widget_p)
 								{
-									if (widget_p -> IsComboBoxWidget ())
+									/*
+									 * Can we reuse the existing widget?
+									 */
+									if (existing_param_p -> pa_type == new_param_p -> pa_type)
 										{
-											if (new_param_p -> pa_options_p)
+											if (widget_p -> IsComboBoxWidget ())
 												{
-													reuse_flag = true;
+													if (new_param_p -> pa_options_p)
+														{
+															reuse_flag = true;
+														}
 												}
+											else
+												{
+													if (! (new_param_p -> pa_options_p))
+														{
+															reuse_flag = true;
+														}
+												}
+										}
+
+									if (reuse_flag)
+										{
+											widget_p -> SetParameter (new_param_p);
 										}
 									else
 										{
-											if (! (new_param_p -> pa_options_p))
-												{
-													reuse_flag = true;
-												}
+											PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "cannot reuse param \"%s\"\n", new_param_p -> pa_name_s);
 										}
 								}
-
-							if (reuse_flag)
+							else
 								{
-									widget_p -> SetParameter (new_param_p);
+									PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "no widget for param \"%s\"\n", new_param_p -> pa_name_s);
 								}
-						}
 
-				}		/* if (existing_param_p) */
+						}		/* if (existing_param_p) */
 
-			param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+					param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+				}		/* while (param_node_p) */
+
+
 		}		/* if (new_params_p) */
 
 	return success_flag;
@@ -1160,12 +1174,7 @@ void QTParameterWidget :: RefreshService ()
 
 																									if (op_p)
 																										{
-																											const json_t *param_set_json_p = json_object_get (op_p, PARAM_SET_KEY_S);
-
-																											if (param_set_json_p)
-																												{
-																													SetParamValuesFromJSON (param_set_json_p);
-																												}
+																											SetParamValuesFromJSON (op_p);
 																										}
 																								}
 																						}

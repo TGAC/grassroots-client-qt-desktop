@@ -49,6 +49,9 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetParameter (Parameter *param_p);
+
+
 protected:
 	DroppableTextBox *ptb_text_box_p;
 	StringParameter *ptb_param_p;

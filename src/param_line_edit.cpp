@@ -48,6 +48,28 @@ void ParamLineEdit :: RemoveConnection ()
 }
 
 
+
+bool ParamLineEdit :: SetParameter (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsStringParameter (param_p))
+		{
+			ple_param_p = (StringParameter *) param_p;
+
+			if (BaseParamWidget :: SetParameter (param_p))
+				{
+					const char *value_s = GetStringParameterCurrentValue (ple_param_p);
+					ple_text_box_p -> setText (value_s);
+
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
+}
+
+
 void ParamLineEdit :: SetDefaultValue ()
 {
 	const char *value_s = GetStringParameterDefaultValue (ple_param_p);

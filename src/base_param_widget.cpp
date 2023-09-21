@@ -28,7 +28,9 @@ const char * const BaseParamWidget ::  BPW_REQUIRED_S = "This field is required"
 BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 : bpw_param_p (param_p),
 	bpw_parent_p (parent_p),
-	bpw_error_flag (false)
+	bpw_error_flag (false),
+	bpw_param_name_s (nullptr),
+	bpw_label_p (nullptr)
 {
 	bpw_param_name_s = EasyCopyToNewString (param_p -> pa_name_s);
 	const char *label_s = GetUIName (param_p);
@@ -73,6 +75,56 @@ const char *BaseParamWidget :: GetParameterName () const
 
 void BaseParamWidget :: RemoveConnection ()
 {
+
+}
+
+
+bool BaseParamWidget :: SetParameter (Parameter *param_p)
+{
+	if (bpw_param_name_s)
+		{
+			if (strcmp (bpw_param_name_s, param_p -> pa_name_s) != 0)
+				{
+					char *new_param_name_s = EasyCopyToNewString (param_p -> pa_name_s);
+					
+					if (new_param_name_s)
+						{
+							FreeCopiedString (bpw_param_name_s);
+							bpw_param_name_s = new_param_name_s;
+						}
+				}	
+		}
+	else
+		{
+			
+		}
+		
+	
+
+
+	
+	const char *label_s = GetUIName (param_p);
+
+
+	if (param_p -> pa_required_flag)
+		{
+			char *title_s = ConcatenateStrings (label_s, " *");
+
+			if (title_s)
+				{
+					bpw_label_p = new LabelsWidget (title_s,  parent_p);
+					FreeCopiedString (title_s);
+				}
+		}
+	else
+		{
+			bpw_label_p = new LabelsWidget (label_s, parent_p);
+		}
+
+	if (param_p -> pa_description_s)
+		{
+			bpw_label_p -> setToolTip (param_p -> pa_description_s);
+		}
 
 }
 

@@ -56,6 +56,27 @@ ParamTextBox ::	~ParamTextBox ()
 }
 
 
+bool ParamTextBox :: SetParameter (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsStringParameter (param_p))
+		{
+			if (BaseParamWidget :: SetParameter (param_p))
+				{
+					StringParameter *string_param_p = (StringParameter *) param_p;
+					const char *value_s = GetStringParameterCurrentValue (string_param_p);
+
+					if (ptb_text_box_p -> SetFromText (value_s))
+						{
+							success_flag = true;
+							ptb_param_p = string_param_p;
+						}
+				}
+		}
+
+	return success_flag;
+}
 
 
 

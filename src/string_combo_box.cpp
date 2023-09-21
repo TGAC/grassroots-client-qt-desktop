@@ -32,6 +32,42 @@ StringComboBox :: ~StringComboBox ()
 
 }
 
+
+bool StringComboBox :: SetParameter (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (BaseParamWidget :: SetParameter (param_p))
+		{
+			const char *current_value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
+			bcb_combo_box_p -> clear ();
+
+			success_flag = true;
+
+			if (param_p -> pa_options_p)
+				{
+					StringParameterOptionNode *node_p = reinterpret_cast <StringParameterOptionNode *> (param_p -> pa_options_p -> ll_head_p);
+
+					while (node_p && success_flag)
+						{
+							StringParameterOption *option_p = node_p -> spon_option_p;
+
+							success_flag = AddOption (option_p -> spo_value_s, option_p -> spo_description_s);
+
+							if (success_flag)
+								{
+									node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
+								}
+						}
+				}
+
+			success_flag = SetValueFromText (current_value_s);
+		}
+
+	return success_flag;
+}
+
+
 bool StringComboBox :: AddOption (const char *value_s, const char *description_s)
 {
 	QVariant v (value_s);

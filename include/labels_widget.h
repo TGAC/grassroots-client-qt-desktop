@@ -11,6 +11,8 @@ public:
 	LabelsWidget (const char *label_s, QWidget *parent_p = nullptr);
 	~LabelsWidget ();
 
+	void SetText (const char *text_s);
+
 	void SetError (const QString &message_r);
 	void ClearError ();
 

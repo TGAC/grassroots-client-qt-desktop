@@ -48,6 +48,8 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetParameter (Parameter *param_p);
+
 
 private:
 	StringParameter *scb_param_p;

@@ -82,7 +82,7 @@ public:
 	virtual bool SetParameter (Parameter *param_p);
 
 protected:
-    Parameter *bpw_param_p;
+	Parameter *bpw_param_p;
 	QTParameterWidget * const bpw_parent_p;
 	LabelsWidget *bpw_label_p;
 	char *bpw_param_name_s;

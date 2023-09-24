@@ -60,7 +60,7 @@ bool ParamCheckBox :: SetParameter (Parameter *param_p)
 							pcb_param_p = bool_param_p;
 
 							success_flag = true;
-}
+						}
 				}
 		}
 

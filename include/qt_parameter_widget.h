@@ -144,11 +144,13 @@ private:
 	json_t *GetParameterSetAsJSON (bool refresh_flag) const;
 
 	bool SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const char *, const char *> *repeatable_param_names_p);
+	bool SetRepeatableGroupParamValues (ParameterSet *param_set_p);
 
 	size_t GetNumberOfRepeatedValues (QHash <Parameter *, const json_t *> *grouped_params_p);
 
 
-	bool SetGroupedParameterValue (Parameter *param_p, const json_t *param_json_p, const size_t index, ByteBuffer *label_buffer_p);
+	bool SetGroupedParameterValueFromJSON (Parameter *param_p, const json_t *param_json_p, const size_t index, ByteBuffer *label_buffer_p);
+	bool SetGroupedParameterValue (Parameter *param_p, const size_t index, ByteBuffer *label_buffer_p);
 
 	static const int QPW_NUM_COLUMNS;
 };

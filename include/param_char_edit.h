@@ -34,6 +34,9 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetParameter (Parameter *param_p);
+
+
 protected:
 	QLineEdit *pce_text_box_p;
 	CharParameter *pce_param_p;

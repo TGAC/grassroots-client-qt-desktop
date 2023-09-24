@@ -18,6 +18,7 @@
 
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QHash>
 
 #include "qt_parameter_widget.h"
 #include "file_chooser_widget.h"
@@ -46,6 +47,7 @@
 #include "string_combo_box.h"
 #include "unsigned_int_combo_box.h"
 
+#include "time_util.h"
 
 #include "qt_client_data.h"
 
@@ -491,6 +493,8 @@ void QTParameterWidget :: AddParameters (ParameterSet *params_p)
 					RepeatableParamGroupBox *box_p = new RepeatableParamGroupBox (group_p, this, false, false);
 
 					box_p -> Init (false);
+
+					PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Adding repeatable group %s = 0x%X\n", group_p -> pg_name_s, box_p);
 					qpw_repeatable_groupings.insert (group_p -> pg_name_s, box_p);
 					widget_p = box_p -> GetWidget ();
 				}
@@ -692,6 +696,156 @@ size_t QTParameterWidget :: GetNumberOfRepeatedValues (QHash <Parameter *, const
 }
 
 
+bool QTParameterWidget :: SetRepeatableGroupParamValues (ParameterSet *new_param_set_p)
+{
+	bool success_flag = false;
+	QHash <const json_t *, const json_t *> repeatable_param_names;
+
+	if (new_param_set_p -> ps_grouped_params_p)
+		{
+			QHash <const char *, RepeatableParamGroupBox *> :: iterator  grp_itr;
+
+			for (grp_itr = qpw_repeatable_groupings.begin (); grp_itr != qpw_repeatable_groupings.end (); grp_itr ++)
+				{
+					const char *group_s = grp_itr.key ();
+
+					ParameterGroup *group_p = GetParameterGroupFromParameterSetByGroupName (new_param_set_p, group_s);
+
+					if (group_p)
+						{
+							QHash <Parameter *, Parameter *> non_label_params;
+
+							if (group_p -> pg_params_p)
+								{
+									RepeatableParamGroupBox *box_p = grp_itr.value ();
+
+									if (box_p)
+										{
+											ByteBuffer *buffer_p = NULL;
+											ParameterNode *param_node_p = (ParameterNode *) (group_p -> pg_params_p -> ll_head_p);
+
+											/*
+											 * start by getting all parameters
+											 */
+											while (param_node_p)
+												{
+													Parameter *param_p = param_node_p -> pn_parameter_p;
+													non_label_params.insert (param_p, param_p);
+
+													//repeatable_param_names_p -> insert (param_json_p, param_json_p);
+
+													param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+												}		/* while (param_node_p) */
+
+											/*
+											 * Now remove the label params from non_label_params
+											 */
+											param_node_p = (ParameterNode *) (group_p -> pg_repeatable_label_params_p -> ll_head_p);
+
+											while (param_node_p)
+												{
+													non_label_params.remove (param_node_p -> pn_parameter_p);
+													param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+												}
+
+											box_p -> ClearList ();
+
+											/*
+											 * Build and add the entries to the lists
+											 */
+
+											/*
+											 * Build the label
+											 */
+											buffer_p = AllocateByteBuffer (1024);
+
+											if (buffer_p)
+												{
+													param_node_p = (ParameterNode *) (group_p -> pg_params_p -> ll_head_p);
+
+													while (param_node_p)
+														{
+															bool success_flag = true;
+															char *label_s = NULL;
+															uint32 i = 0;
+															ParameterNode *label_param_node_p = (ParameterNode *) (group_p -> pg_repeatable_label_params_p -> ll_head_p);
+
+															/* do the label params first */
+															while (label_param_node_p)
+																{
+																	Parameter *param_p = label_param_node_p -> pn_parameter_p;
+
+																	SetGroupedParameterValue (param_p, i, buffer_p);
+
+																	label_param_node_p = (ParameterNode *) (label_param_node_p -> pn_node.ln_next_p);
+																	++ i;
+																}		/* while (param_node_p) */
+
+															/* now do the other params */
+															i = 0;
+															QHash <Parameter *, Parameter *> :: iterator itr;
+															for (itr = non_label_params.begin (); itr != non_label_params.end (); ++ itr, ++ i)
+																{
+																	Parameter *param_p = itr.key ();
+
+																	SetGroupedParameterValue (param_p, i, nullptr);
+																}
+
+															if (success_flag)
+																{
+																	const SchemaVersion *sv_p = qpw_client_data_p -> qcd_base_data.cd_schema_p;
+
+																	json_t *group_json_p = GetParameterGroupAsJSON (box_p -> GetParameterGroup (), true, false, sv_p);
+
+																	if (group_json_p)
+																		{
+																			if (qpw_client_data_p -> qcd_verbose_flag)
+																				{
+																					PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list\n", label_s);
+																				}
+
+																			box_p -> AddListEntry (GetByteBufferData (buffer_p), group_json_p);
+																			json_decref (group_json_p);
+																		}
+																}
+
+															ResetByteBuffer (buffer_p);
+
+															param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
+														}		/* while (param_node_p) */
+
+													FreeByteBuffer (buffer_p);
+												}		/* if (buffer_p) */
+
+										}		/* if (box_p) */
+									else
+										{
+											QHash <const char *, RepeatableParamGroupBox *> :: iterator  grp_itr;
+
+											PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "group \"%s\" has no repeatable container\n", group_p -> pg_name_s);
+
+											PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "%d repeatable groups\n", qpw_repeatable_groupings.size ());
+
+											for (grp_itr = qpw_repeatable_groupings.begin (); grp_itr != qpw_repeatable_groupings.end (); grp_itr ++)
+												{
+													PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "\"%s\" has repeatable container 0x%X\n", grp_itr.key (), grp_itr.value ());
+												}
+
+
+										}
+
+								}		/* if (group_p -> pg_params_p) */
+
+						}		/* if (group_p) */
+
+				}		/* for (grp_itr = qpw_repeatable_groupings.begin (); grp_itr != qpw_repeatable_groupings.end (); grp_itr ++) */
+
+		}		/* if (param_set_p -> ps_grouped_params_p) */
+
+	return success_flag;
+}
+
+
 bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const json_t *, const json_t *> *repeatable_param_names_p)
 {
 	bool success_flag = false;
@@ -784,7 +938,7 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 											Parameter *param_p = param_node_p -> pn_parameter_p;
 											const json_t *param_json_p = grouped_params.value (param_p);
 
-											SetGroupedParameterValue (param_p, param_json_p, i, buffer_p);
+											SetGroupedParameterValueFromJSON (param_p, param_json_p, i, buffer_p);
 
 											param_node_p = (ParameterNode *) (param_node_p -> pn_node.ln_next_p);
 										}		/* while (param_node_p) */
@@ -796,7 +950,7 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 											Parameter *param_p = itr.key ();
 											const json_t *param_json_p = grouped_params.value (param_p);
 
-											SetGroupedParameterValue (param_p, param_json_p, i, nullptr);
+											SetGroupedParameterValueFromJSON (param_p, param_json_p, i, nullptr);
 										}
 
 									if (success_flag)
@@ -835,7 +989,61 @@ bool QTParameterWidget :: SetRepeatableGroupParamValuesFromJSON (const json_t *p
 }
 
 
-bool QTParameterWidget :: SetGroupedParameterValue (Parameter *param_p, const json_t *param_json_p , const size_t index, ByteBuffer *label_buffer_p)
+bool QTParameterWidget :: SetGroupedParameterValue (Parameter *param_p, const size_t index, ByteBuffer *label_buffer_p)
+{
+	bool success_flag = true;
+	char *value_s = NULL;
+	bool alloc_flag = false;
+
+	if (IsStringArrayParameter (param_p))
+		{
+			value_s = const_cast <char *> (GetStringArrayParameterCurrentValueAtIndex ((StringArrayParameter *) param_p, index));
+		}
+	else if (IsTimeArrayParameter (param_p))
+		{
+			const struct tm *time_p = GetTimeArrayParameterCurrentValueAtIndex ((TimeArrayParameter *) param_p, index);
+
+			value_s = GetTimeAsString (time_p, true, NULL);
+		}
+	else
+		{
+			value_s = GetParameterValueAsString (param_p, &alloc_flag);
+		}
+
+
+	if (value_s)
+		{
+			AppendStringsToByteBuffer (label_buffer_p, value_s, " ", NULL);
+
+			if (qpw_client_data_p -> qcd_verbose_flag)
+				{
+					PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "param \"%s\" entry " SIZET_FMT "\n", param_p -> pa_name_s, index);
+				}
+
+			success_flag = SetParameterCurrentValueFromString (param_p, value_s);
+
+			if (alloc_flag)
+				{
+					FreeCopiedString (value_s);
+				}
+		}
+	else
+		{
+			if (qpw_client_data_p -> qcd_verbose_flag)
+				{
+					PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "param \"%s\" NULL entry " SIZET_FMT "\n", param_p -> pa_name_s, index);
+				}
+
+            success_flag = SetParameterCurrentValueFromString (param_p, NULL);
+		}
+
+
+
+	return success_flag;
+}
+
+
+bool QTParameterWidget :: SetGroupedParameterValueFromJSON (Parameter *param_p, const json_t *param_json_p , const size_t index, ByteBuffer *label_buffer_p)
 {
 	bool success_flag = true;
 
@@ -904,7 +1112,11 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 	if (new_params_p)
 		{
-			ParameterNode *param_node_p = (ParameterNode *) (new_params_p -> ps_params_p -> ll_head_p);
+			ParameterNode *param_node_p = NULL;
+
+			SetRepeatableGroupParamValues (new_params_p);
+
+			param_node_p = (ParameterNode *) (new_params_p -> ps_params_p -> ll_head_p);
 
 			while (param_node_p)
 				{
@@ -913,7 +1125,7 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 
 					if (existing_param_p)
 						{
-							bool reuse_flag = false;
+							bool widget_flag = false;
 							BaseParamWidget *widget_p = GetWidgetForParameter (existing_param_p -> pa_name_s);
 
 							if (widget_p)
@@ -927,19 +1139,74 @@ bool QTParameterWidget :: SetParamValuesFromJSON (const json_t *param_set_json_p
 												{
 													if (new_param_p -> pa_options_p)
 														{
-															reuse_flag = true;
+															widget_flag = true;
 														}
 												}
 											else
 												{
 													if (! (new_param_p -> pa_options_p))
 														{
-															reuse_flag = true;
+															widget_flag = true;
 														}
 												}
 										}
 
-									if (reuse_flag)
+									if (!widget_flag)
+										{
+											ParameterWidgetContainer *container_p = nullptr;
+
+											if (existing_param_p -> pa_group_p)
+												{
+													container_p = qpw_groupings.value (existing_param_p -> pa_group_p -> pg_name_s);
+												}
+
+											BaseParamWidget *new_widget_p = CreateWidgetForParameter (new_param_p, container_p, false);
+
+											PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "using new widget for %s is at row %d", new_param_p -> pa_name_s);
+
+											if (new_widget_p)
+												{
+													if (container_p)
+														{
+															QWidget *old_ui_widget_p = widget_p -> GetUIQWidget ();
+
+															if (container_p -> ReplaceWidget (old_ui_widget_p, new_widget_p))
+																{
+																	widget_p = new_widget_p;
+																}
+														}
+													else
+														{
+															int existing_row = -1;
+															QWidget *new_ui_widget_p = new_widget_p -> GetUIQWidget ();
+															QFormLayout :: ItemRole role;
+
+															qpw_layout_p -> getWidgetPosition (widget_p -> GetLabel (), &existing_row, &role);
+
+
+															PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "%s is at row %d", existing_param_p -> pa_name_s, existing_row);
+
+															if (existing_row != -1)
+																{
+																	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "removing %s at row %d", existing_param_p -> pa_name_s, existing_row);
+																	qpw_layout_p -> removeRow (existing_row);
+																	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "inserting new row %s at row %d", new_param_p -> pa_name_s, existing_row);
+																	qpw_layout_p -> insertRow (existing_row, widget_p -> GetLabel (), new_ui_widget_p) ;
+																	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__,  "inserted new row %s at row %d", new_param_p -> pa_name_s, existing_row);
+																	widget_p = new_widget_p;
+																	widget_flag = true;
+																}
+															else
+																{
+																	PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__,  "Failed to get existing row for %s", existing_param_p -> pa_name_s);
+																}
+														}
+												}
+
+										}
+
+
+									if (widget_flag)
 										{
 											widget_p -> SetParameter (new_param_p);
 										}

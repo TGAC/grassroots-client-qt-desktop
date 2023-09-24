@@ -50,6 +50,35 @@ void ParamCharEdit :: RemoveConnection ()
 }
 
 
+bool ParamCharEdit :: SetParameter (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsCharParameter (param_p))
+		{
+			if (BaseParamWidget :: SetParameter (param_p))
+				{
+					CharParameter *char_param_p = (CharParameter *) param_p;
+					const char *value_s = GetCharParameterCurrentValue (char_param_p);
+
+					if (value_s)
+						{
+							if (SetValueFromText (value_s))
+								{
+									pce_param_p = char_param_p;
+
+									success_flag = true;
+
+								}
+						}
+				}
+		}
+
+	return success_flag;
+}
+
+
+
 void ParamCharEdit :: SetDefaultValue ()
 {
 	const char *def_p = GetCharParameterDefaultValue (pce_param_p);

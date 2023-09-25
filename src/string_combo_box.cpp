@@ -1,5 +1,6 @@
 #include "string_combo_box.h"
 
+#include "qt_parameter_widget.h"
 
 StringComboBox :: StringComboBox (StringParameter * const param_p, QTParameterWidget * const parent_p)
 	: BaseComboBox (& (param_p -> sp_base_param), parent_p)
@@ -21,6 +22,10 @@ StringComboBox :: StringComboBox (StringParameter * const param_p, QTParameterWi
 						{
 							node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
 						}
+					else
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for \"%s\": \"%s\"\n", option_p -> spo_value_s, option_p -> spo_description_s);
+						}
 				}
 		}
 
@@ -37,7 +42,7 @@ bool StringComboBox :: SetParameter (Parameter *param_p)
 {
 	bool success_flag = false;
 
-	if (BaseParamWidget :: SetParameter (param_p))
+	if (BaseComboBox :: SetParameter (param_p))
 		{
 			const char *current_value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
 			bcb_combo_box_p -> clear ();
@@ -57,6 +62,10 @@ bool StringComboBox :: SetParameter (Parameter *param_p)
 							if (success_flag)
 								{
 									node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
+								}
+							else
+								{
+									PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for \"%s\": \"%s\"\n", option_p -> spo_value_s, option_p -> spo_description_s);
 								}
 						}
 				}
@@ -98,6 +107,10 @@ bool StringComboBox :: SetValueFromText (const char *value_s)
 		{
 			bcb_combo_box_p -> setCurrentIndex (index);
 			success_flag  = true;
+		}
+	else
+		{
+			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Could not find \"%s\" in combobox for \"%s\" in service \"%s\"\n", value_s, bpw_param_name_s, bpw_parent_p -> GetServiceName ());
 		}
 
 	return success_flag;

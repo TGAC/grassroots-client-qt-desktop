@@ -1013,7 +1013,10 @@ bool QTParameterWidget :: SetGroupedParameterValue (Parameter *param_p, const si
 
 	if (value_s)
 		{
-			AppendStringsToByteBuffer (label_buffer_p, value_s, " ", NULL);
+			if (label_buffer_p)
+				{
+					AppendStringsToByteBuffer (label_buffer_p, value_s, " ", NULL);
+				}
 
 			if (qpw_client_data_p -> qcd_verbose_flag)
 				{
@@ -1502,6 +1505,13 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 
 	qpw_level = level;	
 }
+
+
+const char * const QTParameterWidget :: GetServiceName () const
+{
+	return qpw_parent_prefs_widget_p -> GetServiceName ();
+}
+
 
 
 BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * const param_p,  ParameterWidgetContainer *container_p, bool add_param_flag)

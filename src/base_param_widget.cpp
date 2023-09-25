@@ -45,6 +45,21 @@ BaseParamWidget :: ~BaseParamWidget ()
 }
 
 
+
+
+const char *BaseParamWidget :: GetParameterName () const
+{
+	return bpw_param_name_s;
+}
+
+
+void BaseParamWidget :: RemoveConnection ()
+{
+
+}
+
+
+
 bool BaseParamWidget :: SetParameter (Parameter *param_p)
 {
 	bool success_flag = true;
@@ -86,26 +101,7 @@ bool BaseParamWidget :: SetParameter (Parameter *param_p)
 			bpw_label_p -> setToolTip (param_p -> pa_description_s);
 		}
 
-	bpw_param_p = param_p;
 
-	return success_flag;
-}
-
-
-const char *BaseParamWidget :: GetParameterName () const
-{
-	return bpw_param_name_s;
-}
-
-
-void BaseParamWidget :: RemoveConnection ()
-{
-
-}
-
-
-bool BaseParamWidget :: SetParameter (Parameter *param_p)
-{
 	if (bpw_param_name_s)
 		{
 			if (strcmp (bpw_param_name_s, param_p -> pa_name_s) != 0)
@@ -121,36 +117,12 @@ bool BaseParamWidget :: SetParameter (Parameter *param_p)
 		}
 	else
 		{
-			
-		}
-		
-	
-
-
-	
-	const char *label_s = GetUIName (param_p);
-
-
-	if (param_p -> pa_required_flag)
-		{
-			char *title_s = ConcatenateStrings (label_s, " *");
-
-			if (title_s)
-				{
-					bpw_label_p = new LabelsWidget (title_s,  parent_p);
-					FreeCopiedString (title_s);
-				}
-		}
-	else
-		{
-			bpw_label_p = new LabelsWidget (label_s, parent_p);
+			bpw_param_name_s = EasyCopyToNewString (param_p -> pa_name_s);
 		}
 
-	if (param_p -> pa_description_s)
-		{
-			bpw_label_p -> setToolTip (param_p -> pa_description_s);
-		}
+	bpw_param_p = param_p;
 
+	return success_flag;
 }
 
 

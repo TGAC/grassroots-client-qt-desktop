@@ -41,11 +41,16 @@ public:
 
 	virtual bool IsComboBoxWidget () const;
 
+	virtual bool SetParameter (Parameter *param_p);
+
 
 protected:
 	QComboBox *bcb_combo_box_p;
 
 	virtual QWidget *GetQWidget ();
+
+private:
+	void SetMaxVisibleItemsFromParameter (Parameter *param_p);
 
 };
 

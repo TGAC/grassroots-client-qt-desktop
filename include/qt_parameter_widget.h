@@ -108,7 +108,7 @@ private:
 
 	const ServicePrefsWidget * const qpw_parent_prefs_widget_p;
 
-	QHash <Parameter *, BaseParamWidget *> qpw_widgets_map;
+	QHash <QString, BaseParamWidget *> qpw_widgets_map;
 
 	//QGridLayout *qpw_layout_p;
 	QFormLayout *qpw_layout_p;
@@ -117,7 +117,7 @@ private:
 
 	QList <QWebEngineView *> qpw_browsers;
 
-	QHash <const char *, ParamGroupBox *> qpw_groupings;
+	QHash <QString, ParamGroupBox *> qpw_groupings;
 
 	QHash <const char *, RepeatableParamGroupBox *> qpw_repeatable_groupings;
 
@@ -147,7 +147,10 @@ private:
 	bool SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const char *, const char *> *repeatable_param_names_p);
 	bool SetRepeatableGroupParamValues (ParameterSet *param_set_p);
 
-	size_t GetNumberOfRepeatedValues (QHash <Parameter *, const json_t *> *grouped_params_p);
+	size_t GetNumberOfRepeatedValues (ParameterGroup *params_group_p);
+
+	size_t GetNumberOfRepeatedValuesFromJSON (QHash <Parameter *, const json_t *> *grouped_params_p);
+
 
 
 	bool SetGroupedParameterValueFromJSON (Parameter *param_p, const json_t *param_json_p, const size_t index, ByteBuffer *label_buffer_p);

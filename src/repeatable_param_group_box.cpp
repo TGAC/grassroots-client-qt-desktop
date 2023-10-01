@@ -290,8 +290,8 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 
 
 	if (pgb_parent_p -> GetClientData () -> qcd_verbose_flag)
-        {
-            PrintJSONToErrors (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list for repeatable group \"%s\"", label_s, pgb_parameter_group_p -> pg_name_s);
+		{
+			PrintJSONToErrors (STM_LEVEL_INFO, __FILE__, __LINE__, group_json_p, "Adding \"%s\" to list for repeatable group \"%s\"", label_s, pgb_parameter_group_p -> pg_name_s);
 		}
 
 	QListWidgetItem *item_p = new QListWidgetItem (label, rpgb_entries_p);
@@ -301,10 +301,8 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 		{
 			SetListItemData (item_p, value_s);
 
-            qDebug () << "adding " << value_s << " for " << label << ": " << GetListItemDataAsJSON (item_p) << Qt :: endl;
-            free (value_s);
-
-
+			qDebug () << "adding " << value_s << " for " << label << ": " << GetListItemDataAsJSON (item_p) << Qt :: endl;
+			free (value_s);
 		}
 	else
 		{
@@ -314,7 +312,6 @@ void RepeatableParamGroupBox :: AddListEntry (const char *label_s, json_t *group
 	qDebug () << "adding " << label << ": " << GetListItemDataAsJSON (item_p)  << Qt :: endl;
 
 	rpgb_entries_p -> addItem (item_p);
-
 }
 
 

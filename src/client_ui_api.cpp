@@ -54,7 +54,7 @@ static const char *GetQTClientDescription (ClientData *client_data_p);
 static json_t *RunQTClient (ClientData *client_data_p);
 static json_t *DisplayResultsInQTClient (ClientData *client_data_p, json_t *response_p);
 static int AddServiceToQTClient (ClientData *client_data_p, const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t * const provider_p, ParameterSet *params_p, ServiceMetadata *metadata_p);
-
+static bool SetQTClientUser (ClientData *client_data_p, User *user_p);
 
 Client *GetClient (Connection *connection_p)
 {
@@ -67,7 +67,7 @@ Client *GetClient (Connection *connection_p)
 
 			if (client_p)
 				{
-					InitialiseClient (client_p, GetQTClientName, GetQTClientDescription, RunQTClient, DisplayResultsInQTClient, AddServiceToQTClient, ReleaseClient, reinterpret_cast <ClientData *> (data_p), connection_p);
+					InitialiseClient (client_p, GetQTClientName, GetQTClientDescription, RunQTClient, DisplayResultsInQTClient, AddServiceToQTClient, SetQTClientUser, ReleaseClient, reinterpret_cast <ClientData *> (data_p), connection_p);
 				}
 			else
 				{
@@ -270,3 +270,7 @@ static json_t *DisplayResultsInQTClient (ClientData *client_data_p, json_t *resp
 }
 
 
+static bool SetQTClientUser (ClientData *client_data_p, User *user_p)
+{
+	return true;
+}

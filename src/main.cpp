@@ -234,7 +234,7 @@ int main (int argc, char *argv [])
 								{
 									QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
 									SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
-									UserDetails *user_p = NULL;
+									User *user_p = NULL;
 
 									if (username_s && password_s)
 										{

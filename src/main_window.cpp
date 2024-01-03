@@ -668,7 +668,7 @@ void MainWindow :: SetAdvancedInterfaceLevel ()
 
 void MainWindow :: GetAllServices ()
 {
-	UserDetails *user_p = nullptr;
+	User *user_p = nullptr;
 	Client *client_p = mw_client_data_p -> qcd_base_data.cd_client_p;
 	GetAllServicesInClient (client_p, user_p);
 }

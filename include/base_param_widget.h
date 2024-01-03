@@ -81,6 +81,8 @@ public:
 
 	virtual bool SetParameter (Parameter *param_p);
 
+	virtual bool SetFromParameterValue (Parameter *param_p) = 0;
+
 protected:
 	Parameter *bpw_param_p;
 	QTParameterWidget * const bpw_parent_p;

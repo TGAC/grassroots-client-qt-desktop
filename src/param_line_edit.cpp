@@ -70,6 +70,25 @@ bool ParamLineEdit :: SetParameter (Parameter *param_p)
 }
 
 
+bool ParamLineEdit :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsStringParameter (param_p))
+		{
+			const char *value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
+
+			if (SetStringParameterCurrentValue (ple_param_p, value_s))
+				{
+					ple_text_box_p -> setText (value_s);
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
+}
+
+
 void ParamLineEdit :: SetDefaultValue ()
 {
 	const char *value_s = GetStringParameterDefaultValue (ple_param_p);

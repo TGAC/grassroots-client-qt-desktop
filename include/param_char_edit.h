@@ -36,6 +36,7 @@ public:
 
 	virtual bool SetParameter (Parameter *param_p);
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
 
 protected:
 	QLineEdit *pce_text_box_p;

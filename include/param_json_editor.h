@@ -47,6 +47,9 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
+
+
 protected:
 	JSONParameter *pje_param_p;
 	DroppableJSONBox *pje_text_box_p;

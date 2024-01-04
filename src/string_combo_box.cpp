@@ -77,6 +77,25 @@ bool StringComboBox :: SetParameter (Parameter *param_p)
 }
 
 
+bool StringComboBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsStringParameter (param_p))
+		{
+			const char *value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
+
+			if (SetStringParameterCurrentValue (ple_param_p, value_s))
+				{
+					ple_text_box_p -> setText (value_s);
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
+}
+
+
 bool StringComboBox :: AddOption (const char *value_s, const char *description_s)
 {
 	QVariant v (value_s);

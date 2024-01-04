@@ -79,6 +79,23 @@ bool ParamTextBox :: SetParameter (Parameter *param_p)
 }
 
 
+bool ParamTextBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsStringParameter (param_p))
+		{
+			const char *value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
+
+			if (SetStringParameterCurrentValue (ptb_param_p, value_s))
+				{
+					ptb_text_box_p -> SetFromText (value_s);
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
+}
 
 void ParamTextBox :: RemoveConnection ()
 {

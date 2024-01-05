@@ -50,9 +50,13 @@ public:
 
 	virtual bool SetParameter (Parameter *param_p);
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
 
 private:
 	StringParameter *scb_param_p;
+
+	bool SetParameterOptions (Parameter *param_p);
+
 };
 
 

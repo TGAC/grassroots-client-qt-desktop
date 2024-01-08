@@ -46,6 +46,9 @@ public:
 	virtual void SetDefaultValue ();
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+
+	virtual bool SetFromParameterValue (Parameter *param_p);
+
 protected:
 	static uint32 UIPSB_DEFAULT_MAX;
 
@@ -53,7 +56,7 @@ protected:
 
 private:	
 	UnsignedIntSpinner *uipsb_spin_box_p;
-	UnsignedIntParameter *uips_param_p;
+	UnsignedIntParameter *uipsb_param_p;
 };
 
 

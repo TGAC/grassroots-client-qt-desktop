@@ -96,6 +96,33 @@ bool ParamDoubleSpinBox :: StoreParameterValue (bool refresh_flag)
 }
 
 
+bool ParamDoubleSpinBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsDoubleParameter (param_p))
+		{
+			const double64 *value_p = GetDoubleParameterCurrentValue (reinterpret_cast <DoubleParameter *> (param_p));
+
+			if (SetDoubleParameterCurrentValue (pdsb_param_p, value_p))
+				{
+					if (value_p)
+						{
+							pdsb_spinner_p -> setValue (*value_p);
+						}
+					else
+						{
+							pdsb_spinner_p -> ClearValue ();
+						}
+
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
+}
+
+
 bool ParamDoubleSpinBox :: SetValueFromText (const char *value_s)
 {
 	bool success_flag  = false;

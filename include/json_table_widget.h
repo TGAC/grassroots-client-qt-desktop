@@ -24,6 +24,9 @@ public:
 
 	virtual void Clear ();
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
+
+
 protected:
 	JSONParameter *jtw_param_p;
 };

@@ -47,12 +47,14 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
 
 private:
 	DoubleParameter *dcb_param_p;
 
 	bool SetValue (const double64 value);
 
+	bool SetParameterOptions (Parameter *param_p);
 };
 
 

@@ -76,6 +76,34 @@ void SignedIntParamSpinBox :: SetDefaultValue ()
 }
 
 
+
+bool SignedIntParamSpinBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsSignedIntParameter (param_p))
+		{
+			const int32 *value_p = GetSignedIntParameterCurrentValue (reinterpret_cast <SignedIntParameter *> (param_p));
+
+			if (SetSignedIntParameterCurrentValue (sipsb_param_p, value_p))
+				{
+					if (value_p)
+						{
+							sipsb_spin_box_p -> setValue (*value_p);
+						}
+					else
+						{
+							sipsb_spin_box_p -> ClearValue ();
+						}
+
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
+}
+
+
 bool SignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool b = false;

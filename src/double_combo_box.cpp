@@ -39,6 +39,32 @@ void DoubleComboBox :: SetDefaultValue ()
 }
 
 
+bool DoubleComboBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsDoubleParameter (param_p))
+		{
+			DoubleParameter *dbl_param_p = reinterpret_cast <DoubleParameter *> (param_p);
+			const double64 *value_p = GetDoubleParameterCurrentValue (dbl_param_p);
+
+			bcb_combo_box_p -> clear ();
+
+			if (SetParameterOptions (param_p))
+				{
+					if (SetDoubleParameterCurrentValue (dcb_param_p, value_p))
+						{
+							SetValue (*value_p);
+							success_flag = true;
+						}
+				}
+		}
+
+	return success_flag;
+}
+
+
+
 bool DoubleComboBox :: SetValueFromText (const char *value_s)
 {
 	bool success_flag  = false;
@@ -99,3 +125,35 @@ bool DoubleComboBox :: SetValue (const double64 value)
 
 	return success_flag;
 }
+
+
+
+bool DoubleComboBox :: SetParameterOptions (Parameter *param_p)
+{
+	bool success_flag = true;
+
+	if (param_p -> pa_options_p)
+		{
+			DoubleParameterOptionNode *node_p = reinterpret_cast <DoubleParameterOptionNode *> (param_p -> pa_options_p -> ll_head_p);
+
+			while (node_p && success_flag)
+				{
+					DoubleParameterOption *option_p = node_p -> dpon_option_p;
+
+					success_flag = AddOption (option_p -> dpo_value, option_p -> dpo_description_s);
+
+					if (success_flag)
+						{
+							node_p = reinterpret_cast <DoubleParameterOptionNode *> (node_p -> dpon_node.ln_next_p);
+						}
+					else
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for " DOUBLE64_FMT " : \"%s\"\n", option_p -> dpo_value, option_p -> dpo_description_s);
+						}
+				}
+		}
+
+	return success_flag;
+}
+
+

@@ -117,6 +117,12 @@ bool FileChooserWidget :: StoreParameterValue (bool refresh_flag)
 }
 
 
+bool FileChooserWidget :: SetFromParameterValue (Parameter *param_p)
+{
+
+}
+
+
 
 FileChooserWidget :: FileChooserWidget (ResourceParameter * const param_p, QTParameterWidget * const parent_p, QFileDialog :: FileMode mode)
 	: BaseParamWidget (& (param_p -> rp_base_param), parent_p),

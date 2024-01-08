@@ -28,7 +28,7 @@
 UnsignedIntParamSpinBox :: UnsignedIntParamSpinBox (UnsignedIntParameter * const param_p, QTParameterWidget * const parent_p)
 :	BaseParamWidget (& (param_p -> uip_base_param), parent_p)
 {
-	uips_param_p = param_p;
+	uipsb_param_p = param_p;
 	uipsb_spin_box_p = new UnsignedIntSpinner (param_p -> uip_base_param.pa_required_flag, parent_p);
 
 	if (param_p -> uip_min_value_p)
@@ -49,7 +49,7 @@ UnsignedIntParamSpinBox :: ~UnsignedIntParamSpinBox ()
 
 void UnsignedIntParamSpinBox :: SetDefaultValue ()
 {
-	const uint32 *def_value_p = GetUnsignedIntParameterDefaultValue (uips_param_p);
+	const uint32 *def_value_p = GetUnsignedIntParameterDefaultValue (uipsb_param_p);
 
 	if (def_value_p)
 		{
@@ -72,18 +72,45 @@ bool UnsignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 	if (uipsb_spin_box_p -> IsValueSet ())
 		{			
 			const uint32 value = uipsb_spin_box_p -> GetValue ();
-			b = SetUnsignedIntParameterCurrentValue (uips_param_p, &value);
+			b = SetUnsignedIntParameterCurrentValue (uipsb_param_p, &value);
 
 			qDebug () << "UnsignedIntParamSpinBox :: StoreParameterValue: Setting " << bpw_param_p -> pa_name_s << " to " << value;
 		}
 	else
 		{
 			qDebug () << "UnsignedIntParamSpinBox :: StoreParameterValue: Setting " << bpw_param_p -> pa_name_s << "to NULL value";
-			b = SetUnsignedIntParameterCurrentValue (uips_param_p, NULL);
+			b = SetUnsignedIntParameterCurrentValue (uipsb_param_p, NULL);
 		}
 
 
 	return b;
+}
+
+
+bool UnsignedIntParamSpinBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsUnsignedIntParameter (param_p))
+		{
+			const uint32 *value_p = GetUnsignedIntParameterCurrentValue (reinterpret_cast <UnsignedIntParameter *> (param_p));
+
+			if (SetUnsignedIntParameterCurrentValue (uipsb_param_p, value_p))
+				{
+					if (value_p)
+						{
+							uipsb_spin_box_p -> setValue (*value_p);
+						}
+					else
+						{
+							uipsb_spin_box_p -> ClearValue ();
+						}
+
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
 }
 
 

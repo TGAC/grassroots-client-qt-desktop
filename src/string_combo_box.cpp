@@ -7,7 +7,7 @@ StringComboBox :: StringComboBox (StringParameter * const param_p, QTParameterWi
 {
 	scb_param_p = param_p;
 
-	SetParameterOptions (param_p);
+	SetParameterOptions (& (param_p -> sp_base_param));
 
 	SetDefaultValue ();
 }
@@ -22,47 +22,29 @@ bool StringComboBox :: SetParameterOptions (Parameter *param_p)
 {
 	bool success_flag = true;
 
-	if (param_p -> sp_base_param.pa_options_p)
+	if (param_p -> pa_options_p)
 		{
-		StringParameterOptionNode *node_p = reinterpret_cast <StringParameterOptionNode *> (param_p -> sp_base_param.pa_options_p -> ll_head_p);
+			StringParameterOptionNode *node_p = reinterpret_cast <StringParameterOptionNode *> (param_p -> pa_options_p -> ll_head_p);
 
-		while (node_p && success_flag)
-		{
-		StringParameterOption *option_p = node_p -> spon_option_p;
+			while (node_p && success_flag)
+				{
+					StringParameterOption *option_p = node_p -> spon_option_p;
 
-		success_flag = AddOption (option_p -> spo_value_s, option_p -> spo_description_s);
+					success_flag = AddOption (option_p -> spo_value_s, option_p -> spo_description_s);
 
-		if (success_flag)
-		{
-			node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
-		}
-		else
-		{
-			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for \"%s\": \"%s\"\n", option_p -> spo_value_s, option_p -> spo_description_s);
-		}
-	}
-
+					if (success_flag)
+						{
+							node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
+						}
+					else
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for \"%s\": \"%s\"\n", option_p -> spo_value_s, option_p -> spo_description_s);
+						}
+				}
 		}
 
 	return success_flag;
 }
-
-
-bool StringComboBox :: SetFromParameterValue (Parameter *param_p)
-{
-	bool success_flag = false;
-
-	bcb_combo_box_p -> clear ();
-
-	if (SetParameterOptions (param_p))
-	{
-
-	}
-
-
-	return success_flag;
-}
-
 
 
 
@@ -75,30 +57,10 @@ bool StringComboBox :: SetParameter (Parameter *param_p)
 			const char *current_value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
 			bcb_combo_box_p -> clear ();
 
-			success_flag = true;
-
-			if (param_p -> pa_options_p)
+			if (SetParameterOptions (param_p))
 				{
-					StringParameterOptionNode *node_p = reinterpret_cast <StringParameterOptionNode *> (param_p -> pa_options_p -> ll_head_p);
-
-					while (node_p && success_flag)
-						{
-							StringParameterOption *option_p = node_p -> spon_option_p;
-
-							success_flag = AddOption (option_p -> spo_value_s, option_p -> spo_description_s);
-
-							if (success_flag)
-								{
-									node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
-								}
-							else
-								{
-									PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for \"%s\": \"%s\"\n", option_p -> spo_value_s, option_p -> spo_description_s);
-								}
-						}
+					success_flag = SetValueFromText (current_value_s);
 				}
-
-			success_flag = SetValueFromText (current_value_s);
 		}
 
 	return success_flag;
@@ -111,12 +73,18 @@ bool StringComboBox :: SetFromParameterValue (Parameter *param_p)
 
 	if (IsStringParameter (param_p))
 		{
-			const char *value_s = GetStringParameterCurrentValue ((StringParameter *) param_p);
+			StringParameter *str_param_p = reinterpret_cast <StringParameter *> (param_p);
+			const char *value_s = GetStringParameterCurrentValue (str_param_p);
 
-			if (SetStringParameterCurrentValue (ple_param_p, value_s))
+			bcb_combo_box_p -> clear ();
+
+			if (SetParameterOptions (param_p))
 				{
-					ple_text_box_p -> setText (value_s);
-					success_flag = true;
+					if (SetStringParameterCurrentValue (str_param_p, value_s))
+						{
+							SetValueFromText (value_s);
+							success_flag = true;
+						}
 				}
 		}
 

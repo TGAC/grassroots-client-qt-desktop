@@ -173,6 +173,21 @@ bool ParamJSONEditor :: SetValueFromText (const char *value_s)
 }
 
 
+bool ParamJSONEditor :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsJSONParameter (param_p))
+		{
+			JSONParameter *json_param_p = reinterpret_cast <JSONParameter *> (param_p);
+			const json_t *value_p = GetJSONParameterCurrentValue (json_param_p);
+
+			success_flag = SetValueFromJSON (value_p);
+		}
+
+	return success_flag;
+}
+
 
 bool ParamJSONEditor :: SetValueFromJSON (const json_t * const param_value_p)
 {

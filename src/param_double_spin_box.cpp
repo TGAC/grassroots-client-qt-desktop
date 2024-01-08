@@ -81,8 +81,8 @@ bool ParamDoubleSpinBox :: StoreParameterValue (bool refresh_flag)
 				}
 		}
 	else
-        {
-                if ((IsRequired ()) && (!refresh_flag))
+		{
+			if ((IsRequired ()) && (!refresh_flag))
 				{
 					SetErrorMessage (BaseParamWidget ::  BPW_REQUIRED_S);
 				}
@@ -106,6 +106,15 @@ bool ParamDoubleSpinBox :: SetValueFromText (const char *value_s)
 			pdsb_spinner_p -> setValue (value);
 			success_flag = true;
 		}
+
+	return success_flag;
+}
+
+
+bool ParamDoubleSpinBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
 
 	return success_flag;
 }

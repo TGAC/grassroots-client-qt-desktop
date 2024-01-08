@@ -47,6 +47,7 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
 
 private:
 	UnsignedIntParameter *uicb_param_p;

@@ -67,6 +67,39 @@ bool DoubleComboBox :: SetValueFromJSON (const json_t * const value_p)
 }
 
 
+
+bool DoubleComboBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsDoubleParameter (param_p))
+		{
+			bcb_combo_box_p -> clear ();
+
+			if (SetParameterOptions (param_p))
+				{
+					const double64 *value_p = GetDoubleParameterCurrentValue ((DoubleParameter *) param_p);
+
+					if (SetDoubleParameterCurrentValue (dcb_param_p, value_p))
+						{
+							if (value_p)
+								{
+									success_flag = SetValue (*value_p);
+								}
+							else
+								{
+
+								}
+
+						}
+
+				}
+		}
+
+	return success_flag;
+}
+
+
 bool DoubleComboBox :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
@@ -79,6 +112,16 @@ bool DoubleComboBox :: StoreParameterValue (bool refresh_flag)
 
 			success_flag = SetDoubleParameterCurrentValue (dcb_param_p, &d);
 		}
+
+	return success_flag;
+}
+
+
+bool DoubleComboBox :: SetParameterOptions (Parameter *param_p)
+{
+	bool success_flag = true;
+
+
 
 	return success_flag;
 }

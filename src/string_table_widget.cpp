@@ -104,6 +104,22 @@ bool StringTableWidget :: SetValueFromJSON (const json_t * const value_p)
 }
 
 
+bool StringTableWidget :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsStringParameter (param_p))
+		{
+			StringParameter *str_param_p = reinterpret_cast <StringParameter *> (param_p);
+			const char *value_s = GetStringParameterCurrentValue (str_param_p);
+
+			success_flag = SetValueFromText (value_s);
+		}
+
+	return success_flag;
+}
+
+
 bool StringTableWidget :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;

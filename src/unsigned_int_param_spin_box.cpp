@@ -87,6 +87,15 @@ bool UnsignedIntParamSpinBox :: StoreParameterValue (bool refresh_flag)
 }
 
 
+bool UnsignedIntParamSpinBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+
+	return success_flag;
+}
+
+
 bool UnsignedIntParamSpinBox :: SetValueFromText (const char *value_s)
 {
 	bool success_flag  = true;

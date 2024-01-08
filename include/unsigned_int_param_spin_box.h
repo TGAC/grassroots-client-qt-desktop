@@ -46,6 +46,9 @@ public:
 	virtual void SetDefaultValue ();
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
+
+
 protected:
 	static uint32 UIPSB_DEFAULT_MAX;
 

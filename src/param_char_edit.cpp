@@ -78,6 +78,24 @@ bool ParamCharEdit :: SetParameter (Parameter *param_p)
 }
 
 
+bool ParamCharEdit :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsCharParameter (param_p))
+		{
+			const char *value_s = GetCharParameterCurrentValue ((CharParameter *) param_p);
+
+			if (SetCharParameterCurrentValue (pce_param_p, value_s))
+				{
+					pce_text_box_p -> setText (value_s);
+					success_flag = true;
+				}
+		}
+
+	return success_flag;
+}
+
 
 void ParamCharEdit :: SetDefaultValue ()
 {

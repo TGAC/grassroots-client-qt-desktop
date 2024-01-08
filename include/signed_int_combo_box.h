@@ -45,6 +45,7 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
+	virtual bool SetFromParameterValue (Parameter *param_p);
 
 	bool AddOption (const int32 value, const char *description_s);
 

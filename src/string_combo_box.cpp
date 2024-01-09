@@ -34,11 +34,12 @@ bool StringComboBox :: SetParameterOptions (Parameter *param_p)
 
 					if (success_flag)
 						{
+							PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () succeeded for \"%s\": \"%s\"\n\n", option_p -> spo_value_s, option_p -> spo_description_s);
 							node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
 						}
 					else
 						{
-							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for \"%s\": \"%s\"\n", option_p -> spo_value_s, option_p -> spo_description_s);
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () failed for \"%s\": \"%s\"\n\n", option_p -> spo_value_s, option_p -> spo_description_s);
 						}
 				}
 		}
@@ -75,11 +76,14 @@ bool StringComboBox :: SetFromParameterValue (Parameter *param_p)
 			StringParameter *str_param_p = reinterpret_cast <StringParameter *> (param_p);
 			const char *value_s = GetStringParameterCurrentValue (str_param_p);
 
+			PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Param \"%s\" has value \"%s\"\n", param_p -> pa_name_s, value_s);
+
+
 			bcb_combo_box_p -> clear ();
 
 			if (SetParameterOptions (param_p))
 				{
-					if (SetStringParameterCurrentValue (str_param_p, value_s))
+					if (SetStringParameterCurrentValue (scb_param_p, value_s))
 						{
 							SetValueFromText (value_s);
 							success_flag = true;
@@ -116,6 +120,11 @@ bool StringComboBox :: SetValueFromText (const char *value_s)
 	bool success_flag  = false;
 	QVariant v (value_s);
 	int index = bcb_combo_box_p -> findData (v);
+
+
+
+	PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "\"%s\" looking for \"%s\" in %d options\n", bpw_param_name_s, value_s, bcb_combo_box_p -> count ());
+
 
 	if (index != -1)
 		{

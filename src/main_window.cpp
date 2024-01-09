@@ -31,6 +31,8 @@
 #include <QToolBar>
 #include <QScreen>
 #include <QWidget>
+#include <QStatusBar>
+
 
 #include "string_utils.h"
 #include "request_tools.h"
@@ -71,8 +73,19 @@ MainWindow :: MainWindow (QTClientData *data_p)
 
 	AddActions ();
 
-    QScreen *screen_p = QGuiApplication :: primaryScreen ();
-    QSize screen_size = screen_p -> availableGeometry ().size ();
+	QStatusBar *status_bar_p = statusBar ();
+	QPixmap user_img ("images/user");
+	QLabel *user_img_p = new QLabel;
+
+	user_img_p -> setPixmap (user_img);
+	status_bar_p -> addWidget (user_img_p);
+
+	mw_user_label_p = new QLabel;
+	status_bar_p -> addWidget (mw_user_label_p);
+
+
+	QScreen *screen_p = QGuiApplication :: primaryScreen ();
+	QSize screen_size = screen_p -> availableGeometry ().size ();
 	resize (screen_size * 0.5);
 	move (static_cast <int> (screen_size.width () * 0.25), static_cast <int> (screen_size.height () * 0.25));
 }
@@ -341,6 +354,12 @@ void MainWindow :: RunServices (bool run_flag)
 		{
 			close ();
 		}
+}
+
+
+void MainWindow :: SetUser (User *user_p)
+{
+	mw_user_label_p -> setText (user_p -> us_email_s);
 }
 
 

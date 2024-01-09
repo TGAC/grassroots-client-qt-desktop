@@ -119,7 +119,10 @@ bool FileChooserWidget :: StoreParameterValue (bool refresh_flag)
 
 bool FileChooserWidget :: SetFromParameterValue (Parameter *param_p)
 {
+	bool success_flag = false;
 
+
+	return success_flag;
 }
 
 

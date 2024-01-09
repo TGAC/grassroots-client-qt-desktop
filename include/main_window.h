@@ -30,6 +30,7 @@
 #include "prefs_widget.h"
 
 #include "service_metadata.h"
+#include "user_details.h"
 
 
 struct QTClientData;
@@ -72,6 +73,8 @@ public:
 
 	void ProcessResults (json_t *services_json_p);
 
+	void SetUser (User *user_p);
+
 protected:
 	virtual void dropEvent (QDropEvent *event_p);
 	virtual void dragEnterEvent (QDragEnterEvent *event_p);
@@ -86,6 +89,7 @@ private:
 	struct QTClientData *mw_client_data_p;
 	QTabWidget *mw_tabs_p;
 	ParameterLevel mw_current_level;
+	QLabel *mw_user_label_p;
 
 	void AddActions ();
 	void SetParams (json_t *config_p);

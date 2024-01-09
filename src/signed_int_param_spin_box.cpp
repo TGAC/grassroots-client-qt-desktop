@@ -76,7 +76,6 @@ void SignedIntParamSpinBox :: SetDefaultValue ()
 }
 
 
-
 bool SignedIntParamSpinBox :: SetFromParameterValue (Parameter *param_p)
 {
 	bool success_flag = false;

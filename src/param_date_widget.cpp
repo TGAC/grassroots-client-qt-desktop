@@ -179,6 +179,15 @@ bool ParamDateWidget :: SetValueFromJSON (const json_t * const value_p)
 }
 
 
+bool ParamDateWidget :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+
+	return success_flag;
+}
+
+
 QWidget *ParamDateWidget :: GetQWidget ()
 {
 	return pdw_root_widget_p;

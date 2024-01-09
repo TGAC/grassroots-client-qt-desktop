@@ -47,7 +47,6 @@ bool StringComboBox :: SetParameterOptions (Parameter *param_p)
 }
 
 
-
 bool StringComboBox :: SetParameter (Parameter *param_p)
 {
 	bool success_flag = false;

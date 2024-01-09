@@ -113,6 +113,14 @@ bool UnsignedIntComboBox :: StoreParameterValue (bool refresh_flag)
 }
 
 
+bool UnsignedIntComboBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+
+	return success_flag;
+}
+
 
 bool UnsignedIntComboBox :: SetValue (const uint32 value)
 {

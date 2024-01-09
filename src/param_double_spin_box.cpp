@@ -81,8 +81,8 @@ bool ParamDoubleSpinBox :: StoreParameterValue (bool refresh_flag)
 				}
 		}
 	else
-        {
-                if ((IsRequired ()) && (!refresh_flag))
+		{
+			if ((IsRequired ()) && (!refresh_flag))
 				{
 					SetErrorMessage (BaseParamWidget ::  BPW_REQUIRED_S);
 				}
@@ -136,6 +136,7 @@ bool ParamDoubleSpinBox :: SetValueFromText (const char *value_s)
 
 	return success_flag;
 }
+
 
 
 bool ParamDoubleSpinBox :: SetValueFromJSON (const json_t * const value_p)

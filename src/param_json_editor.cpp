@@ -173,6 +173,21 @@ bool ParamJSONEditor :: SetValueFromText (const char *value_s)
 }
 
 
+bool ParamJSONEditor :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+	if (IsJSONParameter (param_p))
+		{
+			JSONParameter *json_param_p = reinterpret_cast <JSONParameter *> (param_p);
+			const json_t *value_p = GetJSONParameterCurrentValue (json_param_p);
+
+			success_flag = SetValueFromJSON (value_p);
+		}
+
+	return success_flag;
+}
+
 
 bool ParamJSONEditor :: SetValueFromJSON (const json_t * const param_value_p)
 {
@@ -203,30 +218,3 @@ bool ParamJSONEditor :: SetValueFromJSON (const json_t * const param_value_p)
 	return success_flag;
 }
 
-
-
-bool ParamJSONEditor :: SetFromParameterValue (Parameter *param_p)
-{
-	bool success_flag = false;
-
-	if (IsJSONParameter (param_p))
-		{
-			const uint32 *value_p = GetUnsignedIntParameterCurrentValue (reinterpret_cast <UnsignedIntParameter *> (param_p));
-
-			if (SetUnsignedIntParameterCurrentValue (uipsb_param_p, value_p))
-				{
-					if (value_p)
-						{
-							uipsb_spin_box_p -> setValue (*value_p);
-						}
-					else
-						{
-							uipsb_spin_box_p -> ClearValue ();
-						}
-
-					success_flag = true;
-				}
-		}
-
-	return success_flag;
-}

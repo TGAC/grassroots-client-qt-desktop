@@ -55,7 +55,6 @@ public:
 
 	virtual bool SetFromParameterValue (Parameter *param_p);
 
-
 protected:
 	virtual QWidget *GetQWidget ();
 

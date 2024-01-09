@@ -46,7 +46,6 @@ public:
 	virtual void SetDefaultValue ();
 	virtual bool StoreParameterValue (bool refresh_flag);
 
-
 	virtual bool SetFromParameterValue (Parameter *param_p);
 
 protected:

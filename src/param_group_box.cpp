@@ -79,7 +79,7 @@ const char *ParamGroupBox :: GetGroupName () const
 
 bool ParamGroupBox :: ReplaceWidget (QWidget *old_widget_p, BaseParamWidget *new_widget_p)
 {
-    bool success_flag = false;
+	bool success_flag = false;
 	int existing_row = -1;
 	QWidget *new_ui_widget_p = new_widget_p -> GetUIQWidget ();
 	QWidget *new_label_p = new_widget_p -> GetLabel ();

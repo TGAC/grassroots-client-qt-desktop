@@ -272,5 +272,8 @@ static json_t *DisplayResultsInQTClient (ClientData *client_data_p, json_t *resp
 
 static bool SetQTClientUser (ClientData *client_data_p, User *user_p)
 {
+	QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_data_p);
+	qt_data_p -> qcd_window_p -> SetUser (user_p);
+
 	return true;
 }

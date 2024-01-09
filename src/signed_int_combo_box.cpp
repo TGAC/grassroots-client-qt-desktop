@@ -82,6 +82,13 @@ bool SignedIntComboBox :: StoreParameterValue (bool refresh_flag)
 }
 
 
+bool SignedIntComboBox :: SetFromParameterValue (Parameter *param_p)
+{
+	bool success_flag = false;
+
+
+	return success_flag;
+}
 
 bool SignedIntComboBox :: SetValue (const int32 value)
 {

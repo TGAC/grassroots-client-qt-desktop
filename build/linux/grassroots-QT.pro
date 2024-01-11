@@ -197,6 +197,7 @@ SOURCES += \
 	../../src/signed_int_combo_box.cpp \
 	../../src/signed_int_spinner.cpp \
 	../../src/string_combo_box.cpp \
+	../../src/string_list_widget.cpp \
 	../../src/unsigned_int_combo_box.cpp \
 	../../src/unsigned_int_validator.cpp \
 	../../src/unsigned_int_spinner.cpp
@@ -256,6 +257,7 @@ HEADERS  += \
 	../../include/signed_int_combo_box.h \
 	../../include/signed_int_spinner.h \
 	../../include/string_combo_box.h \
+	../../include/string_list_widget.h \
 	../../include/unsigned_int_combo_box.h \
 	../../include/unsigned_int_spinner.h \
 	../../include/unsigned_int_validator.h

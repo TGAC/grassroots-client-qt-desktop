@@ -36,6 +36,7 @@
 #include "param_text_box.h"
 #include "prefs_widget.h"
 #include "string_table_widget.h"
+#include "string_list_widget.h"
 #include "param_json_editor.h"
 #include "json_table_widget.h"
 
@@ -1595,6 +1596,12 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 			}
 		else if (IsStringArrayParameter (param_p))
 			{
+				StringArrayParameter *string_array_param_p = reinterpret_cast <StringArrayParameter *> (param_p);
+
+				if (param_p -> pa_options_p)
+					{
+						widget_p = new StringListWidget (string_array_param_p, this);
+					}
 			}
 
 	}

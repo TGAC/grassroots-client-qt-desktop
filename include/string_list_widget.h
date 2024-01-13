@@ -50,6 +50,11 @@ private:
 
 	void AddOptions (Parameter *param_p);
 
+	bool GetValues (char *** values_sss, size_t *num_values_p);
+
+	bool UpdateConfigValue (char ** const values_ss, const size_t num_values);
+
+	void SelectAllEntries (const bool selected_flag);
 };
 
 

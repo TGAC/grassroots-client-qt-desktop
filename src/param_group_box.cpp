@@ -132,7 +132,7 @@ void ParamGroupBox :: AddParamGroupWidgets (bool add_params_flag)
 						}
 					else
 						{
-							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to add widget for \"%s\"", param_p -> pa_name_s);
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to add widget for \"%s\"\n", param_p -> pa_name_s);
 						}
 
 				    node_p = (ParameterNode *) (node_p -> pn_node.ln_next_p);

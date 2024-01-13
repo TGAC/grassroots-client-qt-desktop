@@ -475,7 +475,10 @@ void QTParameterWidget :: ParameterWidgetAdded (Parameter *param_p, BaseParamWid
 	QString param_name (param_p -> pa_name_s);
 	qpw_widgets_map.insert (param_name, widget_p);
 
-	PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "Added \"%s\"", param_p -> pa_name_s);
+	if (qpw_client_data_p -> qcd_verbose_flag)
+		{
+			PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "Added \"%s\"\n", param_p -> pa_name_s);
+		}
 }
 
 
@@ -1600,10 +1603,20 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 
 				if (param_p -> pa_options_p)
 					{
+						PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "Creating StringListWidget for param \"%s\"\n\n", param_p -> pa_name_s);
+
+
 						widget_p = new StringListWidget (string_array_param_p, this);
 					}
+				else
+					{
+						PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "No options for param \"%s\"\n\n", param_p -> pa_name_s);
+					}
 			}
-
+		else
+			{
+				PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "No widget for param \"%s\" of type \"%s\"\n\n", param_p -> pa_name_s, GetGrassrootsTypeAsString (param_p -> pa_type));
+			}
 	}
 
 
@@ -1621,9 +1634,11 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 						}
 				}
 
-			ParameterWidgetAdded (param_p, widget_p);
-
 		}		/* if (widget_p) */
+	else
+		{
+			PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to create widget for param \"%s\" of type \"%s\"\n\n", param_p -> pa_name_s, GetGrassrootsTypeAsString (param_p -> pa_type));
+		}
 
 	if (add_param_flag)
 		{

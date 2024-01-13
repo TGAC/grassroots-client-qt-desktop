@@ -6,6 +6,7 @@
  */
 
 #include "string_list_widget.h"
+#include "string_parameter.h"
 
 
 StringListWidget :: StringListWidget (StringArrayParameter * const param_p, QTParameterWidget * const parent_p)
@@ -42,13 +43,19 @@ void StringListWidget :: AddOptions (Parameter *param_p)
 {
 	if (param_p -> pa_options_p)
 		{
-			StringListNode *node_p = reinterpret_cast <StringListNode *> (param_p -> pa_options_p -> ll_head_p);
+			StringParameterOptionNode *node_p = reinterpret_cast <StringParameterOptionNode *> (param_p -> pa_options_p -> ll_head_p);
 
 			while (node_p)
 				{
-					slw_list_p -> addItem (node_p -> sln_string_s);
+					const StringParameterOption *option_p = node_p -> spon_option_p;
+					QListWidgetItem *item_p = new QListWidgetItem (option_p -> spo_description_s, slw_list_p);
+					QString s (option_p -> spo_value_s);
+					QVariant v (s);
 
-					node_p = reinterpret_cast <StringListNode *> (node_p -> sln_node.ln_next_p);
+					item_p -> setData (Qt :: UserRole, v);
+					slw_list_p -> addItem (item_p);
+
+					node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
 				}
 		}
 
@@ -163,33 +170,57 @@ bool StringListWidget :: SetValueFromText (const char *value_s)
 		}
 	else
 		{
-			const int num_entries = slw_list_p -> count ();
-
-			for (int i = 0; i < num_entries; ++ i)
-				{
-					slw_list_p -> item (i) -> setSelected (false);
-				}
+			SelectAllEntries (false);
 		}
 
 	return true;
 }
 
 
+void StringListWidget :: SelectAllEntries (const bool selected_flag)
+{
+	const int num_entries = slw_list_p -> count ();
+
+	for (int i = 0; i < num_entries; ++ i)
+		{
+			slw_list_p -> item (i) -> setSelected (selected_flag);
+		}
+}
+
 
 bool StringListWidget :: SetValueFromJSON (const json_t * const value_p)
 {
 	bool success_flag = false;
 
-	if (json_is_string (value_p))
+	if (json_is_array (value_p))
 		{
-			const char *value_s = json_string_value (value_p);
+			size_t i;
+			json_t *entry_p;
 
-			ple_text_box_p -> setText (value_s);
+			SelectAllEntries (false);
+
+			json_array_foreach (value_p, i, entry_p)
+				{
+				if (json_is_string (entry_p))
+					{
+						const char *entry_s = json_string_value (entry_p);
+						QList <QListWidgetItem *> l = slw_list_p -> findItems (entry_s, Qt :: MatchFixedString);
+
+						for (qsizetype j = 0; j < l.count (); ++ j)
+							{
+								QListWidgetItem *item_p = l.at (j);
+								item_p -> setSelected (true);
+							}
+
+					}
+
+				}
+
 			success_flag = true;
 		}
 	else if (json_is_null (value_p))
 		{
-			ple_text_box_p -> setText (nullptr);
+			SelectAllEntries (false);
 			success_flag = true;
 		}
 	else
@@ -205,39 +236,89 @@ bool StringListWidget :: SetValueFromJSON (const json_t * const value_p)
 bool StringListWidget :: StoreParameterValue (bool refresh_flag)
 {
 	bool success_flag = false;
-	QString s = ple_text_box_p -> text ();
-	QByteArray ba = s.toLocal8Bit ();
-	const char *value_s = ba.constData ();
+	char **values_ss = nullptr;
+	size_t num_values = 0;
 
-
-        if ((!(IsRequired ())) || refresh_flag || (!IsStringEmpty (value_s)))
+	if (GetValues (&values_ss, &num_values))
 		{
-			if (GetErrorFlag ())
+			if ((!(IsRequired ())) || refresh_flag || (num_values > 0))
 				{
-					SetErrorMessage (nullptr);
+					if (GetErrorFlag ())
+						{
+							SetErrorMessage (nullptr);
+						}
+
+					success_flag = UpdateConfigValue (values_ss, num_values);
+				}
+			else
+				{
+					SetErrorMessage (BaseParamWidget ::  BPW_REQUIRED_S);
 				}
 
-			if (IsStringEmpty (value_s))
+			if (values_ss)
 				{
-					value_s = nullptr;
+					FreeMemory (values_ss);
 				}
-
-			success_flag = UpdateConfigValue (value_s);
-		}
-	else
-		{
-			SetErrorMessage (BaseParamWidget ::  BPW_REQUIRED_S);
 		}
 
 	return success_flag;
 }
 
 
-bool StringListWidget :: UpdateConfigValue (const char * const value_s)
+bool StringListWidget :: UpdateConfigValue (char ** const values_ss, const size_t num_values)
 {
-	bool success_flag = SetStringParameterCurrentValue (ple_param_p, value_s);
+	bool success_flag = SetStringArrayParameterCurrentValues (slw_param_p, values_ss, num_values);
 
-	qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s;
+	//qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value_s;
+
+	return success_flag;
+}
+
+
+bool StringListWidget :: GetValues (char *** values_sss, size_t *num_values_p)
+{
+	bool success_flag = false;
+	QStringList values;
+	const int num_entries = slw_list_p -> count ();
+	int num_values;
+
+	for (int i = 0; i < num_entries; ++ i)
+		{
+			QListWidgetItem *item_p = slw_list_p -> item (i);
+
+			if (item_p -> isSelected ())
+				{
+					QString s = item_p -> text ();
+					values.append (s);
+				}
+		}
+
+	if ((num_values = values.size ()) > 0)
+		{
+			char **results_ss = reinterpret_cast <char **> (AllocMemoryArray (num_values, sizeof (char *)));
+
+			if (results_ss)
+				{
+					char **result_ss = results_ss;
+
+					for (qsizetype i = 0; i < num_values; ++ i, ++ result_ss)
+						{
+							QString s = values.at (i);
+							QByteArray ba = s.toLocal8Bit ();
+							*result_ss = ba.data ();
+						}
+
+					*values_sss = results_ss;
+					*num_values_p = num_values;
+					success_flag = true;
+				}
+		}
+	else
+		{
+			*values_sss = nullptr;
+			*num_values_p = 0;
+			success_flag = true;
+		}
 
 	return success_flag;
 }

@@ -34,7 +34,6 @@ bool StringComboBox :: SetParameterOptions (Parameter *param_p)
 
 					if (success_flag)
 						{
-							PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "AddOption () succeeded for \"%s\": \"%s\"\n\n", option_p -> spo_value_s, option_p -> spo_description_s);
 							node_p = reinterpret_cast <StringParameterOptionNode *> (node_p -> spon_node.ln_next_p);
 						}
 					else

@@ -70,7 +70,7 @@ public:
 
 	bool SetRepeatableGroupParamValuesFromJSON (const json_t *params_array_json_p, QHash <const json_t *, const json_t *> *repeatable_param_names_p);
 
-	const char * const GetServiceName () const;
+	const char *GetServiceName () const;
 
 	void ClearErrors ();
 

@@ -1466,7 +1466,7 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 }
 
 
-const char * const QTParameterWidget :: GetServiceName () const
+const char *QTParameterWidget :: GetServiceName () const
 {
 	return qpw_parent_prefs_widget_p -> GetServiceName ();
 }

@@ -48,9 +48,10 @@ void StringListWidget :: AddOptions (Parameter *param_p)
 			while (node_p)
 				{
 					const StringParameterOption *option_p = node_p -> spon_option_p;
-					QListWidgetItem *item_p = new QListWidgetItem (option_p -> spo_description_s, slw_list_p);
-					QString s (option_p -> spo_value_s);
-					QVariant v (s);
+					QString s (option_p -> spo_description_s);
+					QListWidgetItem *item_p = new QListWidgetItem (s, slw_list_p);
+					QByteArray ba (option_p -> spo_value_s);
+					QVariant v (ba);
 
 					item_p -> setData (Qt :: UserRole, v);
 					slw_list_p -> addItem (item_p);
@@ -93,33 +94,84 @@ bool StringListWidget :: SetFromParameterValue (Parameter *param_p)
 			const char **values_ss = GetStringArrayParameterCurrentValues (new_string_array_param_p);
 			size_t num_values = GetNumberOfStringArrayCurrentParameterValues (new_string_array_param_p);
 
+			if (values_ss)
+				{
+					for (size_t i = 0; i < num_values; ++ i)
+						{
+							PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "setting value [%u] = \"%s\"\n", i, * (values_ss + i), i);
+						}
+				}
+			else
+				{
+					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "GetStringArrayParameterCurrentValues () failed for \"%s\"", new_string_array_param_p -> sap_base_param.pa_name_s);
+				}
+
 			if (SetStringArrayParameterCurrentValues (slw_param_p, const_cast <char **> (values_ss), num_values))
 				{
 					if (new_string_array_param_p -> sap_base_param.pa_options_p)
 						{
-							if (!CopyStringParameterOptions (& (new_string_array_param_p -> sap_base_param), & (slw_param_p -> sap_base_param)))
+							if (CopyStringParameterOptions (& (new_string_array_param_p -> sap_base_param), & (slw_param_p -> sap_base_param), true))
 								{
 									slw_list_p -> clear ();
 									AddOptions (& (slw_param_p -> sap_base_param));
 
-									for (size_t i = 0; i < num_values; ++ i, ++ values_ss)
-										{
-											QList <QListWidgetItem *> matches = slw_list_p -> findItems (*values_ss, Qt :: MatchCaseSensitive);
-											const qsizetype num_entries = matches.size ();
+									const int list_size = slw_list_p -> count ();
+									const char **value_ss = values_ss;
 
-											for (qsizetype j = 0; j < num_entries; ++ j)
+									for (size_t i = 0; i < num_values; ++ i, ++ value_ss)
+										{
+											if (*value_ss)
 												{
-													matches.at (j) -> setSelected (true);
+													size_t num_matches = 0;
+													const char *value_s = *value_ss;
+
+													for (int j = 0; j < list_size; ++ j)
+														{
+															QListWidgetItem *item_p = slw_list_p -> item (j);
+															QVariant v = item_p -> data (Qt :: UserRole);
+															QByteArray ba = v.toByteArray ();
+															const char *item_value_s = ba.constData ();
+
+															if (strcmp (item_value_s, value_s) == 0)
+																{
+																	item_p -> setSelected (true);
+																	++ num_matches;
+																}
+														}
+
+													PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "findItems () found %u matches for  \"%s\"\n", num_matches,  value_s);
 												}
+
 										}
 
+									success_flag = true;
+
 								}
+							else
+								{
+									PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "No Parameter Options for \"%s\"\n", new_string_array_param_p -> sap_base_param.pa_name_s);
+								}
+						}
+					else
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "CopyStringParameterOptions () failed for \"%s\"\n", slw_param_p -> sap_base_param.pa_name_s);
 						}
 
 				}
+			else
+				{
+					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "SetStringArrayParameterCurrentValues () failed for \"%s\"\n", slw_param_p -> sap_base_param.pa_name_s);
 
+					for (size_t i = 0; i < num_values; ++ i)
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "value [%u] = \"%s\"\n", i, * (values_ss + i), i);
+						}
+				}
 
-
+		}
+	else
+		{
+			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Param \"%s\" is not a StringArrayParameter, %d\n", param_p -> pa_name_s, param_p -> pa_type);
 		}
 
 	return success_flag;

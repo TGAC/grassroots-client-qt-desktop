@@ -83,7 +83,9 @@ bool ParamLineEdit :: SetFromParameterValue (Parameter *param_p)
 			if (SetStringParameterCurrentValue (ple_param_p, value_s))
 				{
 					ple_text_box_p -> setText (value_s);
-					ple_text_box_p -> setEnabled (! (bpw_param_p -> pa_read_only_flag));
+
+					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 					success_flag = true;
 				}
 		}

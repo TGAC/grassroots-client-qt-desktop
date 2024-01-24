@@ -82,6 +82,9 @@ bool ParamCheckBox :: SetFromParameterValue (Parameter *param_p)
 			if (value_p)
 				{
 					pcb_check_box_p -> setChecked (*value_p);
+
+					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 					success_flag = true;
 				}
 		}

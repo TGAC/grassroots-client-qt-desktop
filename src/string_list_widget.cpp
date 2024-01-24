@@ -144,6 +144,9 @@ bool StringListWidget :: SetFromParameterValue (Parameter *param_p)
 
 										}
 
+									SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
+
 									success_flag = true;
 
 								}

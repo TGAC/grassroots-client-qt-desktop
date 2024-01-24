@@ -1433,6 +1433,11 @@ void QTParameterWidget :: RefreshService ()
 
 			qpw_refresh_active = true;
 		}		/* if (qpw_refresh_active) */
+	else
+		{
+			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "refresh inactive\n");
+		}
+
 }
 
 

@@ -93,6 +93,8 @@ protected:
 
 	virtual QWidget *GetQWidget () = 0;
 
+	void SetWidgetEnabled (const bool enabled_flag);
+
 private:
 	bool bpw_error_flag;
 

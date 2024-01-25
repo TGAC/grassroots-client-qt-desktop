@@ -16,10 +16,9 @@
 #include <QDebug>
 
 #include "param_line_edit.h"
-#include "prefs_widget.h"
-
+#include <QLineEdit>
 #include "string_utils.h"
-
+#include "qt_parameter_widget.h"
 
 ParamLineEdit :: ParamLineEdit (StringParameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo)
 :		BaseParamWidget (& (param_p -> sp_base_param), parent_p)

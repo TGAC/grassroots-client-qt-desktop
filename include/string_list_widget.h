@@ -25,6 +25,11 @@ public:
 	StringListWidget (StringArrayParameter * const param_p, QTParameterWidget * const parent_p);
 	virtual ~StringListWidget ();
 
+
+	virtual bool SetParameter (Parameter *param_p);
+
+	virtual void RemoveConnection ();
+
 	virtual void SetDefaultValue ();
 
 	virtual bool SetValueFromText (const char *value_s);
@@ -33,15 +38,12 @@ public:
 
 	virtual bool StoreParameterValue (bool refresh_flag);
 
-	virtual bool SetParameter (Parameter *param_p);
-
 	virtual bool SetFromParameterValue (Parameter *param_p);
 
-	void RemoveConnection ();
+
 
 protected:
 	virtual QWidget *GetQWidget ();
-
 
 private:
 	StringArrayParameter *slw_param_p;
@@ -52,9 +54,13 @@ private:
 
 	bool GetValues (char *** values_sss, size_t *num_values_p);
 
-	bool UpdateConfigValue (char ** const values_ss, const size_t num_values);
 
 	void SelectAllEntries (const bool selected_flag);
+
+private slots:
+	bool UpdateConfigValue (char ** const values_ss, const size_t num_values);
+
+
 };
 
 

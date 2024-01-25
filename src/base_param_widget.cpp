@@ -17,7 +17,6 @@
 #include "base_param_widget.h"
 #include "qt_parameter_widget.h"
 
-#include "QtGui"
 
 #include "string_utils.h"
 
@@ -28,8 +27,8 @@ const char * const BaseParamWidget ::  BPW_REQUIRED_S = "This field is required"
 BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget * const parent_p)
 : bpw_param_p (nullptr),
 	bpw_parent_p (parent_p),
-	bpw_error_flag (false),
 	bpw_param_name_s (nullptr),
+	bpw_error_flag (false),
 	bpw_label_p (nullptr)
 {
 	SetParameter (param_p);

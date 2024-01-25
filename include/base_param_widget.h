@@ -56,14 +56,6 @@ public:
 
 	void SetVisible (const bool visible_flag);
 
-	virtual void SetDefaultValue () = 0;
-
-	virtual bool SetValueFromText (const char *value_s) = 0;
-
-	virtual bool SetValueFromJSON (const json_t * const value_p) = 0;
-
-	virtual bool StoreParameterValue (bool refresh_flag) = 0;
-
 	virtual void SetErrors (const json_t *errors_p);
 
 	virtual void SetErrorMessage (const char *message_s);
@@ -80,6 +72,15 @@ public:
 	const Parameter *GetParameter () const;
 
 	virtual bool SetParameter (Parameter *param_p);
+
+
+	virtual void SetDefaultValue () = 0;
+
+	virtual bool SetValueFromText (const char *value_s) = 0;
+
+	virtual bool SetValueFromJSON (const json_t * const value_p) = 0;
+
+	virtual bool StoreParameterValue (bool refresh_flag) = 0;
 
 	virtual bool SetFromParameterValue (Parameter *param_p) = 0;
 

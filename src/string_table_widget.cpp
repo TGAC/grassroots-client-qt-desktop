@@ -114,6 +114,9 @@ bool StringTableWidget :: SetFromParameterValue (Parameter *param_p)
 			const char *value_s = GetStringParameterCurrentValue (str_param_p);
 
 			success_flag = SetValueFromText (value_s);
+
+			SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 		}
 
 	return success_flag;

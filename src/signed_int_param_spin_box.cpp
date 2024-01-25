@@ -95,6 +95,8 @@ bool SignedIntParamSpinBox :: SetFromParameterValue (Parameter *param_p)
 							sipsb_spin_box_p -> ClearValue ();
 						}
 
+					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 					success_flag = true;
 				}
 		}

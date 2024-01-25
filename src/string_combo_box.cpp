@@ -85,6 +85,9 @@ bool StringComboBox :: SetFromParameterValue (Parameter *param_p)
 					if (SetStringParameterCurrentValue (scb_param_p, value_s))
 						{
 							SetValueFromText (value_s);
+
+							SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 							success_flag = true;
 						}
 				}

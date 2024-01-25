@@ -355,3 +355,5 @@ void BaseTableWidget :: SetErrors (const json_t *errors_p)
 
 		}		/* if (errors_p) */
 }
+
+

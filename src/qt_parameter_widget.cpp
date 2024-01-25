@@ -1433,6 +1433,11 @@ void QTParameterWidget :: RefreshService ()
 
 			qpw_refresh_active = true;
 		}		/* if (qpw_refresh_active) */
+	else
+		{
+			PrintLog (STM_LEVEL_INFO, __FILE__, __LINE__, "refresh inactive\n");
+		}
+
 }
 
 
@@ -1466,7 +1471,7 @@ void QTParameterWidget :: UpdateParameterLevel (const ParameterLevel level, cons
 }
 
 
-const char * const QTParameterWidget :: GetServiceName () const
+const char *QTParameterWidget :: GetServiceName () const
 {
 	return qpw_parent_prefs_widget_p -> GetServiceName ();
 }

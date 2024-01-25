@@ -115,6 +115,8 @@ bool ParamDoubleSpinBox :: SetFromParameterValue (Parameter *param_p)
 							pdsb_spinner_p -> ClearValue ();
 						}
 
+					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 					success_flag = true;
 				}
 		}

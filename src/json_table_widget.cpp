@@ -240,7 +240,11 @@ bool JSONTableWidget :: SetFromParameterValue (Parameter *param_p)
 		{
 			const json_t *value_p = GetJSONParameterCurrentValue ((JSONParameter *) param_p);
 
-			success_flag = SetValueFromJSON (value_p);
+			if (SetValueFromJSON (value_p))
+				{
+					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+					success_flag = true;
+				}
 		}
 
 	return success_flag;

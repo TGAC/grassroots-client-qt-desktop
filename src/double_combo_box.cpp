@@ -55,6 +55,9 @@ bool DoubleComboBox :: SetFromParameterValue (Parameter *param_p)
 					if (SetDoubleParameterCurrentValue (dcb_param_p, value_p))
 						{
 							SetValue (*value_p);
+
+							SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 							success_flag = true;
 						}
 				}

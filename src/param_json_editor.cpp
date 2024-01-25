@@ -183,6 +183,8 @@ bool ParamJSONEditor :: SetFromParameterValue (Parameter *param_p)
 			const json_t *value_p = GetJSONParameterCurrentValue (json_param_p);
 
 			success_flag = SetValueFromJSON (value_p);
+
+			SetWidgetEnabled (! (param_p -> pa_read_only_flag));
 		}
 
 	return success_flag;

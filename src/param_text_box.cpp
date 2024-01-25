@@ -90,6 +90,9 @@ bool ParamTextBox :: SetFromParameterValue (Parameter *param_p)
 			if (SetStringParameterCurrentValue (ptb_param_p, value_s))
 				{
 					ptb_text_box_p -> SetFromText (value_s);
+
+					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 					success_flag = true;
 				}
 		}

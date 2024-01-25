@@ -89,6 +89,9 @@ bool ParamCharEdit :: SetFromParameterValue (Parameter *param_p)
 			if (SetCharParameterCurrentValue (pce_param_p, value_s))
 				{
 					pce_text_box_p -> setText (value_s);
+
+					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
+
 					success_flag = true;
 				}
 		}

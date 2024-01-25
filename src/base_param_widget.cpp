@@ -300,3 +300,19 @@ void BaseParamWidget :: SetErrors (const json_t *errors_p)
 
 	bpw_label_p -> SetError (s);
 }
+
+
+void BaseParamWidget :: SetWidgetEnabled (const bool enabled_flag)
+{
+	if (bpw_param_p -> pa_read_only_flag != enabled_flag)
+		{
+			QWidget *widget_p = GetUIQWidget ();
+
+			bpw_param_p -> pa_read_only_flag = enabled_flag;
+
+			if (widget_p)
+				{
+					widget_p -> setEnabled (enabled_flag);
+				}
+		}
+}

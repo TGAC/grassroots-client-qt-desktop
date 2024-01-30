@@ -9,6 +9,7 @@
 #include "string_parameter.h"
 
 
+
 StringListWidget :: StringListWidget (StringArrayParameter * const param_p, QTParameterWidget * const parent_p)
 :		BaseParamWidget (& (param_p -> sap_base_param), parent_p)
 {

@@ -56,6 +56,10 @@ DIR_GRASSROOTS_UTIL = $$DIR_GRASSROOTS_SHARED_SRC/util
 DIR_GRASSROOTS_UTIL_INC = $$DIR_GRASSROOTS_UTIL/include
 GRASSROOTS_UTIL_LIB_NAME =  $$DIR_GRASSROOTS_UTIL/build/windows/x64/$$BUILD/grassroots_util.lib
 
+DIR_GRASSROOTS_USERS = $$DIR_GRASSROOTS_SHARED_SRC/users
+DIR_GRASSROOTS_USERS_INC = $$DIR_GRASSROOTS_USERS/include
+GRASSROOTS_USERS_LIB_NAME =  $$DIR_GRASSROOTS_USERS/build/windows/x64/$$BUILD/grassroots_users.lib
+
 DIR_GRASSROOTS_UUID = $$DIR_GRASSROOTS_SHARED_SRC/uuid
 DIR_GRASSROOTS_UUID_INC = $$DIR_GRASSROOTS_UUID/include
 GRASSROOTS_UUID_LIB_NAME = $$DIR_GRASSROOTS_UUID/build/windows/x64/$$BUILD/grassroots_uuid.lib
@@ -81,6 +85,7 @@ GRASSROOTS_DRMAA_INC = $DIR_GRASSROOTS_DRMAA/include
 DIR_GRASSROOTS_MONGODB = $$DIR_GRASSROOTS_SERVER_SRC/mongodb
 DIR_GRASSROOTS_MONGODB_INC = $$DIR_GRASSROOTS_MONGODB/include
 GRASSROOTS_MONGODB_LIB_NAME = $$DIR_GRASSROOTS_MONGODB/build/windows/x64/$$BUILD/grassroots_mongodb.lib
+
 
 DIR_GRASSROOTS_NETWORK = $$DIR_GRASSROOTS_SHARED_SRC/network
 DIR_GRASSROOTS_NETWORK_INC = $$DIR_GRASSROOTS_NETWORK/include
@@ -128,6 +133,10 @@ DIR_GRASSROOTS_MONGOC = $$DIR_GRASSROOTS_EXTRAS/mongodb-c
 DIR_GRASSROOTS_MONGOC_INC = $$DIR_GRASSROOTS_MONGOC/include
 DIR_GRASSROOTS_MONGOC_LIB = $$DIR_GRASSROOTS_MONGOC/lib/debug
 GRASSROOTS_MONGOC_LIB_NAME = mongoc-1.0
+
+DIR_BSON = $$DIR_GRASSROOTS_EXTRAS/bson
+DIR_BSON_INC = $$DIR_BSON/include
+DIR_BSON_LIB = $$DIR_BSON/lib/debug
 GRASSROOTS_BSON_LIB_NAME = bson-1.0
 
 
@@ -137,12 +146,13 @@ DIR_CURL_LIB = $$DIR_CURL/lib/debug
 CURL_LIB_NAME = $$DIR_CURL/lib/$$BUILD/libcurl_imp.lib
 
 
-DEFINES += "WINDOWS" "_ALLOW_KEYWORD_MACROS " "_CRTDBG_MAP_ALLOC=0" "SHARED_LIBRARY" # "QT_NO_DEBUG_OUTPUT"
+DEFINES += "WINDOWS" "_ALLOW_KEYWORD_MACROS " "SHARED_LIBRARY" "WIN32_LEAN_AND_MEAN" #  "_CRTDBG_MAP_ALLOC=0" "QT_NO_DEBUG_OUTPUT"
 
 INCLUDEPATH += \
     $$DIR_GRASSROOTS_QT_SRC/include \
     $$DIR_CURL_INC \
     $$DIR_JANSSON_INC \
+    $$DIR_BSON_INC \
     $$DIR_GRASSROOTS_CLIENTS_INC \
     $$DIR_GRASSROOTS_PARAMS_INC \
     $$DIR_GRASSROOTS_UUID_INC \
@@ -155,7 +165,8 @@ INCLUDEPATH += \
     $$DIR_GRASSROOTS_NETWORK_INC \
     $$DIR_GRASSROOTS_HANDLER_INC \
     $$DIR_GRASSROOTS_TASK_INC \
-    $$DIR_GRASSROOTS_PLUGIN_INC
+    $$DIR_GRASSROOTS_PLUGIN_INC \
+    $$DIR_GRASSROOTS_USERS_INC
 
 
 
@@ -213,6 +224,7 @@ SOURCES += \
 	../../src/signed_int_combo_box.cpp \
 	../../src/signed_int_spinner.cpp \
   ../../src/string_combo_box.cpp \
+    ../../src/string_list_widget.cpp \
 	../../src/unsigned_int_combo_box.cpp \
 	../../src/unsigned_int_validator.cpp \
 	../../src/unsigned_int_spinner.cpp
@@ -272,6 +284,7 @@ HEADERS  += \
 	../../include/signed_int_combo_box.h \
 	../../include/signed_int_spinner.h \
   ../../include/string_combo_box.h \
+    ../../include/string_list_widget.h \
 	../../include/unsigned_int_combo_box.h \
 	../../include/unsigned_int_spinner.h \
 	../../include/unsigned_int_validator.h
@@ -280,6 +293,7 @@ HEADERS  += \
 message ("GRASSROOTS_UUID_LIB_NAME _$$GRASSROOTS_UUID_LIB_NAME"_)
 message ("GRASSROOTS_SERVICES_LIB_NAME _$$GRASSROOTS_SERVICES_LIB_NAME"_)
 message ("GRASSROOTS_MONGODB_LIB_NAME _$$GRASSROOTS_MONGODB_LIB_NAME"_)
+message ("GRASSROOTS_BSON_INC _$$GRASSROOTS_BSON_INC"_)
 
 
 LIBS += \

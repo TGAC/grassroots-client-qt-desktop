@@ -183,6 +183,34 @@ bool ParamDateWidget :: SetFromParameterValue (Parameter *param_p)
 {
 	bool success_flag = false;
 
+	if (IsTimeParameter (param_p))
+		{
+			TimeParameter *time_param_p = reinterpret_cast <TimeParameter *> (param_p);
+			const struct tm *time_p = GetTimeParameterCurrentValue (time_param_p);
+
+			if (SetTimeParameterCurrentValue (pdw_param_p, time_p))
+				{
+					if (time_p)
+						{
+							QDate d (1900 + (time_p -> tm_year), 1 + (time_p -> tm_mon), time_p -> tm_mday);
+							QTime t (time_p -> tm_hour, time_p -> tm_min, time_p -> tm_sec);
+							QDateTime dt (d, t);
+
+							pdw_calendar_p -> setDateTime (dt);
+
+
+							pdw_checkbox_p -> setChecked (true);
+						}
+					else
+						{
+							pdw_checkbox_p -> setChecked (false);
+						}
+
+					success_flag = true;
+				}
+		}
+
+
 
 	return success_flag;
 }

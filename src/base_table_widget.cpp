@@ -309,6 +309,12 @@ void BaseTableWidget :: SetErrors (const json_t *errors_p)
 							{
 								const char *column_s = GetJSONString (value_p, TABLE_PARAM_COLUMN_S);
 
+								/*
+								 * The error messages start counting from row 1 whereas our table
+								 * starts from row 0 so decrement it.
+								 */
+								-- row;
+
 								if (column_s)
 									{
 										for (int j = num_columns - 1; j >= 0; -- j)

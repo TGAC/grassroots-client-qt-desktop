@@ -54,7 +54,8 @@ public:
 protected:
 	virtual QWidget *GetQWidget ();
 
-
+	static const double pdsb_min_bound;
+	static const double pdsb_max_bound;
 
 private:
 	DoubleParameter *pdsb_param_p;

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui networkauth
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webenginewidgets
 
@@ -191,6 +191,7 @@ SOURCES += \
 	../../src/double_combo_box.cpp \
 	../../src/droppable_table_widget.cpp \
 	../../src/droppable_text_box.cpp \
+	../../src/globus_auth.cpp \
 	../../src/json_table_widget.cpp \
 	../../src/labels_widget.cpp \
 	../../src/param_char_edit.cpp \
@@ -251,6 +252,7 @@ HEADERS  += \
 	../../include/double_combo_box.h \
 	../../include/droppable_table_widget.h \
 	../../include/droppable_text_box.h \
+	../../include/globus_auth.hpp \
 	../../include/json_table_widget.h \
 	../../include/labels_widget.h \
 	../../include/param_char_edit.h \

@@ -20,6 +20,10 @@
 #include "math_utils.h"
 
 
+const double ParamDoubleSpinBox :: pdsb_min_bound = -1000000.0;
+const double ParamDoubleSpinBox :: pdsb_max_bound = 1000000.0;
+
+
 ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTParameterWidget * const parent_p)
 :		BaseParamWidget (& (param_p -> dp_base_param), parent_p)
 {
@@ -28,8 +32,7 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTPar
 	int default_precision = 4;
 	const char *prec_value_s = GetParameterKeyValue (& (param_p -> dp_base_param), PA_DOUBLE_PRECISION_S);
 	const double step = 0.10f;
-	double min_bound = (param_p -> dp_min_value_p) ? * (param_p -> dp_min_value_p) : -1000000.0;
-	double max_bound = (param_p -> dp_max_value_p) ? * (param_p -> dp_max_value_p) : 1000000.0;
+
 
 	if (prec_value_s)
 		{
@@ -38,8 +41,8 @@ ParamDoubleSpinBox :: ParamDoubleSpinBox (DoubleParameter * const param_p, QTPar
 
 	pdsb_spinner_p -> setDecimals (default_precision);
 
-	pdsb_spinner_p -> setMinimum (min_bound);
-	pdsb_spinner_p -> setMaximum (max_bound);
+	pdsb_spinner_p -> setMinimum (ParamDoubleSpinBox :: pdsb_min_bound);
+	pdsb_spinner_p -> setMaximum (ParamDoubleSpinBox :: pdsb_max_bound);
 	pdsb_spinner_p -> setSingleStep (step);
 
 	if (param_p -> dp_base_param.pa_refresh_service_flag)
@@ -72,15 +75,20 @@ bool ParamDoubleSpinBox :: StoreParameterValue (bool refresh_flag)
 		{
 			const double value = pdsb_spinner_p -> value ();
 
-			success_flag = SetDoubleParameterCurrentValue (pdsb_param_p, &value);
-			qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
-
-			if (GetErrorFlag ())
+			if ((CompareDoubles (value, ParamDoubleSpinBox :: pdsb_min_bound) != 0) &&
+					(CompareDoubles (value, ParamDoubleSpinBox :: pdsb_max_bound) != 0))
 				{
-					SetErrorMessage (nullptr);
+					success_flag = SetDoubleParameterCurrentValue (pdsb_param_p, &value);
+					qDebug () << "Setting " << bpw_param_p -> pa_name_s << " to " << value;
+
+					if (GetErrorFlag ())
+						{
+							SetErrorMessage (nullptr);
+						}
 				}
 		}
-	else
+
+	if (!success_flag)
 		{
 			if ((IsRequired ()) && (!refresh_flag))
 				{

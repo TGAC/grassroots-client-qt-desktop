@@ -46,6 +46,8 @@
 #include "client_ui_api.h"
 #include "qt_client_data.h"
 
+#include "globus_auth.hpp"
+
 
 #ifdef _DEBUG
 #define STANDALONE_CLIENT_DEBUG	(STM_LEVEL_FINER)
@@ -72,6 +74,7 @@ int main (int argc, char *argv [])
 					"\t--verbose, display more information whilst running the client\n"
 					"\t--username, username"
 					"\t--password, password"
+					"\t--globus_auth, authenticate via the Globus servers"
 					"\t\tThe resource is in the form <protocol>://<name> e.g. file:///home/test.fa, https://my.data/object, irods://data.fa\n"
 					);
 			return 0;
@@ -90,6 +93,7 @@ int main (int argc, char *argv [])
 			CURLcode c;
 			Connection *connection_p = NULL;
 			bool verbose_flag = false;
+			bool globus_auth_flag = false;
 
 			while (i < argc)
 				{
@@ -202,6 +206,10 @@ int main (int argc, char *argv [])
 						{
 							verbose_flag = true;
 						}
+					else if (strcmp (argv [i], "--globus_auth") == 0)
+						{
+							globus_auth_flag = true;
+						}
 					else
 						{
 							printf ("Unknown argument: \"%s\"", argv [i]);
@@ -211,11 +219,32 @@ int main (int argc, char *argv [])
 				}		/* while (i < argc) */
 
 
-
 			c = curl_global_init (CURL_GLOBAL_DEFAULT);
 
 			if (c == 0)
 				{
+					if (globus_auth_flag)
+						{
+							static char *app_s = EasyCopyToNewString ("Grassroots Auth");
+
+							//QStyle *style_p = QStyleFactory :: create ("Fusion");
+							// /QApplication :: setStyle (style_p);
+
+							//qDebug() << QStyleFactory::keys();
+
+							QApplication *app_p = new QApplication (argc, argv);
+
+							QWindow *win_p = new QWindow;
+
+							win_p -> setTitle (app_s);
+							win_p -> show ();
+
+							GlobusAuth *auth_p = new GlobusAuth (win_p, username_s, password_s, 3456);
+							app_p -> exec ();
+
+
+						}
+
 					connection_p = AllocateWebServerConnection (hostname_s, CM_MEMORY);
 				}
 			else

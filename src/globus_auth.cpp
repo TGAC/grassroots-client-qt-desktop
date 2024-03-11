@@ -12,13 +12,9 @@
 #include "json_util.h"
 
 
+quint16 GlobusAuth :: GA_DEFAULT_PORT = 1337;
+
 static void ModifyParametersFunction (QAbstractOAuth :: Stage stage, QMultiMap <QString, QVariant> *parameters_p);
-
-
-GlobusAuth *GlobusAuth :: GetGlobusAuth (QObject *parent_p, const char * const client_id_s, const char * const client_secret_s, const quint16 reply_port)
-{
-
-}
 
 
 GlobusAuth :: GlobusAuth (QObject *parent_p, const char * const client_id_s, const char * const client_secret_s, const quint16 reply_port)
@@ -26,6 +22,8 @@ GlobusAuth :: GlobusAuth (QObject *parent_p, const char * const client_id_s, con
 {
 	ga_flow_p = new QOAuth2AuthorizationCodeFlow (this);
 	ga_flow_p -> setScope ("email");
+
+	ga_access_token_s  = nullptr;
 
 	connect (ga_flow_p, &QOAuth2AuthorizationCodeFlow :: authorizeWithBrowser, &QDesktopServices :: openUrl);
 
@@ -45,31 +43,86 @@ GlobusAuth :: GlobusAuth (QObject *parent_p, const char * const client_id_s, con
 			ga_flow_p -> setClientIdentifierSharedKey (client_secret_s);
 			ga_flow_p -> setAuthorizationUrl (auth_url);
 			ga_flow_p -> setAccessTokenUrl (token_url);
-			ga_flow_p -> setScope ("email");
+			ga_flow_p -> setScope ("email profile");
 			ga_flow_p -> setModifyParametersFunction (ModifyParametersFunction);
 
 			QOAuthHttpServerReplyHandler *reply_handler_p = new QOAuthHttpServerReplyHandler (reply_port, this);
 			ga_flow_p -> setReplyHandler (reply_handler_p);
 
-			connect (ga_flow_p, &QOAuth2AuthorizationCodeFlow :: granted, this, &GlobusAuth :: TokenGranted);
+			connect (ga_flow_p, &QOAuth2AuthorizationCodeFlow :: granted, this, &GlobusAuth :: Granted);
+
+			connect (reply_handler_p, &QOAuthHttpServerReplyHandler :: tokensReceived, this, &GlobusAuth :: TokensReceived);
 		}
 }
 
-void GlobusAuth :: TokenGranted ()
+void GlobusAuth :: Granted ()
 {
 	const QString token = ga_flow_p -> token ();
-	emit GotToken (token);
+
+	qDebug () << "Granted: " << token << Qt :: endl;
 }
+
+
+void GlobusAuth :: TokensReceived (const QVariantMap &tokens_r)
+{
+	QMapIterator <QString, QVariant> itr (tokens_r);
+
+	qDebug () << "BEGIN tokens" << Qt :: endl;
+
+	while (itr.hasNext ())
+		{
+			itr.next ();
+			QVariant v = itr.value ();
+			QString s = v.toString ();
+
+			qDebug () << itr.key () << ": " << s << " (" << v.typeName () << ")" << Qt :: endl;
+		}
+
+	qDebug () << "END tokens" << Qt :: endl;
+
+	QString access_token_key ("access_token");
+	QVariant access_token = tokens_r.value (access_token_key);
+
+	if (access_token.isValid ())
+		{
+			QString s = access_token.toString ();
+			QByteArray ba = s.toLocal8Bit ();
+			const char *token_s = ba.constData ();
+
+			emit GotAccessToken (token_s);
+		}
+
+
+	emit GotAllTokens (tokens_r);
+}
+
 
 GlobusAuth :: ~GlobusAuth ()
 {
 	delete ga_flow_p;
+
+	if (ga_access_token_s)
+		{
+			FreeCopiedString (ga_access_token_s);
+		}
 }
 
 // Invoked externally to initiate
 void GlobusAuth :: Authenticate ()
 {
 	ga_flow_p -> grant ();
+}
+
+
+bool GlobusAuth :: IsAccessTokenSet () const
+{
+	return (ga_access_token_s != nullptr);
+}
+
+
+const char *GlobusAuth :: GetAccessToken () const
+{
+	return ga_access_token_s;
 }
 
 
@@ -86,6 +139,11 @@ static void ModifyParametersFunction (QAbstractOAuth :: Stage stage, QMultiMap <
 		{
 				// Percent-decode the "code" parameter so Google can match it
 				QByteArray code = parameters_p -> value ("code").toByteArray ();
+
+				const char *code_s = code.constData();
+
+				qDebug () << "code: \"" << code_s << "\"" << Qt :: endl;
+
 				parameters_p -> replace("code", QUrl :: fromPercentEncoding (code));
 		}
 }

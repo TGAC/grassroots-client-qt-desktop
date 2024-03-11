@@ -94,6 +94,8 @@ int main (int argc, char *argv [])
 			Connection *connection_p = NULL;
 			bool verbose_flag = false;
 			bool globus_auth_flag = false;
+			const uint16 port = 1337;
+			char *access_token_s = NULL;
 
 			while (i < argc)
 				{
@@ -223,6 +225,18 @@ int main (int argc, char *argv [])
 
 			if (c == 0)
 				{
+					connection_p = AllocateWebServerConnection (hostname_s, CM_MEMORY);
+				}
+			else
+				{
+					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to initialise curl environment: %d", c);
+				}
+
+
+			if (connection_p)
+				{
+					bool success_flag = false;
+
 					if (globus_auth_flag)
 						{
 							static char *app_s = EasyCopyToNewString ("Grassroots Auth");
@@ -239,81 +253,102 @@ int main (int argc, char *argv [])
 							win_p -> setTitle (app_s);
 							win_p -> show ();
 
-							GlobusAuth *auth_p = new GlobusAuth (win_p, username_s, password_s, 3456);
+
+							GlobusAuth *auth_p = new GlobusAuth (win_p, username_s, password_s, port);
+
+							auth_p -> Authenticate ();
 							app_p -> exec ();
 
-
-						}
-
-					connection_p = AllocateWebServerConnection (hostname_s, CM_MEMORY);
-				}
-			else
-				{
-					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to initialise curl environment: %d", c);
-				}
-
-
-			if (connection_p)
-				{
-					if (InitDefaultOutputStream ())
-						{
-							Client *client_p = GetClient (connection_p);
-
-							if (client_p)
+							if (auth_p -> IsAccessTokenSet ())
 								{
-									QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
-									SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
-									User *user_p = NULL;
+									const char *token_s = auth_p -> GetAccessToken ();
 
-									if (username_s && password_s)
+									access_token_s = EasyCopyToNewString (token_s);
+
+									if (!access_token_s)
 										{
-											if (!SetConnectionCredentials (connection_p, username_s, password_s))
-												{
-													PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set credentials");
-												}
+											PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to copy access token");
+										}
+								}
+
+							if (AddConnectionHeader (connection_p, "token_type", "Bearer"))
+								{
+									if (AddConnectionHeader (connection_p, "access_token", access_token_s))
+										{
+											success_flag = true;
 										}
 
-									SetClientSchema (client_p, sv_p);
-
-									qt_data_p -> qcd_verbose_flag = verbose_flag;
-
-									switch (op)
-										{
-											case OP_LIST_ALL_SERVICES:
-												{
-													GetAllServicesInClient (client_p, user_p);
-												}
-												break;
-
-											case OP_LIST_INTERESTED_SERVICES:
-												{
-													GetInterestedServicesInClient (client_p, protocol_s, query_s, user_p);
-												}
-												break;
-
-											case OP_GET_NAMED_SERVICES:
-												{
-													GetNamedServicesInClient (client_p, keyword_s, user_p);
-												}
-												break;
-
-
-											case OP_GET_SERVICE_INFO:
-												{
-													GetNamedServicesIndexingDataInClient (client_p, keyword_s, user_p);
-												}
-												break;
-
-											default:
-												break;
-										}		/* switch (api_id) */
-
-									ReleaseClient (client_p);
-								}		/* if (client_p) */
-
-
-							FreeDefaultOutputStream ();
+								}
 						}
+					else
+						{
+							success_flag = true;
+						}
+
+					if (success_flag)
+						{
+							if (InitDefaultOutputStream ())
+								{
+									Client *client_p = GetClient (connection_p);
+
+									if (client_p)
+										{
+											QTClientData *qt_data_p = reinterpret_cast <QTClientData *> (client_p -> cl_data_p);
+											SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
+											User *user_p = NULL;
+
+											if (username_s && password_s)
+												{
+													if (!SetConnectionCredentials (connection_p, username_s, password_s))
+														{
+															PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set credentials");
+														}
+												}
+
+											SetClientSchema (client_p, sv_p);
+
+											qt_data_p -> qcd_verbose_flag = verbose_flag;
+
+											switch (op)
+												{
+													case OP_LIST_ALL_SERVICES:
+														{
+															GetAllServicesInClient (client_p, user_p);
+														}
+														break;
+
+													case OP_LIST_INTERESTED_SERVICES:
+														{
+															GetInterestedServicesInClient (client_p, protocol_s, query_s, user_p);
+														}
+														break;
+
+													case OP_GET_NAMED_SERVICES:
+														{
+															GetNamedServicesInClient (client_p, keyword_s, user_p);
+														}
+														break;
+
+
+													case OP_GET_SERVICE_INFO:
+														{
+															GetNamedServicesIndexingDataInClient (client_p, keyword_s, user_p);
+														}
+														break;
+
+													default:
+														break;
+												}		/* switch (api_id) */
+
+											ReleaseClient (client_p);
+										}		/* if (client_p) */
+
+
+									FreeDefaultOutputStream ();
+								}
+
+						}		/*if (success_flag) */
+
 
 					FreeConnection (connection_p);
 
@@ -335,6 +370,11 @@ int main (int argc, char *argv [])
 			if (protocol_s)
 				{
 					FreeCopiedString (protocol_s);
+				}
+
+			if (access_token_s)
+				{
+					FreeCopiedString (access_token_s);
 				}
 
 		}

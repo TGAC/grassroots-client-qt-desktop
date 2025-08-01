@@ -1,7 +1,7 @@
 #ifndef RECEIVER_HPP
 #define RECEIVER_HPP
 
-#include "globus_auth.hpp"
+#include "auth.hpp"
 
 #include <QObject>
 
@@ -10,7 +10,7 @@
 	Q_OBJECT
 
 public:
-	Receiver (GlobusAuth *globus_p);
+	Receiver (Auth *globus_p);
 	virtual ~Receiver ();
 
 signals:

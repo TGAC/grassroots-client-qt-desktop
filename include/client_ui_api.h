@@ -30,7 +30,7 @@ extern "C"
 {
 #endif
 
-Client *GetClient (Connection *connection_p);
+Client *GetClient (Connection *connection_p, int argc, char *argv[]);
 
 bool ReleaseClient (Client *client_p);
 

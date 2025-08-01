@@ -65,7 +65,6 @@ public:
 	virtual bool IsRequired ();
 
 
-
 	void SetErrorFlag (const bool error_flag);
 	bool GetErrorFlag () const;
 
@@ -73,6 +72,7 @@ public:
 
 	virtual bool SetParameter (Parameter *param_p);
 
+	virtual void SetUpdateOnEdit (bool b);
 
 	virtual void SetDefaultValue () = 0;
 
@@ -89,6 +89,16 @@ protected:
 	QTParameterWidget * const bpw_parent_p;
 	LabelsWidget *bpw_label_p;
 	char *bpw_param_name_s;
+
+	/*
+	 * For normal widgets, they update their respective parameter
+	 * values with a call to StoreParameterValue (). However for
+	 * widgets in Repeated Parameter Groups, we need to store them
+	 * immediately otherwise we'd lose their edits when a different
+	 * entry is selected from the list
+	 */
+	bool bpw_update_on_edit_flag;
+
 
 	static const char * const BPW_REQUIRED_S;
 

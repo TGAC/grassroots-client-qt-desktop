@@ -20,6 +20,8 @@ public:
 
 	virtual void Init (bool add_params_flag);
 
+	virtual void AddParameterWidget (BaseParamWidget *widget_p);
+
 	json_t *GetParametersAsJSON ();
 
 	json_t *GetParametersAsGroupJSON ();
@@ -45,7 +47,6 @@ private:
 
 
 	json_t *GetListItemDataAsJSON  (QListWidgetItem *item_p);
-
 
 private slots:
 	void AddEntry ();

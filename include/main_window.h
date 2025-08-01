@@ -44,8 +44,9 @@ signals:
 	void ServiceRequested (const char *service_name_s, const json_t *params_json_p);
 
 public slots:
-	void SetBasicInterfaceLevel ();
+	void SetSimpleInterfaceLevel ();
 	void SetAdvancedInterfaceLevel ();
+	void SetWizardInterfaceLevel ();
 	void LoadConfiguration ();
 	void SaveConfiguration ();
 	void RunServices (bool run_flag);
@@ -95,7 +96,7 @@ private:
 	void SetParams (json_t *config_p);
 
 	//bool AddResults (const json_t *job_results_p);
-
+	void SetParameterLevel (ParameterLevel pl);
 
 private slots:
 	void Run ();

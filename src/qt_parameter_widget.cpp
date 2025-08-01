@@ -1605,18 +1605,9 @@ BaseParamWidget *QTParameterWidget :: CreateWidgetForParameter (Parameter * cons
 		else if (IsStringArrayParameter (param_p))
 			{
 				StringArrayParameter *string_array_param_p = reinterpret_cast <StringArrayParameter *> (param_p);
+				PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "Creating StringListWidget for param \"%s\"\n\n", param_p -> pa_name_s);
 
-				if (param_p -> pa_options_p)
-					{
-						PrintLog (STM_LEVEL_FINE, __FILE__, __LINE__, "Creating StringListWidget for param \"%s\"\n\n", param_p -> pa_name_s);
-
-
-						widget_p = new StringListWidget (string_array_param_p, this);
-					}
-				else
-					{
-						PrintLog (STM_LEVEL_SEVERE, __FILE__, __LINE__, "No options for param \"%s\"\n\n", param_p -> pa_name_s);
-					}
+				widget_p = new StringListWidget (string_array_param_p, this);
 			}
 		else
 			{

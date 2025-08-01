@@ -29,7 +29,8 @@ BaseParamWidget	:: BaseParamWidget (Parameter * const param_p, QTParameterWidget
 	bpw_parent_p (parent_p),
 	bpw_param_name_s (nullptr),
 	bpw_error_flag (false),
-	bpw_label_p (nullptr)
+	bpw_label_p (nullptr),
+	bpw_update_on_edit_flag (false)
 {
 	SetParameter (param_p);
 }
@@ -43,6 +44,14 @@ BaseParamWidget :: ~BaseParamWidget ()
 		}
 }
 
+
+void BaseParamWidget :: SetUpdateOnEdit (bool b)
+{
+	if (b)
+		{
+			bpw_update_on_edit_flag = true;
+		}
+}
 
 
 
@@ -304,11 +313,11 @@ void BaseParamWidget :: SetErrors (const json_t *errors_p)
 
 void BaseParamWidget :: SetWidgetEnabled (const bool enabled_flag)
 {
-	if (bpw_param_p -> pa_read_only_flag != enabled_flag)
+	if (bpw_param_p -> pa_read_only_flag == enabled_flag)
 		{
 			QWidget *widget_p = GetUIQWidget ();
 
-			bpw_param_p -> pa_read_only_flag = enabled_flag;
+			bpw_param_p -> pa_read_only_flag = !enabled_flag;
 
 			if (widget_p)
 				{

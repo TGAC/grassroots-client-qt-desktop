@@ -649,7 +649,7 @@ void MainWindow :: AddActions ()
 	action_p -> setStatusTip (tr ("Basic"));
 	action_p -> setCheckable (true);
 	action_p -> setChecked (mw_current_level == PL_SIMPLE);
-	connect (action_p, &QAction :: triggered, this, &MainWindow :: SetBasicInterfaceLevel);
+	connect (action_p, &QAction :: triggered, this, &MainWindow :: SetSimpleInterfaceLevel);
 	sub_menu_p -> addAction (action_p);
 	interface_levels_p -> addAction (action_p);
 
@@ -662,27 +662,43 @@ void MainWindow :: AddActions ()
 	sub_menu_p -> addAction (action_p);
 	interface_levels_p -> addAction (action_p);
 
+	// Wizard Level
+	action_p = new QAction (tr ("Wizard"), this);
+	action_p -> setStatusTip (tr ("Wizard"));
+	action_p -> setCheckable (true);
+	action_p -> setChecked (mw_current_level == PL_WIZARD);
+	connect (action_p, &QAction :: triggered, this, &MainWindow :: SetWizardInterfaceLevel);
+	sub_menu_p -> addAction (action_p);
+	interface_levels_p -> addAction (action_p);
 
 	addToolBar (main_toolbar_p);
 }
 
 
-void MainWindow :: SetBasicInterfaceLevel ()
+void MainWindow :: SetSimpleInterfaceLevel ()
 {
-	mw_current_level = PL_SIMPLE;
-	mw_prefs_widget_p -> SetInterfaceLevel (mw_current_level);
-	update ();
+    SetParameterLevel (PL_SIMPLE);
 }
 
 
 void MainWindow :: SetAdvancedInterfaceLevel ()
 {
-	mw_current_level = PL_ADVANCED;
-	mw_prefs_widget_p -> SetInterfaceLevel (mw_current_level);
-	update ();
+    SetParameterLevel (PL_ADVANCED);
 }
 
 
+void MainWindow :: SetWizardInterfaceLevel ()
+{
+    SetParameterLevel (PL_WIZARD);
+}
+
+
+void MainWindow :: SetParameterLevel (ParameterLevel pl)
+{
+	mw_current_level = pl;
+	mw_prefs_widget_p -> SetInterfaceLevel (mw_current_level);
+	update ();
+}
 
 
 void MainWindow :: GetAllServices ()

@@ -217,7 +217,13 @@ void BaseParamWidget :: CheckLevelDisplay (const ParameterLevel ui_level, const 
 
 	if (this_widget_p)
 		{
-			if (!CompareParameterLevels (bpw_param_p -> pa_level, ui_level))
+			const bool show_flag = CompareParameterLevels (bpw_param_p -> pa_level, ui_level);
+
+
+			qDebug () << "CheckLevelDisplay () " << bpw_param_p -> pa_name_s << " level: " << bpw_param_p -> pa_level
+					<< " ui level: " << ui_level << " show_flag: " << show_flag << "\n";
+
+			if (!show_flag)
 				{
 					//if (this_widget_p -> isVisibleTo (parent_widget_p))
 					//	{

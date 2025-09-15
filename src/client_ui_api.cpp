@@ -22,6 +22,8 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
+#include <exception>
+
 #include "client_ui_api.h"
 
 #include "prefs_widget.h"
@@ -46,7 +48,8 @@
 
 static int s_dummy_argc = 1;
 
-static QTClientData *AllocateQTClientData (Connection *connection_p);
+static QTClientData *AllocateQTClientData (Connection *connection_p, int argc, char *argv []);
+
 static void FreeQTClientData (QTClientData *qt_data_p);
 
 static const char *GetQTClientName (ClientData *client_data_p);
@@ -56,10 +59,16 @@ static json_t *DisplayResultsInQTClient (ClientData *client_data_p, json_t *resp
 static int AddServiceToQTClient (ClientData *client_data_p, const char * const service_name_s, const char * const service_description_s, const char * const service_info_uri_s, const char * const service_icon_uri_s, const json_t * const provider_p, ParameterSet *params_p, ServiceMetadata *metadata_p);
 static bool SetQTClientUser (ClientData *client_data_p, User *user_p);
 
-Client *GetClient (Connection *connection_p)
+Client *GetClient (Connection *connection_p, int argc, char *argv [])
 {
 	Client *client_p = nullptr;
-	QTClientData *data_p = AllocateQTClientData (connection_p);
+	QTClientData *data_p = nullptr;
+
+	try {
+		data_p = AllocateQTClientData (connection_p, argc, argv);
+	} catch (std::exception &e) {
+		qDebug () << e.what () << Qt :: endl;
+	}
 
 	if (data_p)
 		{
@@ -92,7 +101,7 @@ bool ReleaseClient (Client *client_p)
 }
 
 
-static QTClientData *AllocateQTClientData (Connection *connection_p)
+static QTClientData *AllocateQTClientData (Connection *connection_p, int argc, char *argv [])
 {
 	QTClientData *data_p = static_cast <QTClientData *> (AllocMemory (sizeof (QTClientData)));
 
@@ -122,7 +131,13 @@ static QTClientData *AllocateQTClientData (Connection *connection_p)
 
 					qDebug() << QStyleFactory::keys();
 
-					data_p -> qcd_app_p = new QApplication (s_dummy_argc, & (data_p -> qcd_dummy_arg_s));
+					try
+					{
+						data_p -> qcd_app_p = new QApplication (s_dummy_argc, & (data_p -> qcd_dummy_arg_s));
+						}
+					catch (std :: exception &e) {
+						qDebug () << e.what () << Qt :: endl;
+					}
 
 					data_p -> qcd_window_p = new MainWindow (data_p);
 

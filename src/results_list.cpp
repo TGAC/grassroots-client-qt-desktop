@@ -148,19 +148,28 @@ bool ResultsList :: AddItemFromJSON (const char * const name_s, const json_t *re
 								}
 
 
+							json_t *provider_p = json_object_get (resource_json_p, SERVER_PROVIDER_S);
+
+							if (provider_p)
+								{
+									if (!icon_path_s)
+										{
+											icon_path_s = GetJSONString (provider_p, PROVIDER_LOGO_S);
+
+										}
+								}
+
+							if (icon_path_s)
+								{
+									icon_path_s = "images/list_objects";
+								}
+
+
 							JSONListWidgetItem *item_p = new JSONListWidgetItem (s, rl_list_p);
 
 							connect (item_p, &JSONListWidgetItem :: RunServiceRequested, rp_parent_p, &ResultsPage :: RunService);
 
-							if (icon_path_s)
-								{
-									icon_p = UIUtils :: GetRemoteIconImage (icon_path_s);
-								}
-
-							if (!icon_p)
-								{
-									icon_p = new QIcon ("images/list_objects");
-								}
+							icon_p = UIUtils :: GetRemoteIconImage (icon_path_s);
 
 							if (icon_p)
 								{

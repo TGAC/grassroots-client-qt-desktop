@@ -39,6 +39,7 @@ class ParamLineEdit : public BaseParamWidget
 
 private slots:
 	bool UpdateConfigValue (const char * const value_s);
+    bool UpdateParameterValue (const QString &widget_value_r);
 
 public:
 	ParamLineEdit (StringParameter * const param_p, QTParameterWidget * const parent_p, QLineEdit :: EchoMode echo = QLineEdit :: Normal);
@@ -62,11 +63,15 @@ public:
 
 	virtual bool SetFromParameterValue (Parameter *param_p);
 
+	virtual void SetUpdateOnEdit (bool b);
+
+
 protected:
   QLineEdit *ple_text_box_p;
 	StringParameter *ple_param_p;
 
   virtual QWidget *GetQWidget ();
+
 };
 
 

@@ -57,6 +57,15 @@ void RepeatableParamGroupBox :: Init (bool add_params_flag)
 }
 
 
+
+void RepeatableParamGroupBox :: AddParameterWidget (BaseParamWidget *param_widget_p)
+{
+	ParamGroupBox :: AddParameterWidget (param_widget_p);
+
+    param_widget_p -> SetUpdateOnEdit (true);
+}
+
+
 json_t *RepeatableParamGroupBox :: GetParametersAsJSON ()
 {
 	json_t *res_p = json_array ();
@@ -455,6 +464,7 @@ void RepeatableParamGroupBox :: SelectedListEntryChanged ()
 	if (count == 1)
 		{
 			QListWidgetItem *item_p = l.at (0);
+			int row = rpgb_entries_p -> row (item_p);
 			json_t *group_json_p = GetListItemDataAsJSON (item_p);
 
 			if (group_json_p)
@@ -476,20 +486,40 @@ void RepeatableParamGroupBox :: SelectedListEntryChanged ()
 												{
 													json_t *value_p = json_object_get (param_json_p, PARAM_CURRENT_VALUE_S);
 
-													BaseParamWidget *widget_p = pgb_parent_p -> GetWidgetForParameter (param_name_s);
-
-													if (widget_p)
+													if (json_is_array (value_p))
 														{
-															if (pgb_parent_p -> GetClientData () -> qcd_verbose_flag)
+															const size_t num_values = json_array_size (value_p);
+
+															if (row < num_values)
 																{
-																	PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, value_p, "Calling SetValueFromJSON on widget \"%s\" for \"%s\"\n", widget_p -> GetParameterName (),  param_name_s);
+																	BaseParamWidget *widget_p = pgb_parent_p -> GetWidgetForParameter (param_name_s);
+
+																	if (widget_p)
+																		{
+																			json_t *new_param_value_p = json_array_get (value_p, row);
+
+																			if (pgb_parent_p -> GetClientData () -> qcd_verbose_flag)
+																				{
+																					PrintJSONToLog (STM_LEVEL_INFO, __FILE__, __LINE__, new_param_value_p, "Calling SetValueFromJSON on widget \"%s\" for \"%s\"\n", widget_p -> GetParameterName (),  param_name_s);
+																				}
+																			widget_p -> SetValueFromJSON (new_param_value_p);
+																		}
+																	else
+																		{
+																			PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, param_json_p, "Failed to get widget for \"%s\"\n", param_name_s);
+																		}
+
 																}
-															widget_p -> SetValueFromJSON (value_p);
+															else
+																{
+																	PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, value_p, "Error, array size is %d and row is %d for\"%s\"\n", (int) num_values, row,  param_name_s);
+																}
 														}
 													else
 														{
-															PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, param_json_p, "Failed to get widget for \"%s\"\n", param_name_s);
+															PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, value_p, "Error, value is not an array for \"%s\"\n",  param_name_s);
 														}
+
 												}
 											else
 												{

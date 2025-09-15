@@ -5,11 +5,11 @@
 #include "string_utils.h"
 
 
-Receiver ::	Receiver (GlobusAuth *globus_p)
+Receiver ::	Receiver (Auth *globus_p)
 {
 	re_token_s = nullptr;
-	connect (globus_p, &GlobusAuth :: GotGrant, this, &Receiver :: ReceiveToken);
-	connect (globus_p, &GlobusAuth :: GotAllTokens, this, &Receiver :: ReceiveAllTokens);
+	connect (globus_p, &Auth :: GotGrant, this, &Receiver :: ReceiveToken);
+	connect (globus_p, &Auth :: GotAllTokens, this, &Receiver :: ReceiveAllTokens);
 }
 
 Receiver :: ~Receiver ()
@@ -18,12 +18,6 @@ Receiver :: ~Receiver ()
 		{
 			FreeCopiedString (re_token_s);
 		}
-}
-
-
-const char *Receiver :: GetToken () const
-{
-	return re_token_s;
 }
 
 

@@ -45,6 +45,7 @@
 #include "streams.h"
 #include "client_ui_api.h"
 #include "qt_client_data.h"
+#include "curl_tools.h"
 
 #include "globus_auth.hpp"
 
@@ -289,7 +290,7 @@ int main (int argc, char *argv [])
 						{
 							if (InitDefaultOutputStream ())
 								{
-									Client *client_p = GetClient (connection_p);
+									Client *client_p = GetClient (connection_p, argc, argv);
 
 									if (client_p)
 										{
@@ -297,17 +298,25 @@ int main (int argc, char *argv [])
 											SchemaVersion *sv_p = AllocateSchemaVersion (CURRENT_SCHEMA_VERSION_MAJOR, CURRENT_SCHEMA_VERSION_MINOR);
 											User *user_p = NULL;
 
-											if (username_s && password_s)
+											if (!globus_auth_flag)
 												{
-													if (!SetConnectionCredentials (connection_p, username_s, password_s))
+													if (username_s && password_s)
 														{
-															PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set credentials");
+															if (!SetConnectionCredentials (connection_p, username_s, password_s))
+																{
+																	PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to set credentials");
+																}
 														}
 												}
 
 											SetClientSchema (client_p, sv_p);
 
 											qt_data_p -> qcd_verbose_flag = verbose_flag;
+
+											if (connection_p -> co_type == CT_WEB)
+												{
+													SetCurlToolVerbose (((WebConnection *) connection_p) -> wc_curl_p, verbose_flag);
+												}
 
 											switch (op)
 												{

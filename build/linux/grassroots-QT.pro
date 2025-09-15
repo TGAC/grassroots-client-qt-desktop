@@ -93,10 +93,10 @@ DIR_GRASSROOTS_IRODS_INC = $$DIR_GRASSROOTS_IRODS/include
 GRASSROOTS_IRODS_LIB_NAME = grassroots_irods
 
 
-#DIR_GRASSROOTS_LIBUUID = $$DIR_GRASSROOTS_EXTRAS/libuuid
-#DIR_GRASSROOTS_LIBUUID_INC = $$DIR_GRASSROOTS_LIBUUID/include
-#DIR_GRASSROOTS_LIBUUID_LIB = $$DIR_GRASSROOTS_LIBUUID/lib
-#GRASSROOTS_LIBUUID_LIB_NAME = uuid
+DIR_GRASSROOTS_LIBUUID = $$DIR_GRASSROOTS_EXTRAS/libuuid
+DIR_GRASSROOTS_LIBUUID_INC = $$DIR_GRASSROOTS_LIBUUID/include
+DIR_GRASSROOTS_LIBUUID_LIB = $$DIR_GRASSROOTS_LIBUUID/lib
+GRASSROOTS_LIBUUID_LIB_NAME = uuid
 
 DIR_GRASSROOTS_PCRE2 = /home/billy/Applications/pcre2
 DIR_GRASSROOTS_PCRE2_INC = $$DIR_GRASSROOTS_PCRE2/include
@@ -186,6 +186,7 @@ SOURCES += \
 		$$DIR_GRASSROOTS_QT_SRC/src/signed_int_param_spin_box.cpp \
 		$$DIR_GRASSROOTS_QT_SRC/src/unsigned_int_param_spin_box.cpp \
 	../../src/alloc_failure.cpp \
+	../../src/auth.cpp \
 	../../src/base_combo_box.cpp \
 	../../src/base_table_widget.cpp \
 	../../src/double_combo_box.cpp \
@@ -247,6 +248,7 @@ HEADERS  += \
 		$$DIR_GRASSROOTS_QT_SRC/include/signed_int_param_spin_box.h \
 		$$DIR_GRASSROOTS_QT_SRC/include/unsigned_int_param_spin_box.h \
 	../../include/alloc_failure.hpp \
+	../../include/auth.hpp \
 	../../include/base_combo_box.h \
 	../../include/base_table_widget.h \
 	../../include/double_combo_box.h \
@@ -292,6 +294,7 @@ LIBS += -L$$DIR_GRASSROOTS_LIBS \
  -L$$DIR_GRASSROOTS_JANSSON_LIB  -l$$GRASSROOTS_JANSSON_LIB_NAME \
  -L$$DIR_GRASSROOTS_MONGOC_LIB -l$$GRASSROOTS_MONGOC_LIB_NAME \
  -l$$GRASSROOTS_BSON_LIB_NAME \
+ -L$$DIR_GRASSROOTS_LIBUUID_LIB \
  -lcurl \
  -lpthread \
  -luuid \

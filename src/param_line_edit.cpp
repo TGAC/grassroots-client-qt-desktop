@@ -32,6 +32,10 @@ ParamLineEdit :: ParamLineEdit (StringParameter * const param_p, QTParameterWidg
 		{
 			QObject ::  connect (ple_text_box_p,  &QLineEdit :: returnPressed, parent_p, &QTParameterWidget :: RefreshService);
 		}
+	else
+		{
+			QObject ::  connect (ple_text_box_p,  &QLineEdit :: returnPressed, parent_p, &QTParameterWidget :: RefreshService);
+		}
 
 }
 
@@ -44,6 +48,21 @@ ParamLineEdit ::	~ParamLineEdit ()
 
 void ParamLineEdit :: RemoveConnection ()
 {
+}
+
+
+
+void ParamLineEdit :: SetUpdateOnEdit (bool b)
+{
+	if (b)
+		{
+            QObject ::  connect (ple_text_box_p,  &QLineEdit :: textChanged, this, &ParamLineEdit :: UpdateParameterValue);
+		}
+	else
+		{
+
+		}
+
 }
 
 
@@ -83,6 +102,7 @@ bool ParamLineEdit :: SetFromParameterValue (Parameter *param_p)
 				{
 					ple_text_box_p -> setText (value_s);
 
+					qDebug () << ple_param_p -> sp_base_param.pa_name_s <<  " enabled: " << param_p -> pa_read_only_flag;
 					SetWidgetEnabled (! (param_p -> pa_read_only_flag));
 
 					success_flag = true;
@@ -151,6 +171,11 @@ bool ParamLineEdit :: SetValueFromJSON (const json_t * const value_p)
 	return success_flag;
 }
 
+
+bool ParamLineEdit :: UpdateParameterValue (const QString &widget_value_r)
+{
+	return StoreParameterValue (false);
+}
 
 
 bool ParamLineEdit :: StoreParameterValue (bool refresh_flag)

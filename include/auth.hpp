@@ -1,6 +1,8 @@
 #ifndef AUTH_HPP
 #define AUTH_HPP
 
+#include <QObject>
+
 #include <QNetworkReply>
 #include <QOAuth2AuthorizationCodeFlow>
 

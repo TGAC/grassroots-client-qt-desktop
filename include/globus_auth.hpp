@@ -15,6 +15,8 @@ public:
 
 	virtual ~GlobusAuth ();
 
+
+
 protected:
 	virtual bool GetEndpoints ();
 

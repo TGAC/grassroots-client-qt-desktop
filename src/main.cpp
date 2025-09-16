@@ -47,7 +47,7 @@
 #include "qt_client_data.h"
 #include "curl_tools.h"
 
-#include "globus_auth.hpp"
+//#include "globus_auth.hpp"
 
 
 #ifdef _DEBUG
@@ -242,6 +242,7 @@ int main (int argc, char *argv [])
 						{
 							static char *app_s = EasyCopyToNewString ("Grassroots Auth");
 
+							/*
 							//QStyle *style_p = QStyleFactory :: create ("Fusion");
 							// /QApplication :: setStyle (style_p);
 
@@ -280,6 +281,9 @@ int main (int argc, char *argv [])
 										}
 
 								}
+
+								*/
+							success_flag = true;
 						}
 					else
 						{
